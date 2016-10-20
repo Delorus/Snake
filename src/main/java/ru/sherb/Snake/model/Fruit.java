@@ -1,0 +1,100 @@
+package ru.sherb.Snake.model;
+
+import java.awt.*;
+
+/**
+ * Created by sherb on 12.10.2016.
+ */
+public class Fruit implements Colorable {
+    private Grid grid;
+    private Cell fruit;
+    private int scoreInc; // число, на которое увеличиваются очки, когда змейка съест фрукт
+    private int lengthSnakeInc; //число, на которое увеличится размер змейки, когда она съест фрукт
+    private int existOfTime; //время, которое будет существовать фрукт ms
+    private boolean exist;
+    private Color color;
+
+    public Fruit(Grid grid/*, byte color*/) {
+//        fruit = new Cell(State.FRUIT/*, color*/);
+        this.grid = grid;
+        scoreInc = 1;
+        lengthSnakeInc = 1;
+        exist = false;
+
+    }
+
+//    public Fruit(Cell[][] grid, int existOfTime/*, byte color*/) {
+//        this(grid);
+//        this.existOfTime = existOfTime;
+//    }
+//
+//    public Fruit(Cell[][] grid, int existOfTime/*, byte color*/, int scoreInc) {
+////        fruit = new Cell(State.FRUIT/*, color*/);
+//        this(grid, existOfTime);
+//        this.scoreInc = scoreInc;
+//    }
+//
+//    public Fruit(Cell[][] grid, int existOfTime/*, byte color*/, int scoreInc, int lengthSnakeInc) {
+//        this(grid, existOfTime/*, color*/, scoreInc);
+//        this.lengthSnakeInc = lengthSnakeInc;
+//    }
+
+    public boolean createFruit(int x, int y, Color color) {
+        //TODO доделать создания фрукта, в том числе начать отсчет времени его существования
+        if (grid.getCell(x, y).getStatus() != State.EMPTY) {
+            return false;
+        }
+        fruit = grid.getCell(x, y);
+        this.color = color;
+        fruit.setStatus(State.FRUIT, this);
+        exist = true;
+        return true;
+    }
+
+    public boolean createFruit(int x, int y, Color color, int existOfTime, int scoreInc, int lengthSnakeInc) {
+        this.existOfTime = existOfTime;
+        this.scoreInc = scoreInc;
+        this.lengthSnakeInc = lengthSnakeInc;
+        return createFruit(x, y, color);
+    }
+
+    public void setScoreInc(int scoreInc) {
+        this.scoreInc = scoreInc;
+    }
+
+    public void setLengthSnakeInc(int lengthSnakeInc) {
+        this.lengthSnakeInc = lengthSnakeInc;
+    }
+
+    public void setExistOfTime(int existOfTime) {
+        this.existOfTime = existOfTime;
+    }
+
+//    public int getScoreInc() {
+//        return scoreInc;
+//    }
+//
+//    public int getLengthSnakeInc() {
+//        return lengthSnakeInc;
+//    }
+
+    public int getExistOfTime() {
+        return existOfTime;
+    }
+
+    public void eatenBy(Snake snake) {
+        snake.addScore(scoreInc);
+        snake.grow(lengthSnakeInc);
+        exist = false;
+    }
+
+    @Override
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    @Override
+    public Color getColor() {
+        return color;
+    }
+}
