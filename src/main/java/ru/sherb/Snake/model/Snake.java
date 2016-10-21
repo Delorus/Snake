@@ -26,11 +26,14 @@ public class Snake implements Colorable {
 //    private Direct direct; //Направление движение змейки
     private int direct;
     private Color color;
+    //TODO сделать ввод пользователем своего имени при старте игры
+    private String name;
     //TODO [DEBUG] удалить
     // временное решение бага, пока не изменится способ управления змейкой
     private boolean canMove;
 
-    public Snake(Grid grid, int posX, int posY, Color color) {
+    public Snake(Grid grid, int posX, int posY, String name, Color color) {
+        this.name = name;
         resetScore();
         this.color = color;
         length = 3; //Начальная длина змеи
@@ -185,6 +188,14 @@ public class Snake implements Colorable {
     @Override
     public Color getColor() {
         return color;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
 

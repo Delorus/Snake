@@ -39,21 +39,23 @@ public class GameFormController {
 
         grid = new Grid(width, height, java.awt.Color.BLACK);
         java.awt.Color fruitColor = java.awt.Color.RED;
-        Snake player1 = new Snake(grid, grid.getWidth() / 2, grid.getHeight() / 2, java.awt.Color.WHITE);
-        Snake player2 = new Snake(grid, 0, 0, java.awt.Color.MAGENTA);
+        Snake player1 = new Snake(grid, grid.getWidth() / 2, grid.getHeight() / 2, "player1", java.awt.Color.WHITE);
+        Snake player2 = new Snake(grid, 0, 0, "player2", java.awt.Color.MAGENTA);
         final Game game = new Game(grid, fruitColor, player1, player2);
 
         gc = new GC(composite);
         new Thread(game).start();
-        Thread upd = new Thread(new Updater(gc, grid));
-        upd.start();
+//        Thread upd = new Thread(new Updater(gc, grid));
+//        upd.start();
 
 
 
         //TODO придумать что делать с этим слушателем, он мешает всей программе
-        composite.addKeyListener(new KeyAdapter() {
+        //TODO [ВОЗМОЖНО] убрать запуск слушателя из отдельного потока
+        Display.getCurrent().asyncExec(() -> composite.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+                System.out.println("Нажантие клавиши");
                 switch (e.keyCode) {
                     //TODO придумать где хранить управление у каждой змейки
                     case SWT.ARROW_UP:
@@ -87,8 +89,36 @@ public class GameFormController {
                 }
 
             }
-        });
+        }));
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (grid.isActive()) {
+                    update();
+//            try {
+//                Thread.sleep(34);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+                    if (GameForm.display.isDisposed()) {
+                        System.out.println("Дисплей закрылся!");
+                        grid.setActive(false);
+                        return;
+                    }
+                }
+                System.out.println("Я закончил обновляться");
+                //TODO [ВОЗМОЖНО] переместить вызов окна в контроллер
+                String buffScore = "";
+                //TODO [REFACTOR] засунуть всех игроков в один массив
+                buffScore +=  player1.getName() +"= "+ player1.getScore() + "\n";
+                buffScore += player2.getName() +"= "+ player2.getScore() + "\n";
+                final String CountPlayerScore = buffScore;
+                Display.getDefault().syncExec(() -> new DialogForm(Display.getCurrent(), "You lose", "You score: \n"+ CountPlayerScore +" \n You time: "+ game.getGameTime()));
+//        GameForm.createDialogForm("You lose", "You score: " + game.getScore());
+
+            }
+        }).start();
 //        try {
 //            upd.join();
 //        } catch (InterruptedException e) {
@@ -97,6 +127,33 @@ public class GameFormController {
 //        while (upd.isAlive()) {};
 //        new DialogForm(Display.getCurrent(), "You lose", "You score: false");
 
+    }
+
+    public void update() {
+        Point start = new Point(bounds.x, bounds.y);
+        for (int i = 0; i < grid.getWidth(); i++) {
+            for (int j = 0; j < grid.getHeight(); j++) {
+                gc.setBackground(new Color(null,
+                        grid.getCell(i, j).getStatus().getColor(grid.getCell(i, j)).getRed(),
+                        grid.getCell(i, j).getStatus().getColor(grid.getCell(i, j)).getGreen(),
+                        grid.getCell(i, j).getStatus().getColor(grid.getCell(i, j)).getBlue()));
+                gc.fillRectangle(start.x, start.y, Cell.getSize(), Cell.getSize());
+                start.y += Cell.getSize();
+            }
+            start.y = bounds.y;
+            start.x += Cell.getSize();
+
+        }
+//        if (!game.isActive()) {
+//            active = false;
+//            try {
+//                GameForm.createDialogForm("You lose", "You score: " + game.getScore());
+//            } catch (RuntimeException re) {
+////                re.printStackTrace();
+//                System.out.println("You score: "+ game.getScore());
+//            }
+
+//        }
     }
 
     public void destructGameFormController() {

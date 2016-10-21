@@ -6,14 +6,15 @@
 
     <groupId>ru.sherb</groupId>
     <artifactId>Snake</artifactId>
-    <version>${product.version}-UNSTABLE</version>
+    <version>${product.version}</version>
 
+    <!-- Создавать .jar для каждой версии ОС отдельно -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--<exeFileName>${project.name}</exeFileName>-->
         <!--<product.title>Змейка</product.title>-->
         <!--<product.year>2016</product.year>-->
-        <product.version>0.1.1.3</product.version>
+        <product.version>0.1.1.4</product.version>
         <jdkVersion>1.8</jdkVersion>
     </properties>
 
@@ -46,29 +47,29 @@
             <version>4.6.1RC1</version>
         </dependency>
         <!-- SWT for win32 -->
-        <dependency>
-            <groupId>org.eclipse.swt</groupId>
-            <artifactId>org.eclipse.swt.win32.win32.x86</artifactId>
-            <version>4.6.1RC1</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.eclipse.swt</groupId>-->
+            <!--<artifactId>org.eclipse.swt.win32.win32.x86</artifactId>-->
+            <!--<version>4.6.1RC1</version>-->
+        <!--</dependency>-->
         <!-- SWT for linux32 -->
-        <dependency>
-            <groupId>org.eclipse.swt</groupId>
-            <artifactId>org.eclipse.swt.gtk.linux.x86</artifactId>
-            <version>4.6.1RC1</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.eclipse.swt</groupId>-->
+            <!--<artifactId>org.eclipse.swt.gtk.linux.x86</artifactId>-->
+            <!--<version>4.6.1RC1</version>-->
+        <!--</dependency>-->
         <!-- SWT for linux64 -->
-        <dependency>
-            <groupId>org.eclipse.swt</groupId>
-            <artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
-            <version>4.6.1RC1</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.eclipse.swt</groupId>-->
+            <!--<artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>-->
+            <!--<version>4.6.1RC1</version>-->
+        <!--</dependency>-->
         <!-- SWT for macOS64 (?32?) -->
-        <dependency>
-            <groupId>org.eclipse.swt</groupId>
-            <artifactId>org.eclipse.swt.cocoa.macosx.x86_64</artifactId>
-            <version>4.6.1RC1</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.eclipse.swt</groupId>-->
+            <!--<artifactId>org.eclipse.swt.cocoa.macosx.x86_64</artifactId>-->
+            <!--<version>4.6.1RC1</version>-->
+        <!--</dependency>-->
 
         <!-- https://mvnrepository.com/artifact/com.akathist.maven.plugins.launch4j/launch4j-maven-plugin -->
         <dependency>
@@ -184,6 +185,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <outputDirectory>target/bin/</outputDirectory>
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
@@ -203,6 +205,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
+                    <outputDirectory>target/bin/</outputDirectory>
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
@@ -231,8 +234,8 @@
                         </goals>
                         <configuration>
                             <headerType>gui</headerType>
-                            <outfile>target/${project.name}-${project.version}.exe</outfile>
-                            <jar>target/${project.artifactId}-${project.version}-jar-with-dependencies.jar</jar>
+                            <outfile>target/bin/${project.name}-${project.version}.exe</outfile>
+                            <jar>target/bin/${project.artifactId}-${project.version}-jar-with-dependencies.jar</jar>
                             <classPath>
                                 <mainClass>ru.sherb.Snake.Main</mainClass>
                                 <addDependencies>true</addDependencies>

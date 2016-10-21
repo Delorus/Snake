@@ -147,8 +147,12 @@ public class Game implements Runnable {
                 //TODO сделать зависимость от времени игры или накопленных очков
                 //TODO [ВОЗМОЖНО] уменьшать время существования фрукта
                 //100 - минимальное знач. для комфортной игры
-                Thread.sleep(500);
-                for (Snake player: players) {
+                int totalScore = 0;
+                for (Snake player : players) {
+                    totalScore += player.getScore();
+                }
+                Thread.sleep(500 - (totalScore <= 400 ? totalScore : 400));
+                for (Snake player : players) {
                     player.canMove(true);
                     if (!player.move() || !collisionProc(player)) {
                         grid.setActive(false);
@@ -161,10 +165,14 @@ public class Game implements Runnable {
             }*/
         }
         System.out.println("Я завершил игру");
-        gameTime = System.currentTimeMillis() - timeStart;
+        gameTime = (System.currentTimeMillis() - timeStart) / 1000;
     }
 
-//    public boolean isActive() {
+    public long getGameTime() {
+        return gameTime;
+    }
+
+    //    public boolean isActive() {
 //        return active;
 //    }
 }
