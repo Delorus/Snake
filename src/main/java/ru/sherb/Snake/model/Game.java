@@ -96,21 +96,22 @@ public class Game implements Runnable {
     private boolean collisionProc(Snake player) {
         //TODO [REFACTOR] избавиться от switch-enum
         //TODO [REFACTOR] не явно когда возвращает false, когда true
-        switch (player.getHead().getStatus()) {
+        switch (player.getPierce().getStatus()) {
             case SNAKE:
-                if (player.isThisSnake(player.getHead())) {
-                    return false;
-                }
+//                if (player.isThisSnake(player.getPierce())) {
+//                    return false;
+//                }
                 //TODO дописать, что будет если одна змейка столкнется с другой
 //                throw new RuntimeException("змейка съела саму себя");
 //                break;
             case EMPTY:
-                grid.getCell(player.getHead().getPosX(), player.getHead().getPosY()).setStatus(State.SNAKE, player);
+                //TODO перенести строчку в класс змейки
+                grid.getCell(player.getPierce().getPosX(), player.getPierce().getPosY()).setStatus(State.SNAKE, player);
                 break;
             case FRUIT:
                 //работает только если на поле существует только один фрукт
                 fruit.eatenBy(player);
-                grid.getCell(player.getHead().getPosX(), player.getHead().getPosY()).setStatus(State.SNAKE, player);
+                grid.getCell(player.getPierce().getPosX(), player.getPierce().getPosY()).setStatus(State.SNAKE, player);
                 while (!fruit.createFruit(new Random().nextInt(grid.getWidth()), new Random().nextInt(grid.getHeight()), fruitColor));
                 break;
         }
@@ -144,12 +145,12 @@ public class Game implements Runnable {
 
         while (grid.isActive()) {
             try {
-                //TODO сделать зависимость от времени игры или накопленных очков
+                //TODO подобрать оптимальные значения задерки
                 //TODO [ВОЗМОЖНО] уменьшать время существования фрукта
                 //100 - минимальное знач. для комфортной игры
                 int totalScore = 0;
                 for (Snake player : players) {
-                    totalScore += player.getScore();
+                    totalScore += player.getScore() * 10;
                 }
                 Thread.sleep(500 - (totalScore <= 400 ? totalScore : 400));
                 for (Snake player : players) {
@@ -168,6 +169,10 @@ public class Game implements Runnable {
         gameTime = (System.currentTimeMillis() - timeStart) / 1000;
     }
 
+    /**
+     *
+     * @return время игры в секундах
+     */
     public long getGameTime() {
         return gameTime;
     }

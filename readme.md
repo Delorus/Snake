@@ -1,6 +1,9 @@
 # Snake the game
 **This is my student project!**
 ## Changelog:
+- 0.1.1.5
+    - slightly improved gameplay
+    - fixed minor bugs
 - 0.1.1.4
     - Add dependence on the game speed of the score
     - Add new field `name` in the Snake
@@ -10,7 +13,7 @@
     - Created the logical part of the game
     - Created a visual form
     - Add ability to change color of the game object
-    - Add multipayer (hotseat)
+    - Add multiplayer (hotseat)
 
 ## Control keys (unchangeable):
 - The first player:

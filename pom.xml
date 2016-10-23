@@ -14,7 +14,7 @@
         <!--<exeFileName>${project.name}</exeFileName>-->
         <!--<product.title>Змейка</product.title>-->
         <!--<product.year>2016</product.year>-->
-        <product.version>0.1.1.4</product.version>
+        <product.version>0.1.1.5</product.version>
         <jdkVersion>1.8</jdkVersion>
     </properties>
 
@@ -72,11 +72,11 @@
         <!--</dependency>-->
 
         <!-- https://mvnrepository.com/artifact/com.akathist.maven.plugins.launch4j/launch4j-maven-plugin -->
-        <dependency>
-            <groupId>com.akathist.maven.plugins.launch4j</groupId>
-            <artifactId>launch4j-maven-plugin</artifactId>
-            <version>1.7.12</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.akathist.maven.plugins.launch4j</groupId>-->
+            <!--<artifactId>launch4j-maven-plugin</artifactId>-->
+            <!--<version>1.7.12</version>-->
+        <!--</dependency>-->
 
     </dependencies>
 

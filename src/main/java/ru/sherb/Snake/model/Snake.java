@@ -1,7 +1,10 @@
 package ru.sherb.Snake.model;
 
 
-import java.awt.*;
+import ru.sherb.Snake.util.SimpleQueue;
+
+import java.awt.Color;
+import java.awt.Point;
 import java.util.ArrayList;
 
 /**
@@ -19,31 +22,37 @@ public class Snake implements Colorable {
     @Deprecated
     public static final int LEFT = 3;
     private int length;// = 3; //длина змеи с головой, длина хвоста = length - 1, начальный размер 3?
-    private ArrayList<Cell> tail; //ArrayList пока не напишу свою очередь
+//    private ArrayList<Cell> tail; //ArrayList пока не напишу свою очередь
+    private SimpleQueue<Cell> tail;
     private Cell pierce; //элементы змейки
     private int score; //очки за игру
     private Grid grid; // Поле на котором ползает змейка. Отказаться от этого
 //    private Direct direct; //Направление движение змейки
     private int direct;
     private Color color;
+    private SimpleQueue<Point> foods;
+//    private Point food;
+    private int countLength;
     //TODO сделать ввод пользователем своего имени при старте игры
     private String name;
     //TODO [DEBUG] удалить
     // временное решение бага, пока не изменится способ управления змейкой
     private boolean canMove;
 
-    public Snake(Grid grid, int posX, int posY, String name, Color color) {
+    public Snake(Grid grid, int posX, int posY, String name, Color color, int length) {
         this.name = name;
         resetScore();
         this.color = color;
-        length = 3; //Начальная длина змеи
+        this.length = length; //Начальная длина змеи
         this.grid = grid;
-        tail = new ArrayList<>();
+//        tail = new ArrayList<>();
+        tail = new SimpleQueue<>();
         pierce = grid.getCell(posX, posY); //Установка головы змейки в центр решетки
         pierce.setStatus(State.SNAKE, this);
         tail.add(pierce); // Добавление головы змейки в хвост -_-
 //        direct = Direct.RIGHT;
         canMove = true;
+        foods = new SimpleQueue<>();
     }
 
 
@@ -69,13 +78,22 @@ public class Snake implements Colorable {
             canMove = false;
             return false;
         }
+
         tail.add(pierce);
         if (tail.size() > length) {
-            tail.get(0).setStatus(State.EMPTY, grid);
-//            tail.peek().setStatus(State.EMPTY);
-            tail.remove(0);
-//            tail.poll();
-        }
+//            tail.get(0).setStatus(State.EMPTY, grid);
+            tail.peek().setStatus(State.EMPTY, grid);
+//            tail.remove(0);
+            tail.remove();
+            if (foods.peek() != null) {
+//                if (tail.get(0).getPosX() == food.x && tail.get(0).getPosY() == food.y) {
+                if (tail.peek().getPosX() == foods.peek().x && tail.peek().getPosY() == foods.peek().y) {
+                    length += countLength;
+                    foods.remove();
+                }
+            }
+            }
+
         canMove = true;
         return true;
     }
@@ -100,49 +118,10 @@ public class Snake implements Colorable {
         return direct;
     }
 
-    //TODO нужен ли этот метод тут?
-//    private void collision() {
-//        if (pierce.getStatus() == State.SNAKE) {
-//            throw new IndexOutOfBoundsException("змейка съела себя");
-//        }
-        // ошибка в архитектуре
-//        if (pierce.getStatus() == State.FRUIT) {
-//        }
-//    }
-
-//    private void hasEaten()
-
-    //TODO [ВОЗМОЖНО] вынести логику перемещения змейки в класс Game
-//    @Deprecated
-//    public void moveUp() {
-//        pierce = grid[pierce.getPosX()][pierce.getPosY() - 1];
-//        pierce.setStatus(State.SNAKE);
-//        move();
-//    }
-//
-//    @Deprecated
-//    public void moveDown() {
-//        pierce = grid[pierce.getPosX()][pierce.getPosY() + 1];
-//        pierce.setStatus(State.SNAKE);
-//        move();
-//    }
-//
-//    @Deprecated
-//    public void moveRight() {
-//        pierce = grid[pierce.getPosX() + 1][pierce.getPosY()];
-//        pierce.setStatus(State.SNAKE);
-//        move();
-//    }
-//
-//    @Deprecated
-//    public void moveLeft() {
-//        pierce = grid[pierce.getPosX() - 1][pierce.getPosY()];
-//        pierce.setStatus(State.SNAKE);
-//        move();
-//    }
-
-    public void grow(int count) {
-        length += count;
+    //TODO съедать фрукт, а не ячейку
+    public void eat(Point location, int count) {
+        foods.add(location.getLocation());
+        countLength = count;
     }
 
     public void addScore(int count) {
@@ -157,7 +136,7 @@ public class Snake implements Colorable {
         return score;
     }
 
-    public Cell getHead() {
+    public Cell getPierce() {
         return pierce;
     }
 
@@ -169,16 +148,17 @@ public class Snake implements Colorable {
         this.canMove = canMove;
     }
 
-    public boolean isThisSnake(int x, int y) {
-        if (y < 0 || x < 0 || x > (grid.getWidth() - 1)  || y > (grid.getHeight() - 1)) {
-            return false;
-        }
-        return tail.contains(new Cell(State.SNAKE, x, y, color));
-    }
 
-    public boolean isThisSnake(Cell cell) {
-        return isThisSnake(cell.getPosX(), cell.getPosY());
-    }
+//    public boolean isThisSnake(int x, int y) {
+//        if (y < 0 || x < 0 || x > (grid.getWidth() - 1)  || y > (grid.getHeight() - 1)) {
+//            return false;
+//        }
+//        return tail.contains(new Cell(State.SNAKE, x, y, color));
+//    }
+
+//    public boolean isThisSnake(Cell cell) {
+//        return isThisSnake(cell.getPosX(), cell.getPosY());
+//    }
 
     @Override
     public void setColor(Color color) {
@@ -198,16 +178,3 @@ public class Snake implements Colorable {
         this.name = name;
     }
 }
-
-//enum Direct {
-//    UP {
-////        @Override
-////        public void moveTo(Snake snake) {
-////
-////        }
-//    },
-//    RIGHT,
-//    DOWN,
-//    LEFT;
-////    abstract public void moveTo(Snake snake);
-//}

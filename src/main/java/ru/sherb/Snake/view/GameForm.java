@@ -30,8 +30,7 @@ public class GameForm {
     public GameForm() {
 
         shell.setText("GAME FORM");
-        Point tmp = shell.computeSize(640, 480); // Не обязательно
-        shell.setSize(tmp.x, tmp.y);
+        shell.setSize(640, 480);
         shell.open();
         shell.setLayout(new FillLayout());
         controller = new GameFormController(this);

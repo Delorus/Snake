@@ -9,18 +9,19 @@ import java.awt.*;
 
 public class Cell implements Colorable {
     public static final int NORMAL_SIZE = 4;
-    private static int sizeCoeff = 1;  //потому что маштаб должен сохраняться во всех объектах
-    private static int size = sizeCoeff * NORMAL_SIZE; //NotNull
+    private static double sizeCoeff = 1;  //потому что маштаб должен сохраняться во всех объектах
+    private static int size = (int) Math.round(sizeCoeff * NORMAL_SIZE); //NotNull
     private Color color;
-    private int posX, posY;
+    private Point position;
+//    private int posX, posY;
     private State status;
 
     private static void resize() {
-        size = sizeCoeff * NORMAL_SIZE;
+        size = (int) Math.round(sizeCoeff * NORMAL_SIZE);
     }
 
     //Всегда при изменении коэффициента делать перерасчет размера
-    public static void setSizeCoeff(int sizeCoeff) {
+    public static void setSizeCoeff(double sizeCoeff) {
         Cell.sizeCoeff = sizeCoeff;
         resize();
     }
@@ -40,8 +41,9 @@ public class Cell implements Colorable {
 //        this(status, x, y);
         resize();
         this.status = status;
-        posX = x;
-        posY = y;
+        position = new Point(x, y);
+//        posX = x;
+//        posY = y;
         this.color = color;
     }
 
@@ -64,11 +66,17 @@ public class Cell implements Colorable {
     }
 
     public int getPosX() {
-        return posX;
+        return position.x;
+//        return posX;
     }
 
     public int getPosY() {
-        return posY;
+        return position.y;
+//        return posY;
+    }
+
+    public Point getPosition() {
+        return position;
     }
 
     public State getStatus() {
@@ -82,15 +90,32 @@ public class Cell implements Colorable {
 
         Cell cell = (Cell) o;
 
-        return posX == cell.posX && posY == cell.posY;
+        return !(position != null ? !position.equals(cell.position) : cell.position != null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = posX;
-        result = 31 * result + posY;
-        return result;
+        return position != null ? position.hashCode() : 0;
     }
+
+    //    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//
+//        Cell cell = (Cell) o;
+//
+//
+//        return posX == cell.posX && posY == cell.posY;
+//
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        int result = posX;
+//        result = 31 * result + posY;
+//        return result;
+//    }
 }
 

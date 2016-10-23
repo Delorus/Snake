@@ -5,6 +5,7 @@ import java.awt.*;
 /**
  * Created by sherb on 12.10.2016.
  */
+//TODO сделать наследование от ячейки
 public class Fruit implements Colorable {
     private Grid grid;
     private Cell fruit;
@@ -23,22 +24,22 @@ public class Fruit implements Colorable {
 
     }
 
-//    public Fruit(Cell[][] grid, int existOfTime/*, byte color*/) {
-//        this(grid);
-//        this.existOfTime = existOfTime;
-//    }
-//
-//    public Fruit(Cell[][] grid, int existOfTime/*, byte color*/, int scoreInc) {
-////        fruit = new Cell(State.FRUIT/*, color*/);
-//        this(grid, existOfTime);
-//        this.scoreInc = scoreInc;
-//    }
-//
-//    public Fruit(Cell[][] grid, int existOfTime/*, byte color*/, int scoreInc, int lengthSnakeInc) {
-//        this(grid, existOfTime/*, color*/, scoreInc);
-//        this.lengthSnakeInc = lengthSnakeInc;
-//    }
+    //TODO [REFACTOR] сделать что-нибудь с этим
+    private Fruit(Grid grid, Cell fruit, int scoreInc, int lengthSnakeInc, int existOfTime, boolean exist, Color color) {
+        this.grid = grid;
+        this.fruit = fruit;
+        this.scoreInc = scoreInc;
+        this.lengthSnakeInc = lengthSnakeInc;
+        this.existOfTime = existOfTime;
+        this.exist = exist;
+        this.color = color;
+    }
 
+
+    // Конструктор клонирования
+    public Fruit(Fruit other) {
+        this(other.grid, other.fruit, other.scoreInc, other.lengthSnakeInc, other.existOfTime, other.exist, other.color);
+    }
     public boolean createFruit(int x, int y, Color color) {
         //TODO доделать создания фрукта, в том числе начать отсчет времени его существования
         if (grid.getCell(x, y).getStatus() != State.EMPTY) {
@@ -84,7 +85,7 @@ public class Fruit implements Colorable {
 
     public void eatenBy(Snake snake) {
         snake.addScore(scoreInc);
-        snake.grow(lengthSnakeInc);
+        snake.eat(fruit.getPosition(), lengthSnakeInc);
         exist = false;
     }
 

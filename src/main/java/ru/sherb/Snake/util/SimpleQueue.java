@@ -2,96 +2,57 @@ package ru.sherb.Snake.util;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Queue;
 
 /**
- * Реализация структуры "очередь", базирующаяся на односвязном списке
  * Created by sherb on 12.10.2016.
  */
-//TODO Доделать класс
-public class SimpleQueue<Value> extends RelateList<Value> implements java.util.Queue {
+//TODO РґРѕР±Р°РІРёС‚СЊ РІ РѕС‡РµСЂРµРґСЊ РјРµС‚РѕРґ contains();
+public class SimpleQueue<Value> {
+    private List<Value> start;
+    private List<Value> item;
+    private int size;
 
-    @Override
-    public boolean offer(Object o) {
-        return false;
+    public SimpleQueue() {
+        item = new List<>();
+        start = item;
+        size = 1;
     }
 
-    @Override
+
     public Value remove() {
-        return null;
+        List<Value> deletedItem = start;
+        start = start.next();
+        size--;
+        return deletedItem.getValue();
     }
 
-    @Override
-    public Value poll() {
-        return null;
-    }
-
-    @Override
-    public Value element() {
-        return null;
-    }
-
-    @Override
+    /**
+     *
+     * @return РІРѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёРµ СЌР»РµРјРµРЅС‚Р° РІ РіРѕР»РѕРІРµ РѕС‡РµСЂРµРґРё
+     */
     public Value peek() {
-        return null;
+        return start.getValue();
     }
 
-    @Override
-    public boolean isEmpty() {
-        return false;
+    public boolean add(Value o) {
+        if (item.getValue() == null) {
+            return item.setValue(o);
+        }
+        item = item.next();
+        size++;
+        return item.setValue(o);
     }
 
-    @Override
-    public boolean contains(Object o) {
-        return false;
+    /**
+     *
+     * @return РІРѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёРµ СЌР»РµРјРµРЅС‚Р° РІ РєРѕРЅС†Рµ РѕС‡РµСЂРµРґРё
+     */
+    public Value element() {
+        return item.getValue();
     }
 
-    @Override
-    public Iterator iterator() {
-        return null;
-    }
-
-    @Override
-    public Object[] toArray() {
-        return new Object[0];
-    }
-
-    @Override
-    public Object[] toArray(Object[] a) {
-        return new Object[0];
-    }
-
-    @Override
-    public boolean add(Object o) {
-        return false;
-    }
-
-    @Override
-    public boolean remove(Object o) {
-        return false;
-    }
-
-    @Override
-    public boolean addAll(Collection c) {
-        return false;
-    }
-
-    @Override
-    public void clear() {
-
-    }
-
-    @Override
-    public boolean retainAll(Collection c) {
-        return false;
-    }
-
-    @Override
-    public boolean removeAll(Collection c) {
-        return false;
-    }
-
-    @Override
-    public boolean containsAll(Collection c) {
-        return false;
+    public int size() {
+        return size;
     }
 }
