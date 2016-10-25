@@ -13,7 +13,6 @@ public class Cell implements Colorable {
     private static int size = (int) Math.round(sizeCoeff * NORMAL_SIZE); //NotNull
     private Color color;
     private Point position;
-//    private int posX, posY;
     private State status;
 
     private static void resize() {
@@ -30,24 +29,14 @@ public class Cell implements Colorable {
         return size;
     }
 
-//    public Cell(State status, int x, int y) {
-//        resize();
-//        this.status = status;
-//        posX = x;
-//        posY = y;
-//    }
-
     public Cell(State status, int x, int y, Color color) {
-//        this(status, x, y);
         resize();
         this.status = status;
         position = new Point(x, y);
-//        posX = x;
-//        posY = y;
         this.color = color;
     }
 
-    public Cell(State status,int x, int y, Color color, int sizeCoeff) {
+    public Cell(State status, int x, int y, Color color, int sizeCoeff) {
         this(status, x, y, color);
         Cell.setSizeCoeff(sizeCoeff);
     }
@@ -67,12 +56,10 @@ public class Cell implements Colorable {
 
     public int getPosX() {
         return position.x;
-//        return posX;
     }
 
     public int getPosY() {
         return position.y;
-//        return posY;
     }
 
     public Point getPosition() {
@@ -98,24 +85,5 @@ public class Cell implements Colorable {
     public int hashCode() {
         return position != null ? position.hashCode() : 0;
     }
-
-    //    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//
-//        Cell cell = (Cell) o;
-//
-//
-//        return posX == cell.posX && posY == cell.posY;
-//
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        int result = posX;
-//        result = 31 * result + posY;
-//        return result;
-//    }
 }
 

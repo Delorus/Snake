@@ -21,17 +21,14 @@ public class Snake implements Colorable {
     public static final int DOWN = 2;
     @Deprecated
     public static final int LEFT = 3;
-    private int length;// = 3; //длина змеи с головой, длина хвоста = length - 1, начальный размер 3?
-//    private ArrayList<Cell> tail; //ArrayList пока не напишу свою очередь
+    private int length;// = 3; // длина змеи с головой, длина хвоста = length - 1, начальный размер 3?
     private SimpleQueue<Cell> tail;
-    private Cell pierce; //элементы змейки
-    private int score; //очки за игру
+    private Cell pierce; // элемент змейки
+    private int score; // очки за игру
     private Grid grid; // Поле на котором ползает змейка. Отказаться от этого
-//    private Direct direct; //Направление движение змейки
     private int direct;
     private Color color;
-    private SimpleQueue<Point> foods;
-//    private Point food;
+    private SimpleQueue<Point> foods; // Хранит адрес фруктов, которые проглатила змейка
     private int countLength;
     //TODO сделать ввод пользователем своего имени при старте игры
     private String name;
@@ -43,14 +40,12 @@ public class Snake implements Colorable {
         this.name = name;
         resetScore();
         this.color = color;
-        this.length = length; //Начальная длина змеи
+        this.length = length; // Начальная длина змеи
         this.grid = grid;
-//        tail = new ArrayList<>();
         tail = new SimpleQueue<>();
-        pierce = grid.getCell(posX, posY); //Установка головы змейки в центр решетки
+        pierce = grid.getCell(posX, posY); // Установка головы змейки по указанным координатам
         pierce.setStatus(State.SNAKE, this);
-        tail.add(pierce); // Добавление головы змейки в хвост -_-
-//        direct = Direct.RIGHT;
+        tail.add(pierce); // Добавление текущей частички змейки в хвост
         canMove = true;
         foods = new SimpleQueue<>();
     }
@@ -74,51 +69,41 @@ public class Snake implements Colorable {
                     break;
             }
         } catch (IndexOutOfBoundsException e) {
-//            grid.setActive(false);
             canMove = false;
             return false;
         }
 
         tail.add(pierce);
         if (tail.size() > length) {
-//            tail.get(0).setStatus(State.EMPTY, grid);
             tail.peek().setStatus(State.EMPTY, grid);
-//            tail.remove(0);
             tail.remove();
             if (foods.peek() != null) {
-//                if (tail.get(0).getPosX() == food.x && tail.get(0).getPosY() == food.y) {
                 if (tail.peek().getPosX() == foods.peek().x && tail.peek().getPosY() == foods.peek().y) {
                     length += countLength;
                     foods.remove();
                 }
             }
-            }
+        }
 
         canMove = true;
         return true;
     }
 
-    public synchronized void moveTo(/*Direct*/ int newDirect) {
+    public void moveTo(int newDirect) {
         //TODO [REFACTOR] попробовать как-нибудь сократить условие
-        if ( canMove &&
+        if (canMove &&
                 !((direct == newDirect) ||
-                (direct == /*Direct.*/RIGHT && newDirect == /*Direct.*/LEFT) ||
-                (direct == /*Direct.*/LEFT && newDirect == /*Direct.*/RIGHT) ||
-                (direct == /*Direct.*/UP && newDirect == /*Direct.*/DOWN) ||
-                (direct == /*Direct.*/DOWN && newDirect == /*Direct.*/UP))){
+                        (direct == RIGHT && newDirect == LEFT) ||
+                        (direct == LEFT && newDirect == RIGHT) ||
+                        (direct == UP && newDirect == DOWN) ||
+                        (direct == DOWN && newDirect == UP))) {
             direct = newDirect;
             canMove = false;
         }
     }
 
-//    public Direct getDirect() {
-//        return direct;
-//    }
-    public int getDirect() {
-        return direct;
-    }
 
-    //TODO съедать фрукт, а не ячейку
+    //TODO съедать фрукт, а не его позицию
     public void eat(Point location, int count) {
         foods.add(location.getLocation());
         countLength = count;
@@ -159,11 +144,6 @@ public class Snake implements Colorable {
 //    public boolean isThisSnake(Cell cell) {
 //        return isThisSnake(cell.getPosX(), cell.getPosY());
 //    }
-
-    @Override
-    public void setColor(Color color) {
-        this.color = color;
-    }
 
     @Override
     public Color getColor() {

@@ -1,6 +1,8 @@
 # Snake the game
 **This is my student project!**
 ## Changelog:
+- 0.1.1.6
+    - Added bonus fruit
 - 0.1.1.5
     - slightly improved gameplay
     - fixed minor bugs

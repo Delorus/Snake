@@ -47,12 +47,6 @@ public class Grid implements Colorable {
     }
 
     @Override
-    public void setColor(Color color) {
-        //TODO устанавливать цвет всему массиву
-        this.color = color;
-    }
-
-    @Override
     public Color getColor() {
         return color;
     }

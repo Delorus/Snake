@@ -1,8 +1,5 @@
 package ru.sherb.Snake;
 
-import ru.sherb.Snake.model.Cell;
-import ru.sherb.Snake.model.Game;
-import ru.sherb.Snake.util.SimpleQueue;
 import ru.sherb.Snake.view.GameForm;
 
 import java.io.IOException;

@@ -1,19 +1,19 @@
 package ru.sherb.Snake.controller;
 
 
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import ru.sherb.Snake.model.*;
 import ru.sherb.Snake.view.DialogForm;
 import ru.sherb.Snake.view.GameForm;
+
+import java.awt.*;
 
 /**
  * Created by sherb on 17.10.2016.
@@ -34,15 +34,16 @@ public class GameFormController {
         composite = form.shell;
         bounds = composite.getClientArea();
         //TODO [ВОЗМОЖНО] вынести в класс Game
-        int CellCount = 20; // Количество ячеек
+        int CellCount = 10; // Количество ячеек
         int size = bounds.height < bounds.width ? (int) Math.ceil((double) bounds.height / CellCount) : (int) Math.ceil((double) bounds.width / CellCount); // Расчет оптимального размера ячейки
         Cell.setSizeCoeff((double) size / Cell.NORMAL_SIZE); //Расчет размера каждой ячейки
-        int gridWidth = bounds.width / Cell.getSize();
-        int gridHeight = bounds.height / Cell.getSize();
+        int gridWidth = (int) Math.round((double) bounds.width / Cell.getSize()); // round
+        int gridHeight = (int) Math.round((double) bounds.height / Cell.getSize()); //round
 
         grid = new Grid(gridWidth, gridHeight, java.awt.Color.BLACK);
         java.awt.Color fruitColor = java.awt.Color.RED;
-        Snake player1 = new Snake(grid, grid.getWidth() / 2, grid.getHeight() / 2, "player1", java.awt.Color.GREEN, 3);
+        Snake player1 = new Snake(grid, 0, grid.getHeight() - 1, "player1", java.awt.Color.GREEN, 3);
+//        Snake player1 = new Snake(grid, grid.getWidth() / 2, grid.getHeight() / 2, "player1", java.awt.Color.GREEN, 3);
 //        Snake player2 = new Snake(grid, 0, 0, "player2", java.awt.Color.MAGENTA, 3);
         final Game game = new Game(grid, fruitColor, player1);
 
@@ -93,6 +94,7 @@ public class GameFormController {
             }
         }));
 
+        //TODO избавиться от состояния гонок
         new Thread(() -> {
             while (grid.isActive()) {
                 paint();
@@ -103,7 +105,6 @@ public class GameFormController {
                 }
             }
             System.out.println("Я закончил обновляться");
-            //TODO [ВОЗМОЖНО] переместить вызов окна в контроллер
             String buffScore = "";
             //TODO [REFACTOR] засунуть всех игроков в один массив
             buffScore += player1.getName() + "= " + player1.getScore() + "\n";
@@ -123,14 +124,15 @@ public class GameFormController {
 
     }
 
+    //TODO [THREAD] синхронизировать потоки обновление графического и логического состояния игры
     public void paint() {
         Point start = new Point(bounds.x, bounds.y);
         for (int i = 0; i < grid.getWidth(); i++) {
             for (int j = 0; j < grid.getHeight(); j++) {
                 gc.setBackground(new Color(null,
-                        grid.getCell(i, j).getStatus().getColor(grid.getCell(i, j)).getRed(),
-                        grid.getCell(i, j).getStatus().getColor(grid.getCell(i, j)).getGreen(),
-                        grid.getCell(i, j).getStatus().getColor(grid.getCell(i, j)).getBlue()));
+                        grid.getCell(i, j).getColor().getRed(),
+                        grid.getCell(i, j).getColor().getGreen(),
+                        grid.getCell(i, j).getColor().getBlue()));
                 gc.fillRectangle(start.x, start.y, Cell.getSize(), Cell.getSize());
 //                gc.drawOval(start.x, start.y, Cell.getSize(), Cell.getSize());
                 start.y += Cell.getSize();
@@ -138,7 +140,42 @@ public class GameFormController {
             start.y = bounds.y;
             start.x += Cell.getSize();
 
-    }
+        }
+        // Попытка оптимизации кода
+        // height = 0
+        //TODO [DEBUG] если на одной вертикали находятся два объекта, то происходит неверная отрисовка
+        //TODO [DEBUG] находится в состоянии гонок с Game.class, из-за этого не всегда вовремя обновляется
+        //TODO [DEBUG] при первом проходе не обновляются последние ячейки
+        //TODO [REFACTOR] доделать обновление через буфер, после окончания разработки GUI
+//        Point start = new Point(bounds.x, bounds.y);
+//        Rectangle buff = new Rectangle(start.x, start.y, Cell.getSize(), Cell.getSize()); //одна ячейка
+//        Color background = new Color(Display.getCurrent(),
+//                grid.getColor().getRed(),
+//                grid.getColor().getGreen(),
+//                grid.getColor().getBlue());
+//        for (int i = 0; i < grid.getWidth(); i++) {
+//            for (int j = 0; j < grid.getHeight(); j++) {
+//                if (grid.getCell(i, j).getStatus() == State.EMPTY) {
+//                    buff.height += Cell.getSize();
+//                } else {
+//                    gc.fillRectangle(buff);
+//                    gc.setBackground(new Color(Display.getCurrent(),
+//                            grid.getCell(i, j).getColor().getRed(),
+//                            grid.getCell(i, j).getColor().getGreen(),
+//                            grid.getCell(i, j).getColor().getBlue()));
+//                    gc.fillRectangle(start.x, start.y, Cell.getSize(), Cell.getSize());
+//                    buff.y = start.y + Cell.getSize();
+//                    buff.height = buff.y;
+//                }
+//                start.y += Cell.getSize();
+//            }
+//            gc.setBackground(background);
+//            buff.height = buff.height - buff.y;
+//            gc.fillRectangle(buff);
+//            buff.y = start.y = bounds.y;
+//            buff.x = start.x += Cell.getSize();
+//            buff.height = Cell.getSize();
+//        }
     }
 
     public void destructGameFormController() {
@@ -146,70 +183,3 @@ public class GameFormController {
 
     }
 }
-
-
-//TODO [REFACTOR] удалить костыль, удалить полностью, писалось в невменяемом состоянии
-//TODO [THREAD] синхронизировать потоки обновление графического и логического состояния игры
-//class Updater implements Runnable {
-//    private GC gc;
-//    private Grid grid;
-//    private Rectangle bounds;
-////    private boolean active;
-//
-//    public Updater(GC gc, Grid grid) {
-//        this.grid = grid;
-//        this.gc = gc;
-//        bounds = new Rectangle(0, 0, grid.getWidth(), grid.getHeight());
-////        active = true;
-//    }
-//
-//    @Override
-//    public void run() {
-//
-//        while (grid.isActive()) {
-//                paint();
-////            try {
-////                Thread.sleep(34);
-////            } catch (InterruptedException e) {
-////                e.printStackTrace();
-////            }
-//            if (GameForm.display.isDisposed()) {
-//                System.out.println("Дисплей закрылся!");
-//                grid.setActive(false);
-//                return;
-//            }
-//        }
-//        System.out.println("Я закончил обновляться");
-//        //TODO [ВОЗМОЖНО] переместить вызов окна в контроллер
-//        Display.getDefault().syncExec(() -> new DialogForm(Display.getCurrent(), "You lose", "You score: null \n You time: null"));
-////        GameForm.createDialogForm("You lose", "You score: " + game.getScore());
-//
-//    }
-//
-//    public void paint() {
-//            Point start = new Point(bounds.x, bounds.y);
-//            for (int i = 0; i < grid.getWidth(); i++) {
-//                for (int j = 0; j < grid.getHeight(); j++) {
-//                    gc.setBackground(new Color(null,
-//                            grid.getCell(i, j).getStatus().getColor(grid.getCell(i, j)).getRed(),
-//                            grid.getCell(i, j).getStatus().getColor(grid.getCell(i, j)).getGreen(),
-//                            grid.getCell(i, j).getStatus().getColor(grid.getCell(i, j)).getBlue()));
-//                    gc.fillRectangle(start.x, start.y, Cell.getSize(), Cell.getSize());
-//                    start.y += Cell.getSize();
-//                }
-//                start.y = bounds.y;
-//                start.x += Cell.getSize();
-//
-//            }
-////        if (!game.isActive()) {
-////            active = false;
-////            try {
-////                GameForm.createDialogForm("You lose", "You score: " + game.getScore());
-////            } catch (RuntimeException re) {
-//////                re.printStackTrace();
-////                System.out.println("You score: "+ game.getScore());
-////            }
-//
-////        }
-//    }
-//}

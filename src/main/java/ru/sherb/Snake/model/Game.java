@@ -8,90 +8,20 @@ import java.util.Random;
  * Created by sherb on 12.10.2016.
  */
 public class Game implements Runnable {
-    //    private Cell[][] grid;
     private Grid grid;
     private Snake[] players; // Один игрок за раз //TODO сделать больше
     private Fruit fruit; // Один фрукт за раз
     private long gameTime;
     private Color fruitColor;
-//    private boolean active;
 
-    public Game(Grid grid, Color fruitColor, Snake ...players/*, byte backgroundColor*//*, byte snakeColor*/) {
+    public Game(Grid grid, Color fruitColor, Snake ...players) {
         // Создание поля для игры
         this.grid = grid;
-//        this.grid.setActive(false);
         this.players = players;
         this.fruitColor = fruitColor;
-//        grid = new Cell[width][height];
-//        for (int i = 0; i < width; i++) {
-//            for (int j = 0; j < height; j++) {
-//                grid[i][j] = new Cell(State.EMPTY, i, j/*, backgroundColor*/);
-//            }
-//        }
-
-//        player = new Snake(grid, grid.length/2, grid[0].length/2/*, snakeColor*/);
 
         fruit = new Fruit(grid);
     }
-
-    //TODO [COMPLETED] объединить методы движения в один
-    //TODO [COMPLETED] сделать метод синхронизированным, что бы листенер не мог задать несколько значений до того как змейка походит (возможно не нужно)
-    //TODO [COMPLETED] если быстро нажать на вниз\вверх и лево\право, то змейка съедает сама себя, решается дав возможность устанавливать направление один раз за цикл или пока змейка не двинется
-//    @Deprecated
-//    public void moveSnakeUp(Snake player) {
-//        if (!player.isCanMove() || player.getDirect() == Snake.DOWN || player.getDirect() == Snake.UP) {
-//            return;
-//        }
-//        player.moveTo(Snake.UP);
-//        player.canMove(false);
-//    }
-//
-//    @Deprecated
-//    public void moveSnakeRight(Snake player) {
-//        if (!player.isCanMove() || player.getDirect() == Snake.LEFT || player.getDirect() == Snake.RIGHT) {
-//            return;
-//        }
-//        player.moveTo(Snake.RIGHT);
-//        player.canMove(false);
-//    }
-//
-//    @Deprecated
-//    public void moveSnakeDown(Snake player) {
-//        if (!player.isCanMove() || player.getDirect() == Snake.UP || player.getDirect() == Snake.DOWN) {
-//            return;
-//        }
-//        player.moveTo(Snake.DOWN);
-//        player.canMove(false);
-//    }
-//
-//    @Deprecated
-//    public void moveSnakeLeft(Snake player) {
-//        if (!player.isCanMove() || player.getDirect() == Snake.RIGHT || player.getDirect() == Snake.LEFT) {
-//            return;
-//        }
-//        player.moveTo(Snake.LEFT);
-//        player.canMove(false);
-//    }
-//
-//    @Deprecated
-//    public void testMoveUp() {
-//        moveSnakeUp(player);
-//    }
-//
-//    @Deprecated
-//    public void testMoveDown() {
-//        moveSnakeDown(player);
-//    }
-//
-//    @Deprecated
-//    public void testMoveLeft() {
-//        moveSnakeLeft(player);
-//    }
-//
-//    @Deprecated
-//    public void testMoveRight() {
-//        moveSnakeRight(player);
-//    }
 
     private boolean collisionProc(Snake player) {
         //TODO [REFACTOR] избавиться от switch-enum
@@ -102,7 +32,7 @@ public class Game implements Runnable {
 //                    return false;
 //                }
                 //TODO дописать, что будет если одна змейка столкнется с другой
-//                throw new RuntimeException("змейка съела саму себя");
+                return false;
 //                break;
             case EMPTY:
                 //TODO перенести строчку в класс змейки
@@ -111,8 +41,11 @@ public class Game implements Runnable {
             case FRUIT:
                 //работает только если на поле существует только один фрукт
                 fruit.eatenBy(player);
-                grid.getCell(player.getPierce().getPosX(), player.getPierce().getPosY()).setStatus(State.SNAKE, player);
-                while (!fruit.createFruit(new Random().nextInt(grid.getWidth()), new Random().nextInt(grid.getHeight()), fruitColor));
+                if (new Random().nextInt(10) <= 2) {
+                    fruit.createFruitRandPos(10, 2, 7, Color.CYAN);
+                } else {
+                    fruit.createFruitRandPos(1, 1, -1, fruitColor);
+                }
                 break;
         }
         return true;
@@ -123,26 +56,15 @@ public class Game implements Runnable {
         Cell.setSizeCoeff(scaleCoeff);
     }
 
-//    public Cell[][] getGrid() {
-//        return grid;
-//    }
-
-//    @Deprecated
-//    public int getScore() {
-//        return player.getScore();
-//    }
-
 
     public void run() {
         long timeStart = System.currentTimeMillis();
-        while (!fruit.createFruit(new Random().nextInt(grid.getWidth()), new Random().nextInt(grid.getHeight()), fruitColor)) ;
+        //TODO [REFACTOR] изменить константные значения на переменные
+        fruit.createFruitRandPos(1, 1, -1, fruitColor);
         for (Snake player: players) {
-            player.moveTo(Snake.RIGHT);
+            player.moveTo(Snake.RIGHT); // начальное направление движение всех игроков
         }
         grid.setActive(true);
-        //TODO [DEBUG] удалить
-//        active = true;
-
         while (grid.isActive()) {
             try {
                 //TODO подобрать оптимальные значения задерки
@@ -152,18 +74,20 @@ public class Game implements Runnable {
                 for (Snake player : players) {
                     totalScore += player.getScore() * 10;
                 }
+
                 Thread.sleep(500 - (totalScore <= 400 ? totalScore : 400));
                 for (Snake player : players) {
                     player.canMove(true);
                     if (!player.move() || !collisionProc(player)) {
                         grid.setActive(false);
                     }
+                    if (!fruit.decExistOfTime()) {
+                        fruit.createFruitRandPos(1, 1, -1, fruitColor);
+                    }
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            } /*catch (RuntimeException er) {
-                active = false;
-            }*/
+            }
         }
         System.out.println("Я завершил игру");
         gameTime = (System.currentTimeMillis() - timeStart) / 1000;
@@ -176,8 +100,4 @@ public class Game implements Runnable {
     public long getGameTime() {
         return gameTime;
     }
-
-    //    public boolean isActive() {
-//        return active;
-//    }
 }
