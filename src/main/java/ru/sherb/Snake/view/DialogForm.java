@@ -34,11 +34,11 @@ public class DialogForm {
         // Обработка закрытия окна
         //TODO [DEBUG] удалить после тестирования
         while (!dialog.isDisposed()) {
-            if (!GameForm.display.readAndDispatch()) {
-                GameForm.display.sleep();
+            if (!Display.getCurrent().readAndDispatch()) {
+                Display.getCurrent().sleep();
             }
         }
-        GameForm.display.dispose();
+        Display.getCurrent().dispose();
         System.out.println("Я закрыл окно");
     }
 }
