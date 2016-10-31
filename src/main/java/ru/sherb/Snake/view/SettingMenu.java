@@ -48,6 +48,7 @@ public class SettingMenu extends Composite {
 		
 		btnExit = new Button(this, SWT.NONE);
 		btnExit.setText("Exit");
+        btnExit.addListener(SWT.Selection, e -> parent.setComposite(new MainMenu(parent, SWT.NONE)));
 
 	}
 

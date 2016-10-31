@@ -8,7 +8,9 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.wb.swt.SWTResourceManager;
+import ru.sherb.Snake.Main;
 import ru.sherb.Snake.controller.GameShellController;
 
 public class MainMenu extends Composite {
@@ -38,17 +40,11 @@ public class MainMenu extends Composite {
 
 		btnNewGame = new Button(this, SWT.NONE);
 		btnNewGame.setLayoutData(new RowData(100, SWT.DEFAULT));
-		// TODO убрать в контроллер
-		btnNewGame.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-                // TODO добавить запуск игры
-
-//                new GameShellController();
-//                GameShell shell = new GameShell(Display.getDefault());
-            }
-        });
 		btnNewGame.setText("New game");
+        btnNewGame.addListener(SWT.Selection, e -> {
+            new GameShellController();
+            parent.dispose();
+        });
 
         btnGameLoad = new Button(this, SWT.NONE);
 		btnGameLoad.setEnabled(false);
@@ -59,12 +55,14 @@ public class MainMenu extends Composite {
 
         btnSetting = new Button(this, SWT.NONE);
 		btnSetting.setText("Setting");
+        btnSetting.addListener(SWT.Selection, e -> parent.setComposite(new SettingMenu(parent, SWT.NONE)));
 
         btnHelp = new Button(this, SWT.NONE);
 		btnHelp.setText("Help");
 
 		btnExit = new Button(this, SWT.NONE);
-		btnExit.setText("Exit");
+        btnExit.setText("Exit");
+        btnExit.addListener(SWT.Selection, e -> Main.display.dispose());
 
 	}
 

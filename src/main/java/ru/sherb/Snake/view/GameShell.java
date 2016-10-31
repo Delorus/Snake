@@ -46,18 +46,26 @@ public class GameShell extends Shell {
 	 * Create contents of the shell.
 	 */
 	protected void createContents() {
-		setText("The Snake");
-		setSize(640, 480);
+        setText("The Snake");
+        setSize(640, 480);
 
         stateComposite = new Composite(this, SWT.BORDER);
+
+        toolComposite = new Composite(this, SWT.BORDER);
+        sysMessage = new Label(toolComposite, SWT.LEFT);
+
+        Composite gameComposite = new Composite(this, SWT.BORDER);
+        gameField = new Canvas(gameComposite, SWT.NONE);
+        //TODO удалить после дебага
+        gameField.setBackground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
+
         FormData fd_stateComposite = new FormData();
         fd_stateComposite.right = new FormAttachment(100);
         fd_stateComposite.top = new FormAttachment(0);
         fd_stateComposite.left = new FormAttachment(100, -153);
+        fd_stateComposite.bottom = new FormAttachment(gameComposite, 0, SWT.BOTTOM);
         stateComposite.setLayoutData(fd_stateComposite);
 
-        Composite gameComposite = new Composite(this, SWT.BORDER);
-        fd_stateComposite.bottom = new FormAttachment(gameComposite, 0, SWT.BOTTOM);
         FormData fd_gameComposite = new FormData();
         fd_gameComposite.bottom = new FormAttachment(100, -33);
         fd_gameComposite.top = new FormAttachment(0);
@@ -65,18 +73,16 @@ public class GameShell extends Shell {
         fd_gameComposite.left = new FormAttachment(0);
         gameComposite.setLayoutData(fd_gameComposite);
         gameComposite.setLayout(new FillLayout());
-        gameField = new Canvas(gameComposite, SWT.NONE);
-        gameField.setBackground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
 
-        toolComposite = new Composite(this, SWT.BORDER);
+
         FormData fd_toolComposite = new FormData();
-        fd_toolComposite.top = new FormAttachment(stateComposite, 2);
+        fd_toolComposite.top = new FormAttachment(gameComposite, 3);
         fd_toolComposite.left = new FormAttachment(0);
         fd_toolComposite.right = new FormAttachment(100);
         fd_toolComposite.bottom = new FormAttachment(100);
         toolComposite.setLayoutData(fd_toolComposite);
         toolComposite.setLayout(new FillLayout());
-        sysMessage = new Label(toolComposite, SWT.LEFT);
+
 
 
     }

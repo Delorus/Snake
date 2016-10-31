@@ -17,10 +17,10 @@ import java.awt.*;
  * Created by sherb on 27.10.2016.
  */
 public class GameShellController {
+    private GameShell gameShell;
 
     public GameShellController() {
-//        final GameShell gameShell;
-        GameShell gameShell = new GameShell(Main.display);
+        gameShell = new GameShell(Main.display);
         gameShell.open();
         gameShell.layout();
         gameShell.getGameField().setFocus();
@@ -39,7 +39,32 @@ public class GameShellController {
 
         GC gc = new GC(gameShell.getGameField());
         new Thread(game).start();
+        //TODO избавиться от состояния гонок
+        new Thread(() -> {
+            while (grid.isActive()) {
+                paint(grid, gc);
+                if (gameShell.isDisposed()) {
+                    if (Main.debug) System.out.println("Я закрыл игровое окно");
+                    grid.setActive(false);
+                    return;
+                }
+            }
+            if (Main.debug) System.out.println("Я закончил обновляться");
+            String buffScore = "";
+            //TODO [REFACTOR] засунуть всех игроков в один массив
+            buffScore += player1.getName() + "= " + player1.getScore() + "\n";
+//            buffScore += player2.getName() + "= " + player2.getScore() + "\n";
+            final String CountPlayerScore = buffScore;
+            Main.display.syncExec(() -> new DialogForm(gameShell, "You lose", "You score: \n" + CountPlayerScore + " \n You time: " + (game.getGameTime() / 1000) + " сек."));
+        }).start();
 
+
+        gameShell.addShellListener(new ShellAdapter() {
+            @Override
+            public void shellClosed(ShellEvent e) {
+                new MainShellController();
+            }
+        });
 
         //TODO придумать что делать с этим слушателем, он мешает всей программе
         gameShell.getGameField().addKeyListener(new KeyAdapter() {
@@ -86,25 +111,7 @@ public class GameShellController {
             }
         });
 
-        //TODO избавиться от состояния гонок
-        new Thread(() -> {
-            while (grid.isActive()) {
-                paint(grid, gc);
-                if (gameShell.isDisposed()) {
-                    if (Main.debug) System.out.println("Я закрыл игровое окно");
-                    grid.setActive(false);
-                    return;
-                }
-            }
-            if (Main.debug) System.out.println("Я закончил обновляться");
-            String buffScore = "";
-            //TODO [REFACTOR] засунуть всех игроков в один массив
-            buffScore += player1.getName() + "= " + player1.getScore() + "\n";
-//            buffScore += player2.getName() + "= " + player2.getScore() + "\n";
-            final String CountPlayerScore = buffScore;
-            Main.display.syncExec(() -> new DialogForm(Main.display, "You lose", "You score: \n" + CountPlayerScore + " \n You time: " + (game.getGameTime() / 1000) + " сек."));
 
-        }).start();
 
 
     }

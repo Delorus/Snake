@@ -8,12 +8,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import ru.sherb.Snake.Main;
+import ru.sherb.Snake.controller.MainShellController;
 
 /**
  * Created by sherb on 19.10.2016.
  */
 public class DialogForm {
-    public DialogForm(Display callBox, String title, String message) {
+    public DialogForm(Shell callBox, String title, String message) {
         Shell dialog = new Shell(callBox, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
         dialog.setText(title);
         dialog.setSize(200, 200);
@@ -39,7 +40,8 @@ public class DialogForm {
                 Display.getCurrent().sleep();
             }
         }
-        Display.getCurrent().dispose();
+        callBox.dispose();
+        new MainShellController();
         if (Main.debug) System.out.println("Я закрыл окно");
     }
 }

@@ -16,7 +16,7 @@ public class Main {
         try {
             MainShellController mainShellController = new MainShellController();
 
-            while (!mainShellController.isDisposed()) {
+            while (!display.isDisposed()) {
                 if (!display.readAndDispatch()) {
                     display.sleep();
                 }

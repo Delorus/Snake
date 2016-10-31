@@ -79,13 +79,12 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.outputDirectory}/ru/sherb/${project.name}</outputDirectory>
+                            <outputDirectory>${project.build.outputDirectory}/ru/sherb/${project.name}/resources</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${project.build.sourceDirectory}/ru/sherb/${project.name}</directory>
-                                    <filtering>true</filtering>
+                                    <directory>${project.build.sourceDirectory}/ru/sherb/${project.name}/resources</directory>
                                     <includes>
-                                        <include>**/*.properties</include>
+                                        <include>*.png</include>
                                     </includes>
                                 </resource>
                             </resources>
