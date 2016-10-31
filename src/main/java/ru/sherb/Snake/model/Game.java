@@ -1,6 +1,8 @@
 package ru.sherb.Snake.model;
 
 
+import ru.sherb.Snake.Main;
+
 import java.awt.*;
 import java.util.Random;
 
@@ -42,6 +44,7 @@ public class Game implements Runnable {
                 //работает только если на поле существует только один фрукт
                 fruit.eatenBy(player);
                 if (new Random().nextInt(10) <= 2) {
+                    //TODO сделать зависимость времени существования от количеста клеток в игровом поле
                     fruit.createFruitRandPos(10, 2, 7, Color.CYAN);
                 } else {
                     fruit.createFruitRandPos(1, 1, -1, fruitColor);
@@ -68,7 +71,7 @@ public class Game implements Runnable {
         while (grid.isActive()) {
             try {
                 //TODO подобрать оптимальные значения задерки
-                //TODO [ВОЗМОЖНО] уменьшать время существования фрукта
+                //TODO сделать зависимость времени задержки от количества ячеек в игровом поле
                 //100 - минимальное знач. для комфортной игры
                 int totalScore = 0;
                 for (Snake player : players) {
@@ -89,13 +92,12 @@ public class Game implements Runnable {
                 e.printStackTrace();
             }
         }
-        System.out.println("Я завершил игру");
-        gameTime = (System.currentTimeMillis() - timeStart) / 1000;
+        if (Main.debug) System.out.println("Я завершил игру");
+        gameTime = (System.currentTimeMillis() - timeStart);
     }
 
     /**
-     *
-     * @return время игры в секундах
+     * @return время игры в миллисекундах
      */
     public long getGameTime() {
         return gameTime;

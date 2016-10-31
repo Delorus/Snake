@@ -1,6 +1,11 @@
 # Snake the game
 **This is my student project!**
 ## Changelog:
+- 0.1.1.8
+    - Added dependency the size of cell from the size of canvas
+    - Was removed a second player (temporarily)
+    - Created the new shell for the main menu
+    - Created the new shell for the game
 - 0.1.1.7
     - First step to create GUI
 - 0.1.1.6
@@ -9,15 +14,15 @@
     - slightly improved gameplay
     - fixed minor bugs
 - 0.1.1.4
-    - Add dependence on the game speed of the score
-    - Add new field `name` in the Snake
-    - Show your result at the end of the game
+    - Added dependence on the game speed of the score
+    - Added new field `name` in the Snake
+    - Shows your result at the end of the game
     - Was deleted all other OS except for win86, win64
 - 0.1.1.3
     - Created the logical part of the game
     - Created a visual form
-    - Add ability to change color of the game object
-    - Add multiplayer (hotseat)
+    - Added ability to change color of the game object
+    - Added multiplayer (hotseat)
 
 ## Control keys (unchangeable):
 - The first player:

@@ -1,10 +1,8 @@
 package ru.sherb.Snake.controller;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.GC;
 import ru.sherb.Snake.Main;
 import ru.sherb.Snake.model.Cell;
 import ru.sherb.Snake.model.Game;
@@ -13,7 +11,7 @@ import ru.sherb.Snake.model.Snake;
 import ru.sherb.Snake.view.DialogForm;
 import ru.sherb.Snake.view.GameShell;
 
-import java.awt.Point;
+import java.awt.*;
 
 /**
  * Created by sherb on 27.10.2016.
@@ -25,35 +23,29 @@ public class GameShellController {
         GameShell gameShell = new GameShell(Main.display);
         gameShell.open();
         gameShell.layout();
-        Rectangle bounds = gameShell.getBoundsGame();
+        gameShell.getGameField().setFocus();
         //TODO [ВОЗМОЖНО] вынести в класс Game
-        int CellCount = 10; // Количество ячеек
-        //Math.min();
-        int size = (int) Math.ceil((double)Math.min(bounds.height, bounds.width) / CellCount);
-//        int size = bounds.height < bounds.width ? (int) Math.ceil((double) bounds.height / CellCount) : (int) Math.ceil((double) bounds.width / CellCount); // Расчет оптимального размера ячейки
-        Cell.setSizeCoeff((double) size / Cell.NORMAL_SIZE); //Расчет размера каждой ячейки
-        int gridWidth = (int) Math.round((double) bounds.width / Cell.getSize()); // round
-        int gridHeight = (int) Math.round((double) bounds.height / Cell.getSize()); //round
+        int cellCount = 20; // Количество ячеек
 
-        Grid grid = new Grid(gridWidth, gridHeight, java.awt.Color.BLACK);
-        java.awt.Color fruitColor = java.awt.Color.RED;
-        Snake player1 = new Snake(grid, 0, grid.getHeight() - 1, "player1", java.awt.Color.GREEN, 3);
+        computeCellSize(cellCount, new Point(gameShell.getBoundsGame().width, gameShell.getBoundsGame().height));
+        int cellCountWidth = (int) Math.floor((double) gameShell.getBoundsGame().width / Cell.getSize()); // количество ячеек по горизонтали
+        int cellCountHeight = (int) Math.floor((double) gameShell.getBoundsGame().height / Cell.getSize()); // количество ячеек по вертикали
+        Grid grid = new Grid(cellCountWidth, cellCountHeight, Color.WHITE);
+        Color fruitColor = Color.RED;
+        Snake player1 = new Snake(grid, 0, grid.getHeight() - 1, "player1", Color.GREEN, 3);
 //        Snake player1 = new Snake(grid, grid.getWidth() / 2, grid.getHeight() / 2, "player1", java.awt.Color.GREEN, 3);
 //        Snake player2 = new Snake(grid, 0, 0, "player2", java.awt.Color.MAGENTA, 3);
         final Game game = new Game(grid, fruitColor, player1);
 
         GC gc = new GC(gameShell.getGameField());
         new Thread(game).start();
-//        Thread upd = new Thread(new Updater(gc, grid));
-//        upd.start();
 
 
         //TODO придумать что делать с этим слушателем, он мешает всей программе
-        //TODO [DEBUG] слушатель не работает!
         gameShell.getGameField().addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                gameShell.printMessage("Нажантие клавиши" + e);
+                if (Main.debug) gameShell.printMessage("Нажантие клавиши " + String.valueOf((char) e.keyCode));
                 switch (e.keyCode) {
                     //TODO придумать где хранить управление у каждой змейки
                     case SWT.ARROW_UP:
@@ -81,7 +73,16 @@ public class GameShellController {
 //                        player2.moveTo(Snake.LEFT);
 //                        break;
                 }
+            }
+        });
 
+        gameShell.addControlListener(new ControlAdapter() {
+            @Override
+            public void controlResized(ControlEvent e) {
+                //TODO [DEBUG] пока лучший вариант для стирания старой картинки, но из-за этого происходят фризы при изменениех размера окна
+                gameShell.getGameField().pack();
+                Point bounds = new Point(gameShell.getBoundsGame().width, gameShell.getBoundsGame().height);
+                computeCellSize(cellCount, bounds);
             }
         });
 
@@ -90,18 +91,18 @@ public class GameShellController {
             while (grid.isActive()) {
                 paint(grid, gc);
                 if (gameShell.isDisposed()) {
-                    System.out.println("Я закрыл игровое окно");
+                    if (Main.debug) System.out.println("Я закрыл игровое окно");
                     grid.setActive(false);
                     return;
                 }
             }
-            System.out.println("Я закончил обновляться");
+            if (Main.debug) System.out.println("Я закончил обновляться");
             String buffScore = "";
             //TODO [REFACTOR] засунуть всех игроков в один массив
             buffScore += player1.getName() + "= " + player1.getScore() + "\n";
 //            buffScore += player2.getName() + "= " + player2.getScore() + "\n";
             final String CountPlayerScore = buffScore;
-            Main.display.syncExec(() -> new DialogForm(Main.display, "You lose", "You score: \n" + CountPlayerScore + " \n You time: " + game.getGameTime()));
+            Main.display.syncExec(() -> new DialogForm(Main.display, "You lose", "You score: \n" + CountPlayerScore + " \n You time: " + (game.getGameTime() / 1000) + " сек."));
 
         }).start();
 
@@ -160,5 +161,12 @@ public class GameShellController {
 //            buff.x = start.x += Cell.getSize();
 //            buff.height = Cell.getSize();
 //        }
+    }
+
+
+    public void computeCellSize(int cellCount, Point canvasSize) {
+        if (Main.debug) System.out.println("with and height canvas = " + canvasSize.x + " " + canvasSize.y);
+        int size = (int) Math.ceil((double) Math.min(canvasSize.x, canvasSize.y) / cellCount);
+        Cell.setSizeCoeff((double) size / Cell.NORMAL_SIZE); //Расчет размера каждой ячейки
     }
 }

@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import ru.sherb.Snake.Main;
 
 /**
  * Created by sherb on 19.10.2016.
@@ -39,6 +40,6 @@ public class DialogForm {
             }
         }
         Display.getCurrent().dispose();
-        System.out.println("Я закрыл окно");
+        if (Main.debug) System.out.println("Я закрыл окно");
     }
 }

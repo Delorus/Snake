@@ -1,22 +1,26 @@
 package ru.sherb.Snake.view;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Drawable;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.*;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 public class GameShell extends Shell {
     private Label sysMessage;
     private  Canvas gameField;
+    private Composite stateComposite;
+    private Composite toolComposite;
 
-	/**
+    /**
 	 * Create the shell.
 	 * @param display
 	 */
@@ -36,11 +40,6 @@ public class GameShell extends Shell {
         item.setText("Select &All\tCtrl+A");
         item.setAccelerator(SWT.MOD1 + 'A');
 		createContents();
-//		while (!isDisposed()) {
-//			if (!display.readAndDispatch()) {
-//				display.sleep();
-//			}
-//		}
 	}
 
 	/**
@@ -50,7 +49,7 @@ public class GameShell extends Shell {
 		setText("The Snake");
 		setSize(640, 480);
 
-        Composite stateComposite = new Composite(this, SWT.BORDER);
+        stateComposite = new Composite(this, SWT.BORDER);
         FormData fd_stateComposite = new FormData();
         fd_stateComposite.right = new FormAttachment(100);
         fd_stateComposite.top = new FormAttachment(0);
@@ -69,7 +68,7 @@ public class GameShell extends Shell {
         gameField = new Canvas(gameComposite, SWT.NONE);
         gameField.setBackground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
 
-        Composite toolComposite = new Composite(this, SWT.BORDER);
+        toolComposite = new Composite(this, SWT.BORDER);
         FormData fd_toolComposite = new FormData();
         fd_toolComposite.top = new FormAttachment(stateComposite, 2);
         fd_toolComposite.left = new FormAttachment(0);
@@ -92,6 +91,7 @@ public class GameShell extends Shell {
     }
 
     public Rectangle getBoundsGame() {
+        this.layout();
         return gameField.getClientArea();
     }
 

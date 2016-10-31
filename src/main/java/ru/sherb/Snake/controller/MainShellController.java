@@ -24,6 +24,7 @@ public class MainShellController {
         shell.open();
         shell.layout();
 
+        //TODO [DEBUG] перестают работать после смены меню
         mainMenu.btnExit.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -33,7 +34,21 @@ public class MainShellController {
         mainMenu.btnNewGame.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                new GameShellController();
+                openGameShell();
+            }
+        });
+        mainMenu.btnSetting.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                shell.setComposite(new SettingMenu(shell, SWT.NONE));
+            }
+        });
+
+
+        settingMenu.btnExit.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                shell.setComposite(new MainMenu(shell, SWT.NONE));
             }
         });
     }

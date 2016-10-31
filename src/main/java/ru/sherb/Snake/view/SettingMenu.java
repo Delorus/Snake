@@ -47,13 +47,6 @@ public class SettingMenu extends Composite {
 		btnControl.setText("Control");
 		
 		btnExit = new Button(this, SWT.NONE);
-		// TODO убрать в контроллер
-		btnExit.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				parent.setComposite(new MainMenu(parent, SWT.NONE));
-			}
-		});
 		btnExit.setText("Exit");
 
 	}

@@ -14,7 +14,7 @@
         <!--<exeFileName>${project.name}</exeFileName>-->
         <!--<product.title>Змейка</product.title>-->
         <!--<product.year>2016</product.year>-->
-        <product.version>0.1.1.7</product.version>
+        <product.version>0.1.1.8</product.version>
         <jdkVersion>1.8</jdkVersion>
     </properties>
 
@@ -25,18 +25,6 @@
             <url>http://maven-eclipse.github.io/dev-releases/maven</url>
         </repository>
 
-        <!-- I don't know why it -->
-        <repository>
-            <id>dsol-xml</id>
-            <name>Simulation @ TU Delft</name>
-            <url>http://simulation.tudelft.nl/maven/</url>
-        </repository>
-
-        <repository>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -46,24 +34,28 @@
             <artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
             <version>4.6.1RC1</version>
         </dependency>
+
         <!-- SWT for win32 -->
         <!--<dependency>-->
             <!--<groupId>org.eclipse.swt</groupId>-->
             <!--<artifactId>org.eclipse.swt.win32.win32.x86</artifactId>-->
             <!--<version>4.6.1RC1</version>-->
         <!--</dependency>-->
+
         <!-- SWT for linux32 -->
         <!--<dependency>-->
             <!--<groupId>org.eclipse.swt</groupId>-->
             <!--<artifactId>org.eclipse.swt.gtk.linux.x86</artifactId>-->
             <!--<version>4.6.1RC1</version>-->
         <!--</dependency>-->
+
         <!-- SWT for linux64 -->
         <!--<dependency>-->
             <!--<groupId>org.eclipse.swt</groupId>-->
             <!--<artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>-->
             <!--<version>4.6.1RC1</version>-->
         <!--</dependency>-->
+
         <!-- SWT for macOS64 (?32?) -->
         <!--<dependency>-->
             <!--<groupId>org.eclipse.swt</groupId>-->
@@ -71,46 +63,10 @@
             <!--<version>4.6.1RC1</version>-->
         <!--</dependency>-->
 
-        <!-- https://mvnrepository.com/artifact/com.akathist.maven.plugins.launch4j/launch4j-maven-plugin -->
-        <!--<dependency>-->
-            <!--<groupId>com.akathist.maven.plugins.launch4j</groupId>-->
-            <!--<artifactId>launch4j-maven-plugin</artifactId>-->
-            <!--<version>1.7.12</version>-->
-        <!--</dependency>-->
-
     </dependencies>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>akathist-repository</id>
-            <name>Akathist Repository</name>
-            <url>http://9stmaryrd.com/tools/launch4j-maven-plugin/</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <build>
         <plugins>
-
-            <!-- copy all dependency into the output directory -->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-dependency-plugin</artifactId>-->
-                <!--<configuration>-->
-                    <!--<outputDirectory>target/classes/</outputDirectory>-->
-                    <!--<overWriteReleases>false</overWriteReleases>-->
-                    <!--<overWriteSnapshots>false</overWriteSnapshots>-->
-                    <!--<overWriteIfNewer>true</overWriteIfNewer>-->
-                <!--</configuration>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>copy-dependencies</id>-->
-                        <!--<phase>package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>copy-dependencies</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
 
             <!-- copy .properties in build directory -->
             <plugin>
@@ -137,30 +93,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- Create version project -->
-            <!--<plugin>-->
-                <!--<groupId>org.codehaus.mojo</groupId>-->
-                <!--<artifactId>buildnumber-maven-plugin</artifactId>-->
-                <!--<version>1.4</version>-->
-                <!--<configuration>-->
-                    <!--<format>{0}-{1,date,yyyyMMdd}</format>-->
-                    <!--<items>-->
-                        <!--<item>${project.version}</item>-->
-                        <!--<item>timestamp</item>-->
-                    <!--</items>-->
-                    <!--<doCheck>true</doCheck>-->
-                    <!--<doUpdate>true</doUpdate>-->
-                <!--</configuration>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<phase>validate</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>create</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
 
             <!-- just compiling .java files into .class -->
             <plugin>
@@ -200,74 +132,8 @@
                 </configuration>
             </plugin>
 
-            <!-- packaging output files into .jar with the creation of the manifest file -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <outputDirectory>target/bin/</outputDirectory>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>target/classes/</classpathPrefix>
-                            <classpathLayoutType>simple</classpathLayoutType>
-                            <mainClass>ru.sherb.Snake.Main</mainClass>
-                        </manifest>
-                        <manifestEntries>
-                            <Version>${project.version}</Version>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
-
-
-            <!--compile project into .exe format-->
-            <plugin>
-                <groupId>com.akathist.maven.plugins.launch4j</groupId>
-                <artifactId>launch4j-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>l4j-clui</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>launch4j</goal>
-                        </goals>
-                        <configuration>
-                            <headerType>gui</headerType>
-                            <outfile>target/bin/${project.name}-${project.version}.exe</outfile>
-                            <jar>target/bin/${project.artifactId}-${project.version}-jar-with-dependencies.jar</jar>
-                            <classPath>
-                                <mainClass>ru.sherb.Snake.Main</mainClass>
-                                <addDependencies>true</addDependencies>
-                                <preCp>anything</preCp>
-                            </classPath>
-                            <jre>
-                                <minVersion>${jdkVersion}.0</minVersion>
-                            </jre>
-                            <versionInfo>
-                                <fileVersion>${product.version}</fileVersion>
-                                <txtFileVersion>${project.version}</txtFileVersion>
-                                <fileDescription>Snake the game</fileDescription>
-                                <copyright>Copyright © 2016 All right reserved</copyright>
-                                <productVersion>${product.version}</productVersion>
-                                <productName>${project.name}</productName>
-                                <txtProductVersion>${project.version}</txtProductVersion>
-                                <internalName>${project.name}</internalName>
-                                <originalFilename>${project.name}.exe</originalFilename>
-                            </versionInfo>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
-
-    <!--<scm>-->
-        <!--<connection>scm:hg:file:///${project.basedir}</connection>-->
-        <!--<developerConnection>scm:hg:file:///${project.basedir}</developerConnection>-->
-        <!--<url>file:///${project.basedir}</url>-->
-    <!--</scm>-->
 
 </project>
 

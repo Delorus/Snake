@@ -58,13 +58,6 @@ public class MainMenu extends Composite {
 		btnState.setText("Statistics");
 
         btnSetting = new Button(this, SWT.NONE);
-		// TODO убрать в контроллер
-		btnSetting.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				parent.setComposite(new SettingMenu(parent, SWT.NONE));
-			}
-		});
 		btnSetting.setText("Setting");
 
         btnHelp = new Button(this, SWT.NONE);

@@ -8,10 +8,10 @@ import ru.sherb.Snake.controller.MainShellController;
  */
 public class Main {
     public static final Display display = Display.getDefault();
-
+    public static boolean debug = false;
     public static void main(String[] args) {
 //        GameForm form = new GameForm();
-
+        if (args.length > 0 && args[0].equals("-debug")) debug = true;
 
         try {
             MainShellController mainShellController = new MainShellController();
@@ -22,7 +22,7 @@ public class Main {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (debug) e.printStackTrace();
         }
     }
 
