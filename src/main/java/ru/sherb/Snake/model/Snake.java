@@ -5,7 +5,6 @@ import ru.sherb.Snake.util.SimpleQueue;
 
 import java.awt.Color;
 import java.awt.Point;
-import java.util.ArrayList;
 
 /**
  * Реализация змейки через связанный список

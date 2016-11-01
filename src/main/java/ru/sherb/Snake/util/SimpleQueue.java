@@ -1,9 +1,5 @@
 package ru.sherb.Snake.util;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Queue;
-
 /**
  * Created by sherb on 12.10.2016.
  */

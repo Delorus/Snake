@@ -2,7 +2,7 @@ package ru.sherb.Snake.controller;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.*;
 import ru.sherb.Snake.Main;
 import ru.sherb.Snake.model.Cell;
 import ru.sherb.Snake.model.Game;
@@ -11,7 +11,12 @@ import ru.sherb.Snake.model.Snake;
 import ru.sherb.Snake.view.DialogForm;
 import ru.sherb.Snake.view.GameShell;
 
-import java.awt.*;
+import java.awt.Color;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * Created by sherb on 27.10.2016.
@@ -20,7 +25,31 @@ public class GameShellController {
     private GameShell gameShell;
 
     public GameShellController() {
-        gameShell = new GameShell(Main.display);
+        //TODO [REFACTOR] вынести в отдельный метод
+        //Чтение настроек из файла
+        Properties setting = new Properties();
+        try(FileInputStream fin = new FileInputStream("Snake.properties")) {
+            setting.load(fin);
+        } catch (FileNotFoundException e) {
+            try(FileOutputStream fout = new FileOutputStream("Snake.properties")) {
+                //TODO доделать после того как будет создана меню настроек
+                //TODO [ВОЗМОЖНО] сделать все параметры в виде констант
+                setting.setProperty("ScreenSizeX", "640");
+                setting.setProperty("ScreenSizeY", "480");
+                setting.setProperty("Fullscreen", "false");
+                //...
+                setting.store(fout, "Snake setting");
+            } catch (IOException e1) {
+                if (Main.debug) e1.printStackTrace();
+            }
+        } catch (IOException e) {
+            if (Main.debug) e.printStackTrace();
+        }
+
+        assert setting.getProperty("ScreenSizeX") != null && setting.getProperty("ScreenSizeY") != null;
+        Point bounds = new Point(Integer.valueOf(setting.getProperty("ScreenSizeX")), Integer.valueOf(setting.getProperty("ScreenSizeY")));
+        assert setting.getProperty("Fullscreen") != null;
+        gameShell = new GameShell(Main.display, bounds, Boolean.valueOf(setting.getProperty("Fullscreen")));
         gameShell.open();
         gameShell.layout();
         gameShell.getGameField().setFocus();
@@ -59,32 +88,25 @@ public class GameShellController {
         }).start();
 
 
-        gameShell.addShellListener(new ShellAdapter() {
-            @Override
-            public void shellClosed(ShellEvent e) {
-                new MainShellController();
-            }
-        });
+        gameShell.addListener(SWT.Close, e -> new MainShellController());
 
         //TODO придумать что делать с этим слушателем, он мешает всей программе
-        gameShell.getGameField().addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (Main.debug) gameShell.printMessage("Нажантие клавиши " + String.valueOf((char) e.keyCode));
-                switch (e.keyCode) {
-                    //TODO придумать где хранить управление у каждой змейки
-                    case SWT.ARROW_UP:
-                        player1.moveTo(Snake.UP);
-                        break;
-                    case SWT.ARROW_RIGHT:
-                        player1.moveTo(Snake.RIGHT);
-                        break;
-                    case SWT.ARROW_DOWN:
-                        player1.moveTo(Snake.DOWN);
-                        break;
-                    case SWT.ARROW_LEFT:
-                        player1.moveTo(Snake.LEFT);
-                        break;
+        gameShell.getGameField().addListener(SWT.KeyDown, e -> {
+            if (Main.debug) gameShell.printMessage("Нажантие клавиши " + String.valueOf((char) e.keyCode));
+            switch (e.keyCode) {
+                //TODO придумать где хранить управление у каждой змейки
+                case SWT.ARROW_UP:
+                    player1.moveTo(Snake.UP);
+                    break;
+                case SWT.ARROW_RIGHT:
+                    player1.moveTo(Snake.RIGHT);
+                    break;
+                case SWT.ARROW_DOWN:
+                    player1.moveTo(Snake.DOWN);
+                    break;
+                case SWT.ARROW_LEFT:
+                    player1.moveTo(Snake.LEFT);
+                    break;
 //                    case 'w':
 //                        player2.moveTo(Snake.UP);
 //                        break;
@@ -97,21 +119,21 @@ public class GameShellController {
 //                    case 'a':
 //                        player2.moveTo(Snake.LEFT);
 //                        break;
-                }
             }
         });
 
-        gameShell.addControlListener(new ControlAdapter() {
-            @Override
-            public void controlResized(ControlEvent e) {
+        gameShell.addListener(SWT.Resize, event -> {
+//        gameShell.addControlListener(new ControlAdapter() {
+//            @Override
+//            public void controlResized(ControlEvent e) {
+                if (Main.debug)
+                    System.out.println("with and height = " + gameShell.getSize().x + " " + gameShell.getSize().y);
                 //TODO [DEBUG] пока лучший вариант для стирания старой картинки, но из-за этого происходят фризы при изменениех размера окна
                 gameShell.getGameField().pack();
-                Point bounds = new Point(gameShell.getBoundsGame().width, gameShell.getBoundsGame().height);
-                computeCellSize(cellCount, bounds);
-            }
+//                Point canvasBounds = new Point(gameShell.getBoundsGame().width, gameShell.getBoundsGame().height);
+                computeCellSize(cellCount, new Point(gameShell.getBoundsGame().width, gameShell.getBoundsGame().height));
+//            }
         });
-
-
 
 
     }
@@ -126,7 +148,7 @@ public class GameShellController {
                         grid.getCell(i, j).getColor().getGreen(),
                         grid.getCell(i, j).getColor().getBlue()));
                 gc.fillRectangle(start.x, start.y, Cell.getSize(), Cell.getSize());
-//                gc.drawOval(start.x, start.y, Cell.getSize(), Cell.getSize());
+//                gc.fillOval(start.x, start.y, Cell.getSize(), Cell.getSize());
                 start.y += Cell.getSize();
             }
             start.y = 0;
@@ -172,7 +194,7 @@ public class GameShellController {
 
 
     public void computeCellSize(int cellCount, Point canvasSize) {
-        if (Main.debug) System.out.println("with and height canvas = " + canvasSize.x + " " + canvasSize.y);
+        //TODO [DEBUG] не верно выравнивает число клеток, если уменьшать по х
         int size = (int) Math.ceil((double) Math.min(canvasSize.x, canvasSize.y) / cellCount);
         Cell.setSizeCoeff((double) size / Cell.NORMAL_SIZE); //Расчет размера каждой ячейки
     }

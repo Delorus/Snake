@@ -16,38 +16,42 @@ import org.eclipse.wb.swt.SWTResourceManager;
 
 public class GameShell extends Shell {
     private Label sysMessage;
-    private  Canvas gameField;
+    private Canvas gameField;
     private Composite stateComposite;
     private Composite toolComposite;
 
     /**
-	 * Create the shell.
-	 * @param display
-	 */
-	public GameShell(Display display) {
-		super(display, SWT.SHELL_TRIM);
+     * Create the shell.
+     *
+     * @param display
+     */
+    public GameShell(Display display, Point defaultSize, boolean fullscreen) {
+        super(display, (fullscreen ? SWT.NO_TRIM : SWT.SHELL_TRIM));
         setLayout(new FormLayout());
-
+        setMinimumSize(349, 241);
+        setText("The Snake");
+        setSize(defaultSize.x, defaultSize.y);
+        if (fullscreen) setMaximized(true);
         //Create menu
-		Menu bar = new Menu (this, SWT.BAR);
+        Menu bar = new Menu(this, SWT.BAR);
         this.setMenuBar(bar);
-        MenuItem fileItem = new MenuItem (bar, SWT.CASCADE);
+        MenuItem fileItem = new MenuItem(bar, SWT.CASCADE);
         fileItem.setText("&File");
-        Menu submenu = new Menu (this, SWT.DROP_DOWN);
+        Menu submenu = new Menu(this, SWT.DROP_DOWN);
         fileItem.setMenu(submenu);
-        MenuItem item = new MenuItem (submenu, SWT.PUSH);
+        MenuItem item = new MenuItem(submenu, SWT.PUSH);
         item.addListener(SWT.Selection, e -> System.out.println("Exit"));
         item.setText("Select &All\tCtrl+A");
         item.setAccelerator(SWT.MOD1 + 'A');
-		createContents();
-	}
+        createContents();
+    }
 
-	/**
-	 * Create contents of the shell.
-	 */
-	protected void createContents() {
-        setText("The Snake");
-        setSize(640, 480);
+
+    /**
+     * Create contents of the shell.
+     */
+    protected void createContents() {
+
 
         stateComposite = new Composite(this, SWT.BORDER);
 
@@ -84,13 +88,12 @@ public class GameShell extends Shell {
         toolComposite.setLayout(new FillLayout());
 
 
-
     }
 
-	@Override
-	protected void checkSubclass() {
-		// Disable the check that prevents subclassing of SWT components
-	}
+    @Override
+    protected void checkSubclass() {
+        // Disable the check that prevents subclassing of SWT components
+    }
 
     public void printMessage(String message) {
         sysMessage.setText(message);

@@ -1,7 +1,5 @@
 package ru.sherb.Snake.model;
 
-import java.awt.*;
-
 
 public enum State {
     EMPTY {
@@ -12,8 +10,8 @@ public enum State {
     },
     SNAKE {
 //        @Override
-//        public Color getColor(Cell snake) {
-//            return snake.getColor(); //new Color(0, 0, 0); //black
+//        public Color getColor(Cell Snake) {
+//            return Snake.getColor(); //new Color(0, 0, 0); //black
 //        }
     },
     FRUIT {
