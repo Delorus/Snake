@@ -26,7 +26,8 @@ public class GameShell extends Shell {
      * @param display
      */
     public GameShell(Display display, Point defaultSize, boolean fullscreen) {
-        super(display, (fullscreen ? SWT.NO_TRIM : SWT.SHELL_TRIM));
+        super(display, SWT.SHELL_TRIM & (~SWT.RESIZE));
+//        super(display, (fullscreen ? SWT.NO_TRIM : SWT.SHELL_TRIM));
         setLayout(new FormLayout());
         setMinimumSize(432, 243);
         setText("The Snake");
@@ -77,9 +78,9 @@ public class GameShell extends Shell {
 
 
         FormData fd_gameComposite = new FormData();
-        fd_gameComposite.bottom = new FormAttachment(100, -32);
+        fd_gameComposite.bottom = new FormAttachment(100, -26);
         fd_gameComposite.top = new FormAttachment(0);
-        fd_gameComposite.right = new FormAttachment(100, -170);
+        fd_gameComposite.right = new FormAttachment(100, -150);
         fd_gameComposite.left = new FormAttachment(0);
         gameComposite.setLayoutData(fd_gameComposite);
         gameComposite.setLayout(new FillLayout());
