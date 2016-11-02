@@ -72,11 +72,8 @@ public class Snake implements Colorable {
 
     public boolean move() {
         try {
-//            if (transparentBorder) {
-//                if (pierce.getPosX() == )
-//            }
-
             //TODO [REFACTOR] изменить способ передвижения
+            //TODO [DEBUG] не изменять направление пока игра на паузе
             Point buff = new Point(pierce.getPosition());
             if (direct == control.up) {
                 if (transparentBorder && pierce.getPosY() == 0) {

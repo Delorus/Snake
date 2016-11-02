@@ -118,16 +118,27 @@ public class GameShellController {
 
         //TODO придумать что делать с этим слушателем, он мешает всей программе
         gameShell.getGameField().addListener(SWT.KeyDown, e -> {
-            if (Main.debug) gameShell.printMessage("Нажатие клавиши " + String.valueOf((char) e.keyCode));
+            if (Main.debug) {
+                gameShell.printMessage("Нажатие клавиши " + Integer.toString(e.keyCode, 16));
+            }
             //TODO добавить сохранение до двух нажатий в очередь
             if (player1.control.contains(e.keyCode)) {
                 player1.moveTo(e.keyCode);
+            } else {
+                //TODO временное решение, пока не будет создано окно паузы
+                if (e.keyCode == 27) {
+                    if (game.isPause()) {
+                        game.start();
+                    } else {
+                        game.stop();
+                    }
+                }
             }
         });
 
         if (Main.debug) System.out.println("Размер окна = " + gameShell.getSize());
         gameShell.addListener(SWT.Resize, event -> {
-                //TODO [DEBUG] пока лучший вариант для стирания старой картинки, но из-за этого происходят фризы при изменениех размера окна
+            //TODO [DEBUG] пока лучший вариант для стирания старой картинки, но из-за этого происходят фризы при изменениех размера окна
 //            gameShell.getGameField().pack();
             computeCellSize(cellCount, new Point(gameShell.getGameArea().width, gameShell.getGameArea().height));
             if (Main.debug) {

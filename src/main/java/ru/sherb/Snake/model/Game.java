@@ -15,13 +15,14 @@ public class Game implements Runnable {
     private Fruit fruit; // Один фрукт за раз
     private long gameTime;
     private Color fruitColor;
+    private boolean pause;
 
     public Game(Grid grid, Color fruitColor, Snake ...players) {
         // Создание поля для игры
         this.grid = grid;
         this.players = players;
         this.fruitColor = fruitColor;
-
+        pause = false;
         fruit = new Fruit(grid);
     }
 
@@ -98,6 +99,12 @@ public class Game implements Runnable {
                         fruit.createFruitRandPos(1, 1, -1, fruitColor);
                     }
                 }
+
+                synchronized (this) {
+                    while (pause) {
+                        wait();
+                    }
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -111,5 +118,18 @@ public class Game implements Runnable {
      */
     public long getGameTime() {
         return gameTime;
+    }
+
+    public synchronized void stop() {
+        pause = true;
+    }
+
+    public synchronized void start() {
+        pause = false;
+        notify();
+    }
+
+    public boolean isPause() {
+        return pause;
     }
 }
