@@ -1,5 +1,7 @@
 package ru.sherb.Snake.model;
 
+import ru.sherb.Snake.Main;
+
 import java.awt.*;
 
 /**
@@ -21,6 +23,7 @@ public class Grid implements Colorable {
             }
         }
         active = true;
+        if (Main.debug) System.out.println("Создано игровое поле " + getWidth() + " на " + getHeight());
     }
 
     public Cell getCell(int x, int y) {

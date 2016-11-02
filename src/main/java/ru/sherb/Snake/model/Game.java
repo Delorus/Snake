@@ -43,9 +43,12 @@ public class Game implements Runnable {
             case FRUIT:
                 //работает только если на поле существует только один фрукт
                 fruit.eatenBy(player);
+                // шанс выпадения супер-фрукта 20%
                 if (new Random().nextInt(10) <= 2) {
-                    //TODO сделать зависимость времени существования от количеста клеток в игровом поле
-                    fruit.createFruitRandPos(10, 2, 7, Color.CYAN);
+                    // TODO сделать зависимость времени существования от количеста клеток в игровом поле
+                    // Время существование = время, которая змейка пройдет 70% от бОльшого значения длины поля
+
+                    fruit.createFruitRandPos(10, 2, (int) (Math.max(grid.getWidth(), grid.getHeight()) * 0.7), Color.CYAN);
                 } else {
                     fruit.createFruitRandPos(1, 1, -1, fruitColor);
                 }
@@ -62,6 +65,12 @@ public class Game implements Runnable {
 
     public void run() {
         long timeStart = System.currentTimeMillis();
+        int sleep = 5000 / Math.max(grid.getWidth(), grid.getHeight());
+        int minSleep = 1000 / Math.max(grid.getWidth(), grid.getHeight());
+        if (Main.debug) {
+            System.out.println("Время задержки = " + sleep);
+            System.out.println("Минимальное время задержки = " + minSleep);
+        }
         //TODO [REFACTOR] изменить константные значения на переменные
         fruit.createFruitRandPos(1, 1, -1, fruitColor);
         for (Snake player: players) {
@@ -70,15 +79,16 @@ public class Game implements Runnable {
         grid.setActive(true);
         while (grid.isActive()) {
             try {
+                //TODO оптимизировать этот процесс
                 //TODO подобрать оптимальные значения задерки
-                //TODO сделать зависимость времени задержки от количества ячеек в игровом поле
                 //100 - минимальное знач. для комфортной игры
                 int totalScore = 0;
                 for (Snake player : players) {
-                    totalScore += player.getScore() * 10;
+                    totalScore += player.getScore() * 4;
                 }
 
-                Thread.sleep(500 - (totalScore <= 400 ? totalScore : 400));
+                int delay = sleep - totalScore < minSleep ? minSleep : sleep - totalScore;
+                Thread.sleep(delay);
                 for (Snake player : players) {
                     player.canMove(true);
                     if (!player.move() || !collisionProc(player)) {

@@ -1,8 +1,9 @@
 package ru.sherb.Snake.controller;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Display;
 import ru.sherb.Snake.Main;
 import ru.sherb.Snake.model.Cell;
 import ru.sherb.Snake.model.Game;
@@ -11,6 +12,7 @@ import ru.sherb.Snake.model.Snake;
 import ru.sherb.Snake.view.DialogForm;
 import ru.sherb.Snake.view.GameShell;
 
+import java.awt.*;
 import java.awt.Color;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,20 +25,23 @@ import java.util.Properties;
  */
 public class GameShellController {
     private GameShell gameShell;
+    //TODO [REFACTOR] убрать отсюда эту переменную
+    private Point oldSize;
 
     public GameShellController() {
         //TODO [REFACTOR] вынести в отдельный метод
         //Чтение настроек из файла
         Properties setting = new Properties();
-        try(FileInputStream fin = new FileInputStream("Snake.properties")) {
+        try (FileInputStream fin = new FileInputStream("Snake.properties")) {
             setting.load(fin);
         } catch (FileNotFoundException e) {
-            try(FileOutputStream fout = new FileOutputStream("Snake.properties")) {
+            try (FileOutputStream fout = new FileOutputStream("Snake.properties")) {
                 //TODO доделать после того как будет создана меню настроек
                 //TODO [ВОЗМОЖНО] сделать все параметры в виде констант
-                setting.setProperty("ScreenSizeX", "640");
+                setting.setProperty("ScreenSizeX", "848");
                 setting.setProperty("ScreenSizeY", "480");
                 setting.setProperty("Fullscreen", "false");
+                setting.setProperty("CellCount", "20");
                 //...
                 setting.store(fout, "Snake setting");
             } catch (IOException e1) {
@@ -53,13 +58,20 @@ public class GameShellController {
         gameShell.open();
         gameShell.layout();
         gameShell.getGameField().setFocus();
-        //TODO [ВОЗМОЖНО] вынести в класс Game
-        int cellCount = 20; // Количество ячеек
 
-        computeCellSize(cellCount, new Point(gameShell.getBoundsGame().width, gameShell.getBoundsGame().height));
-        int cellCountWidth = (int) Math.floor((double) gameShell.getBoundsGame().width / Cell.getSize()); // количество ячеек по горизонтали
-        int cellCountHeight = (int) Math.floor((double) gameShell.getBoundsGame().height / Cell.getSize()); // количество ячеек по вертикали
+        if (Main.debug) System.out.println("Game area = " + gameShell.getGameArea());
+
+        assert Integer.valueOf(setting.getProperty("CellCount")) % 3 == 0;
+        int cellCount = Integer.valueOf(setting.getProperty("CellCount")); // Количество ячеек
+
+        //16:9
+        int cellCountHeight = cellCount;
+        int cellCountWidth = cellCount / 9 * 16;
+        //TODO [DEBUG] не верно работает функция масштабирования
+        //количество ячеек по горизонтали задается в зависимости от начального размера окна
+        computeCellSize(cellCount, new Point(gameShell.getGameArea().width, gameShell.getGameArea().height));
         Grid grid = new Grid(cellCountWidth, cellCountHeight, Color.WHITE);
+
         Color fruitColor = Color.RED;
         Snake player1 = new Snake(grid, 0, grid.getHeight() - 1, "player1", Color.GREEN, 3);
 //        Snake player1 = new Snake(grid, grid.getWidth() / 2, grid.getHeight() / 2, "player1", java.awt.Color.GREEN, 3);
@@ -92,9 +104,10 @@ public class GameShellController {
 
         //TODO придумать что делать с этим слушателем, он мешает всей программе
         gameShell.getGameField().addListener(SWT.KeyDown, e -> {
-            if (Main.debug) gameShell.printMessage("Нажантие клавиши " + String.valueOf((char) e.keyCode));
+            if (Main.debug) gameShell.printMessage("Нажатие клавиши " + String.valueOf((char) e.keyCode));
             switch (e.keyCode) {
                 //TODO придумать где хранить управление у каждой змейки
+                //TODO добавить сохранение до двух нажатий в очередь
                 case SWT.ARROW_UP:
                     player1.moveTo(Snake.UP);
                     break;
@@ -122,19 +135,16 @@ public class GameShellController {
             }
         });
 
+        if (Main.debug) System.out.println("Размер окна = " + gameShell.getSize());
         gameShell.addListener(SWT.Resize, event -> {
-//        gameShell.addControlListener(new ControlAdapter() {
-//            @Override
-//            public void controlResized(ControlEvent e) {
-                if (Main.debug)
-                    System.out.println("with and height = " + gameShell.getSize().x + " " + gameShell.getSize().y);
                 //TODO [DEBUG] пока лучший вариант для стирания старой картинки, но из-за этого происходят фризы при изменениех размера окна
-                gameShell.getGameField().pack();
-//                Point canvasBounds = new Point(gameShell.getBoundsGame().width, gameShell.getBoundsGame().height);
-                computeCellSize(cellCount, new Point(gameShell.getBoundsGame().width, gameShell.getBoundsGame().height));
-//            }
+//            gameShell.getGameField().pack();
+            computeCellSize(cellCount, new Point(gameShell.getGameArea().width, gameShell.getGameArea().height));
+            if (Main.debug) {
+                System.out.println("Размер окна = " + gameShell.getSize());
+                System.out.println("Game area = " + gameShell.getGameArea());
+            }
         });
-
 
     }
 
@@ -148,6 +158,8 @@ public class GameShellController {
                         grid.getCell(i, j).getColor().getGreen(),
                         grid.getCell(i, j).getColor().getBlue()));
                 gc.fillRectangle(start.x, start.y, Cell.getSize(), Cell.getSize());
+//                gc.setForeground(new org.eclipse.swt.graphics.Color(null, 0, 0, 255));
+//                gc.drawRectangle(start.x, start.y, Cell.getSize(), Cell.getSize());
 //                gc.fillOval(start.x, start.y, Cell.getSize(), Cell.getSize());
                 start.y += Cell.getSize();
             }
@@ -196,6 +208,7 @@ public class GameShellController {
     public void computeCellSize(int cellCount, Point canvasSize) {
         //TODO [DEBUG] не верно выравнивает число клеток, если уменьшать по х
         int size = (int) Math.ceil((double) Math.min(canvasSize.x, canvasSize.y) / cellCount);
+        if (Main.debug) System.out.println("Размер ячейки = " + size);
         Cell.setSizeCoeff((double) size / Cell.NORMAL_SIZE); //Расчет размера каждой ячейки
     }
 }

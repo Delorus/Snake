@@ -28,10 +28,14 @@ public class GameShell extends Shell {
     public GameShell(Display display, Point defaultSize, boolean fullscreen) {
         super(display, (fullscreen ? SWT.NO_TRIM : SWT.SHELL_TRIM));
         setLayout(new FormLayout());
-        setMinimumSize(349, 241);
+        setMinimumSize(432, 243);
         setText("The Snake");
         setSize(defaultSize.x, defaultSize.y);
-        if (fullscreen) setMaximized(true);
+        if (fullscreen) {
+            setMaximized(true);
+            setFullScreen(true);
+        }
+
         //Create menu
         Menu bar = new Menu(this, SWT.BAR);
         this.setMenuBar(bar);
@@ -66,14 +70,16 @@ public class GameShell extends Shell {
         FormData fd_stateComposite = new FormData();
         fd_stateComposite.right = new FormAttachment(100);
         fd_stateComposite.top = new FormAttachment(0);
-        fd_stateComposite.left = new FormAttachment(100, -153);
+        fd_stateComposite.left = new FormAttachment(gameComposite, 6);
         fd_stateComposite.bottom = new FormAttachment(gameComposite, 0, SWT.BOTTOM);
         stateComposite.setLayoutData(fd_stateComposite);
 
+
+
         FormData fd_gameComposite = new FormData();
-        fd_gameComposite.bottom = new FormAttachment(100, -33);
+        fd_gameComposite.bottom = new FormAttachment(100, -32);
         fd_gameComposite.top = new FormAttachment(0);
-        fd_gameComposite.right = new FormAttachment(stateComposite, -6);
+        fd_gameComposite.right = new FormAttachment(100, -170);
         fd_gameComposite.left = new FormAttachment(0);
         gameComposite.setLayoutData(fd_gameComposite);
         gameComposite.setLayout(new FillLayout());
@@ -86,8 +92,6 @@ public class GameShell extends Shell {
         fd_toolComposite.bottom = new FormAttachment(100);
         toolComposite.setLayoutData(fd_toolComposite);
         toolComposite.setLayout(new FillLayout());
-
-
     }
 
     @Override
@@ -99,7 +103,7 @@ public class GameShell extends Shell {
         sysMessage.setText(message);
     }
 
-    public Rectangle getBoundsGame() {
+    public Rectangle getGameArea() {
         this.layout();
         return gameField.getClientArea();
     }
