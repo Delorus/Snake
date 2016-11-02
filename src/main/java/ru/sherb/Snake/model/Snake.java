@@ -12,6 +12,10 @@ import java.awt.Point;
  * Created by sherb on 12.10.2016.
  */
 public class Snake implements Colorable {
+    private static final int UP = 0;
+    private static final int DOWN = 1;
+    private static final int RIGHT = 2;
+    private static final int LEFT = 3;
     public Control control;
     private int length;// = 3; // длина змеи с головой, длина хвоста = length - 1, начальный размер 3?
     private SimpleQueue<Cell> tail;
@@ -27,6 +31,7 @@ public class Snake implements Colorable {
     //TODO [DEBUG] удалить
     // временное решение бага, пока не изменится способ управления змейкой
     private boolean canMove;
+    private boolean transparentBorder;
 
     public class Control {
         public final int up;
@@ -60,21 +65,41 @@ public class Snake implements Colorable {
         canMove = true;
         foods = new SimpleQueue<>();
         this.control = new Control(up, down, right, left);
+        //TODO убрать
+        transparentBorder = true;
     }
 
 
     public boolean move() {
-        //TODO [REFACTOR] избавиться от этой бяки
         try {
+//            if (transparentBorder) {
+//                if (pierce.getPosX() == )
+//            }
+
+            //TODO [REFACTOR] изменить способ передвижения
+            Point buff = new Point(pierce.getPosition());
             if (direct == control.up) {
-                pierce = grid.getCell(pierce.getPosX(), pierce.getPosY() - 1);
+                if (transparentBorder && pierce.getPosY() == 0) {
+                    buff.y = grid.getHeight();
+                }
+                pierce = grid.getCell(buff.x, buff.y - 1);
             } else if (direct == control.down) {
-                pierce = grid.getCell(pierce.getPosX(), pierce.getPosY() + 1);
+                if (transparentBorder && pierce.getPosY() == grid.getHeight() - 1) {
+                    buff.y = -1;
+                }
+                pierce = grid.getCell(buff.x, buff.y + 1);
             } else if (direct == control.left) {
-                pierce = grid.getCell(pierce.getPosX() - 1, pierce.getPosY());
+                if (transparentBorder && pierce.getPosX() == 0) {
+                    buff.x = grid.getWidth();
+                }
+                pierce = grid.getCell(buff.x - 1, buff.y);
             } else if (direct == control.right) {
-                pierce = grid.getCell(pierce.getPosX() + 1, pierce.getPosY());
+                if (transparentBorder && pierce.getPosX() == grid.getWidth() - 1) {
+                    buff.x = -1;
+                }
+                pierce = grid.getCell(buff.x + 1, buff.y);
             }
+
         } catch (IndexOutOfBoundsException e) {
             canMove = false;
             return false;
