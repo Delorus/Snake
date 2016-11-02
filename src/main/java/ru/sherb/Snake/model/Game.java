@@ -74,7 +74,7 @@ public class Game implements Runnable {
         //TODO [REFACTOR] изменить константные значения на переменные
         fruit.createFruitRandPos(1, 1, -1, fruitColor);
         for (Snake player: players) {
-            player.moveTo(Snake.RIGHT); // начальное направление движение всех игроков
+            player.moveTo(player.control.right); // начальное направление движение всех игроков
         }
         grid.setActive(true);
         while (grid.isActive()) {

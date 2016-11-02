@@ -38,10 +38,20 @@ public class GameShellController {
             try (FileOutputStream fout = new FileOutputStream("Snake.properties")) {
                 //TODO доделать после того как будет создана меню настроек
                 //TODO [ВОЗМОЖНО] сделать все параметры в виде констант
-                setting.setProperty("ScreenSizeX", "848");
-                setting.setProperty("ScreenSizeY", "480");
+                setting.setProperty("ScreenSizeX", "864");
+                setting.setProperty("ScreenSizeY", "486");
                 setting.setProperty("Fullscreen", "false");
-                setting.setProperty("CellCount", "20");
+
+                setting.setProperty("Grid_HEIGHT", "18");
+
+                setting.setProperty("Player1_UP", String.valueOf(SWT.ARROW_UP));
+                setting.setProperty("Player1_DOWN", String.valueOf(SWT.ARROW_DOWN));
+                setting.setProperty("Player1_RIGHT", String.valueOf(SWT.ARROW_RIGHT));
+                setting.setProperty("Player1_LEFT", String.valueOf(SWT.ARROW_LEFT));
+
+                setting.setProperty("Player1_COLOR", String.valueOf(Color.GREEN.getRGB()));
+                setting.setProperty("Grid_COLOR", String.valueOf(Color.WHITE.getRGB()));
+                setting.setProperty("Fruit_COLOR", String.valueOf(Color.RED.getRGB()));
                 //...
                 setting.store(fout, "Snake setting");
             } catch (IOException e1) {
@@ -61,8 +71,8 @@ public class GameShellController {
 
         if (Main.debug) System.out.println("Game area = " + gameShell.getGameArea());
 
-        assert Integer.valueOf(setting.getProperty("CellCount")) % 3 == 0;
-        int cellCount = Integer.valueOf(setting.getProperty("CellCount")); // Количество ячеек
+        assert Integer.valueOf(setting.getProperty("Grid_HEIGHT")) % 3 == 0;
+        int cellCount = Integer.valueOf(setting.getProperty("Grid_HEIGHT")); // Количество ячеек
 
         //16:9
         int cellCountHeight = cellCount;
@@ -70,10 +80,14 @@ public class GameShellController {
         //TODO [DEBUG] не верно работает функция масштабирования
         //количество ячеек по горизонтали задается в зависимости от начального размера окна
         computeCellSize(cellCount, new Point(gameShell.getGameArea().width, gameShell.getGameArea().height));
-        Grid grid = new Grid(cellCountWidth, cellCountHeight, Color.WHITE);
+        Grid grid = new Grid(cellCountWidth, cellCountHeight, Color.decode(setting.getProperty("Grid_COLOR")));
 
-        Color fruitColor = Color.RED;
-        Snake player1 = new Snake(grid, 0, grid.getHeight() - 1, "player1", Color.GREEN, 3);
+        Color fruitColor = Color.decode(setting.getProperty("Fruit_COLOR"));
+        Snake player1 = new Snake(grid, 0, grid.getHeight() - 1, "player1", Color.decode(setting.getProperty("Player1_COLOR")), 3,
+                Integer.valueOf(setting.getProperty("Player1_UP")),
+                Integer.valueOf(setting.getProperty("Player1_DOWN")),
+                Integer.valueOf(setting.getProperty("Player1_RIGHT")),
+                Integer.valueOf(setting.getProperty("Player1_LEFT")));
 //        Snake player1 = new Snake(grid, grid.getWidth() / 2, grid.getHeight() / 2, "player1", java.awt.Color.GREEN, 3);
 //        Snake player2 = new Snake(grid, 0, 0, "player2", java.awt.Color.MAGENTA, 3);
         final Game game = new Game(grid, fruitColor, player1);
@@ -105,33 +119,9 @@ public class GameShellController {
         //TODO придумать что делать с этим слушателем, он мешает всей программе
         gameShell.getGameField().addListener(SWT.KeyDown, e -> {
             if (Main.debug) gameShell.printMessage("Нажатие клавиши " + String.valueOf((char) e.keyCode));
-            switch (e.keyCode) {
-                //TODO придумать где хранить управление у каждой змейки
-                //TODO добавить сохранение до двух нажатий в очередь
-                case SWT.ARROW_UP:
-                    player1.moveTo(Snake.UP);
-                    break;
-                case SWT.ARROW_RIGHT:
-                    player1.moveTo(Snake.RIGHT);
-                    break;
-                case SWT.ARROW_DOWN:
-                    player1.moveTo(Snake.DOWN);
-                    break;
-                case SWT.ARROW_LEFT:
-                    player1.moveTo(Snake.LEFT);
-                    break;
-//                    case 'w':
-//                        player2.moveTo(Snake.UP);
-//                        break;
-//                    case 'd':
-//                        player2.moveTo(Snake.RIGHT);
-//                        break;
-//                    case 's':
-//                        player2.moveTo(Snake.DOWN);
-//                        break;
-//                    case 'a':
-//                        player2.moveTo(Snake.LEFT);
-//                        break;
+            //TODO добавить сохранение до двух нажатий в очередь
+            if (player1.control.contains(e.keyCode)) {
+                player1.moveTo(e.keyCode);
             }
         });
 

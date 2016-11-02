@@ -12,14 +12,7 @@ import java.awt.Point;
  * Created by sherb on 12.10.2016.
  */
 public class Snake implements Colorable {
-    @Deprecated
-    public static final int UP = 0;
-    @Deprecated
-    public static final int RIGHT = 1;
-    @Deprecated
-    public static final int DOWN = 2;
-    @Deprecated
-    public static final int LEFT = 3;
+    public Control control;
     private int length;// = 3; // длина змеи с головой, длина хвоста = length - 1, начальный размер 3?
     private SimpleQueue<Cell> tail;
     private Cell pierce; // элемент змейки
@@ -35,9 +28,28 @@ public class Snake implements Colorable {
     // временное решение бага, пока не изменится способ управления змейкой
     private boolean canMove;
 
-    public Snake(Grid grid, int posX, int posY, String name, Color color, int length) {
+    public class Control {
+        public final int up;
+        public final int down;
+        public final int right;
+        public final int left;
+
+        public Control(int up, int down, int right, int left) {
+            this.up = up;
+            this.down = down;
+            this.right = right;
+            this.left = left;
+        }
+
+        public boolean contains(int key) {
+            return key == up || key == down || key == right || key == left;
+        }
+
+    }
+
+    public Snake(Grid grid, int posX, int posY, String name, Color color, int length, int up, int down, int right, int left) {
+//        resetScore();
         this.name = name;
-        resetScore();
         this.color = color;
         this.length = length; // Начальная длина змеи
         this.grid = grid;
@@ -47,25 +59,21 @@ public class Snake implements Colorable {
         tail.add(pierce); // Добавление текущей частички змейки в хвост
         canMove = true;
         foods = new SimpleQueue<>();
+        this.control = new Control(up, down, right, left);
     }
 
 
     public boolean move() {
         //TODO [REFACTOR] избавиться от этой бяки
         try {
-            switch (direct) {
-                case UP:
-                    pierce = grid.getCell(pierce.getPosX(), pierce.getPosY() - 1);
-                    break;
-                case RIGHT:
-                    pierce = grid.getCell(pierce.getPosX() + 1, pierce.getPosY());
-                    break;
-                case DOWN:
-                    pierce = grid.getCell(pierce.getPosX(), pierce.getPosY() + 1);
-                    break;
-                case LEFT:
-                    pierce = grid.getCell(pierce.getPosX() - 1, pierce.getPosY());
-                    break;
+            if (direct == control.up) {
+                pierce = grid.getCell(pierce.getPosX(), pierce.getPosY() - 1);
+            } else if (direct == control.down) {
+                pierce = grid.getCell(pierce.getPosX(), pierce.getPosY() + 1);
+            } else if (direct == control.left) {
+                pierce = grid.getCell(pierce.getPosX() - 1, pierce.getPosY());
+            } else if (direct == control.right) {
+                pierce = grid.getCell(pierce.getPosX() + 1, pierce.getPosY());
             }
         } catch (IndexOutOfBoundsException e) {
             canMove = false;
@@ -92,10 +100,10 @@ public class Snake implements Colorable {
         //TODO [REFACTOR] попробовать как-нибудь сократить условие
         if (canMove &&
                 !((direct == newDirect) ||
-                        (direct == RIGHT && newDirect == LEFT) ||
-                        (direct == LEFT && newDirect == RIGHT) ||
-                        (direct == UP && newDirect == DOWN) ||
-                        (direct == DOWN && newDirect == UP))) {
+                        (direct == control.right && newDirect == control.left) ||
+                        (direct == control.left && newDirect == control.right) ||
+                        (direct == control.up && newDirect == control.down) ||
+                        (direct == control.down && newDirect == control.up))) {
             direct = newDirect;
             canMove = false;
         }
