@@ -14,7 +14,7 @@
         <!--<exeFileName>${project.name}</exeFileName>-->
         <!--<product.title>Змейка</product.title>-->
         <!--<product.year>2016</product.year>-->
-        <product.version>0.1.1.8</product.version>
+        <product.version>0.1.1.9</product.version>
         <jdkVersion>1.8</jdkVersion>
     </properties>
 

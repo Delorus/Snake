@@ -1,6 +1,17 @@
 # Snake the game
 **This is my student project!**
 ## Changelog:
+- 0.1.1.9
+    - Extracted loading settings in the separate class 
+    - Added FPS counter 
+    - The number of FPS has been blocked on ~60 FPS
+    - Added game pause (default key `esc`)
+    - Added mode of transparent borders
+    - Added ability to change snake control
+    - Removed ability to resize game shell until the bug is fixed
+    - Speed of the game now depends on the size of the game field
+    - Added scaling ability
+    - Added ability save all setting to the .properties file
 - 0.1.1.8
     - Added dependency the size of cell from the size of canvas
     - Was removed a second player (temporarily)
