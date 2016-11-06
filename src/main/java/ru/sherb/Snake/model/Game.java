@@ -2,6 +2,8 @@ package ru.sherb.Snake.model;
 
 
 import ru.sherb.Snake.Main;
+import ru.sherb.Snake.util.FPSCounter;
+import ru.sherb.Snake.util.Timer;
 
 import java.awt.*;
 import java.util.Random;
