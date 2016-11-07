@@ -10,8 +10,6 @@ import java.awt.*;
 
 public class Grid implements Colorable {
     private Cell[][] grid;
-    //TODO костыль для связи обновления логичекой части и графической
-    private boolean active;
     private Color color;
 
     public Grid(int width, int height, Color color) {
@@ -22,7 +20,6 @@ public class Grid implements Colorable {
                 grid[i][j] = new Cell(State.EMPTY, i, j, this.color);
             }
         }
-        active = true;
         if (Main.debug) System.out.println("Создано игровое поле " + getWidth() + " на " + getHeight());
     }
 
@@ -39,14 +36,6 @@ public class Grid implements Colorable {
             return 0;
         }
         return grid[0].length;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     @Override

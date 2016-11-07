@@ -11,12 +11,7 @@ import java.awt.Point;
  * <p>
  * Created by sherb on 12.10.2016.
  */
-public class Snake implements Colorable {
-    private static final int UP = 0;
-    private static final int DOWN = 1;
-    private static final int RIGHT = 2;
-    private static final int LEFT = 3;
-    public Control control;
+public class Snake extends GameObject implements Controllable {
     private int length;// = 3; // длина змеи с головой, длина хвоста = length - 1, начальный размер 3?
     private SimpleQueue<Cell> tail;
     private Cell pierce; // элемент змейки
@@ -33,26 +28,7 @@ public class Snake implements Colorable {
     private boolean canMove;
     private boolean transparentBorder;
 
-    public class Control {
-        public final int up;
-        public final int down;
-        public final int right;
-        public final int left;
-
-        public Control(int up, int down, int right, int left) {
-            this.up = up;
-            this.down = down;
-            this.right = right;
-            this.left = left;
-        }
-
-        public boolean contains(int key) {
-            return key == up || key == down || key == right || key == left;
-        }
-
-    }
-
-    public Snake(Grid grid, int posX, int posY, String name, Color color, int length, int up, int down, int right, int left) {
+    public Snake(Grid grid, int posX, int posY, String name, Color color, int length) {
 //        resetScore();
         this.name = name;
         this.color = color;
@@ -64,7 +40,6 @@ public class Snake implements Colorable {
         tail.add(pierce); // Добавление текущей частички змейки в хвост
         canMove = true;
         foods = new SimpleQueue<>();
-        this.control = new Control(up, down, right, left);
         //TODO убрать
         transparentBorder = true;
     }
@@ -75,28 +50,34 @@ public class Snake implements Colorable {
             //TODO [REFACTOR] изменить способ передвижения
             //TODO [DEBUG] не изменять направление пока игра на паузе
             Point buff = new Point(pierce.getPosition());
-            if (direct == control.up) {
-                if (transparentBorder && pierce.getPosY() == 0) {
-                    buff.y = grid.getHeight();
-                }
-                pierce = grid.getCell(buff.x, buff.y - 1);
-            } else if (direct == control.down) {
-                if (transparentBorder && pierce.getPosY() == grid.getHeight() - 1) {
-                    buff.y = -1;
-                }
-                pierce = grid.getCell(buff.x, buff.y + 1);
-            } else if (direct == control.left) {
-                if (transparentBorder && pierce.getPosX() == 0) {
-                    buff.x = grid.getWidth();
-                }
-                pierce = grid.getCell(buff.x - 1, buff.y);
-            } else if (direct == control.right) {
-                if (transparentBorder && pierce.getPosX() == grid.getWidth() - 1) {
-                    buff.x = -1;
-                }
-                pierce = grid.getCell(buff.x + 1, buff.y);
+            switch (direct) {
+                case UP:
+                    if (transparentBorder && pierce.getPosY() == 0) {
+                        buff.y = grid.getHeight();
+                    }
+                    pierce = grid.getCell(buff.x, buff.y - 1);
+                    break;
+                case DOWN:
+                    if (transparentBorder && pierce.getPosY() == grid.getHeight() - 1) {
+                        buff.y = -1;
+                    }
+                    pierce = grid.getCell(buff.x, buff.y + 1);
+                    break;
+                case LEFT:
+                    if (transparentBorder && pierce.getPosX() == 0) {
+                        buff.x = grid.getWidth();
+                    }
+                    pierce = grid.getCell(buff.x - 1, buff.y);
+                    break;
+                case RIGHT:
+                    if (transparentBorder && pierce.getPosX() == grid.getWidth() - 1) {
+                        buff.x = -1;
+                    }
+                    pierce = grid.getCell(buff.x + 1, buff.y);
+                    break;
             }
 
+            // Если врезался в стенку
         } catch (IndexOutOfBoundsException e) {
             canMove = false;
             return false;
@@ -118,14 +99,14 @@ public class Snake implements Colorable {
         return true;
     }
 
-    public void moveTo(int newDirect) {
+    public void setDirect(int newDirect) {
         //TODO [REFACTOR] попробовать как-нибудь сократить условие
         if (canMove &&
                 !((direct == newDirect) ||
-                        (direct == control.right && newDirect == control.left) ||
-                        (direct == control.left && newDirect == control.right) ||
-                        (direct == control.up && newDirect == control.down) ||
-                        (direct == control.down && newDirect == control.up))) {
+                        (direct == RIGHT && newDirect == LEFT) ||
+                        (direct == LEFT && newDirect == RIGHT) ||
+                        (direct == UP && newDirect == DOWN) ||
+                        (direct == DOWN && newDirect == UP))) {
             direct = newDirect;
             canMove = false;
         }

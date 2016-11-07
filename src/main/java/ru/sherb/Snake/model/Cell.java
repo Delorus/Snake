@@ -7,7 +7,7 @@ import java.awt.*;
  */
 
 
-public class Cell implements Colorable {
+public class Cell extends GameObject {
     public static final int NORMAL_SIZE = 4;
     private static double sizeCoeff = 1;  //потому что маштаб должен сохраняться во всех объектах
     private static int size = (int) Math.round(sizeCoeff * NORMAL_SIZE); //NotNull

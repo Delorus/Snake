@@ -7,7 +7,7 @@ import java.util.Random;
  * Created by sherb on 12.10.2016.
  */
 //TODO сделать наследование от ячейки
-public class Fruit implements Colorable {
+public class Fruit extends GameObject{
     private Grid grid;
     private Cell fruit;
     private int scoreInc; // число, на которое увеличиваются очки, когда змейка съест фрукт
