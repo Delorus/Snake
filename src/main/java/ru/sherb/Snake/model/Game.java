@@ -79,6 +79,7 @@ public class Game implements Runnable {
             System.out.println("Время задержки = " + sleep);
             System.out.println("Минимальное время задержки = " + minSleep);
         }
+        int step = 0;
         //TODO [REFACTOR] изменить константные значения на переменные
         fruit.createFruitRandPos(1, 1, -1, fruitColor);
         for (Snake player : players) {
@@ -90,12 +91,9 @@ public class Game implements Runnable {
                 //TODO оптимизировать этот процесс
                 //TODO подобрать оптимальные значения задерки
                 //100 - минимальное знач. для комфортной игры
-                int totalScore = 0;
-                for (Snake player : players) {
-                    totalScore += player.getScore() * 4;
-                }
-
-                int delay = sleep - totalScore < minSleep ? minSleep : sleep - totalScore;
+                // максимальная скорость достигатся за примерно минуту игрового времени
+                int delay = sleep - (int) (step * 0.2) < minSleep ? minSleep : sleep - (int) (step * 0.2);
+                if (Main.debug) System.out.println("delay = " + delay);
                 Thread.sleep(delay);
 
                 for (Snake player : players) {
@@ -108,6 +106,8 @@ public class Game implements Runnable {
                     }
                 }
 
+                ++step;
+
                 synchronized (this) {
                     while (pause) {
                         wait();
@@ -118,9 +118,9 @@ public class Game implements Runnable {
                 stop = true;
             }
         }
-        if (Main.debug) System.out.println("Я завершил игру");
         stop = true;
         gameTime = (System.currentTimeMillis() - timeStart);
+        if (Main.debug) System.out.println("Я завершил игру, прошло времени = " + gameTime);
     }
 
     /**
