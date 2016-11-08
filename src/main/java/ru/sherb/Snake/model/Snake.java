@@ -27,6 +27,7 @@ public class Snake extends GameObject implements Controllable {
     // временное решение бага, пока не изменится способ управления змейкой
     private boolean canMove;
     private boolean transparentBorder;
+    private volatile boolean changed;
 
     public Snake(Grid grid, int posX, int posY, String name, Color color, int length) {
 //        resetScore();
@@ -40,6 +41,7 @@ public class Snake extends GameObject implements Controllable {
         tail.add(pierce); // Добавление текущей частички змейки в хвост
         canMove = true;
         foods = new SimpleQueue<>();
+        changed = false;
         //TODO убрать
         transparentBorder = true;
     }
@@ -89,14 +91,19 @@ public class Snake extends GameObject implements Controllable {
             tail.remove();
             if (foods.peek() != null) {
                 if (tail.peek().getPosX() == foods.peek().x && tail.peek().getPosY() == foods.peek().y) {
-                    length += countLength;
-                    foods.remove();
+                    grow();
                 }
             }
         }
 
         canMove = true;
         return true;
+    }
+
+    private void grow() {
+        length += countLength;
+        changed = true;
+        foods.remove();
     }
 
     public void setDirect(int newDirect) {
@@ -121,10 +128,12 @@ public class Snake extends GameObject implements Controllable {
 
     public void addScore(int count) {
         this.score += count;
+        changed = true;
     }
 
     public void resetScore() {
         this.score = 0;
+        changed = true;
     }
 
     public int getScore() {
@@ -139,7 +148,7 @@ public class Snake extends GameObject implements Controllable {
         return canMove;
     }
 
-    public void canMove(boolean canMove) {
+    public synchronized void canMove(boolean canMove) {
         this.canMove = canMove;
     }
 
@@ -164,7 +173,15 @@ public class Snake extends GameObject implements Controllable {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public boolean isChanged() {
+        return changed;
+    }
+
+    public synchronized void setChanged(boolean changed) {
+        this.changed = changed;
+    }
+
+    public int getLength() {
+        return length;
     }
 }

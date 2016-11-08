@@ -7,7 +7,7 @@ import ru.sherb.Snake.model.*;
 import ru.sherb.Snake.util.SettingHelper;
 import ru.sherb.Snake.view.GameShell;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 
 /**
@@ -52,16 +52,18 @@ public class GameShellController {
 //        Snake player2 = new Snake(grid, 0, 0, "player2", java.awt.Color.MAGENTA, 3);
         final Game game = new Game(grid, fruitColor, player1);
 
+        org.eclipse.swt.graphics.Color player1Color = new org.eclipse.swt.graphics.Color(Main.display,
+                player1.getColor().getRed(),
+                player1.getColor().getGreen(),
+                player1.getColor().getBlue());
+        gameShell.setData(player1.getName(), player1Color, player1.getScore(), player1.getLength());
+
 
         new Thread(game).start();
 
         //Поток рендеринга игры
         //TODO избавиться от состояния гонок
-        //Это сделано для того что бы рисование происходило в асинхронном потоке и не мешало игре
-//        GC gc = new GC(gameShell.getGameField()); //ОЧЕНЬ ВАЖНАЯ СТРОЧКА, НЕ ПЫТАТЬСЯ ОПТИМИЗИРОВАТЬ!!!
-        new Thread(new Painter(game, gameShell.getGameField())).start();
-
-
+        new Thread(new Updater(game, gameShell)).start();
 
         gameShell.addListener(SWT.Close, e -> new MainShellController());
 

@@ -93,7 +93,6 @@ public class Game implements Runnable {
                 //100 - минимальное знач. для комфортной игры
                 // максимальная скорость достигатся за примерно минуту игрового времени
                 int delay = sleep - (int) (step * 0.2) < minSleep ? minSleep : sleep - (int) (step * 0.2);
-                if (Main.debug) System.out.println("delay = " + delay);
                 Thread.sleep(delay);
 
                 for (Snake player : players) {
