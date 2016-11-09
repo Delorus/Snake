@@ -5,7 +5,7 @@ import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.wb.swt.SWTResourceManager;
+import ru.sherb.Snake.Main;
 
 public class SettingMenu extends Composite {
 	public Button btnGame;
@@ -22,7 +22,7 @@ public class SettingMenu extends Composite {
 	public SettingMenu(MainShell parent, int style) {
 		super(parent, style);
 		
-		setBackground(SWTResourceManager.getColor(SWT.COLOR_TRANSPARENT));
+		setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
 		RowLayout rl_composite = new RowLayout(SWT.VERTICAL);
 		rl_composite.spacing = 5;
 		rl_composite.marginHeight = 50;
@@ -34,15 +34,18 @@ public class SettingMenu extends Composite {
 		btnGame = new Button(this, SWT.NONE);
 		btnGame.setLayoutData(new RowData(100, SWT.DEFAULT));
 		btnGame.setText("Game");
+		btnGame.addListener(SWT.Selection, e -> parent.setComposite(new GameSetting(parent, SWT.NONE)));
 		
 		btnGraphics = new Button(this, SWT.NONE);
 		btnGraphics.setText("Graphics");
+        btnGraphics.addListener(SWT.Selection, e -> parent.setComposite(new GraphicSetting(parent, SWT.NONE)));
 		
 		btnAudio = new Button(this, SWT.NONE);
 		btnAudio.setText("Audio");
 		
 		btnControl = new Button(this, SWT.NONE);
 		btnControl.setText("Control");
+        btnControl.addListener(SWT.Selection, e -> parent.setComposite(new ControlSetting(parent, SWT.NONE)));
 		
 		btnExit = new Button(this, SWT.NONE);
 		btnExit.setText("Exit");

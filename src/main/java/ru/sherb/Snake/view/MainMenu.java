@@ -25,7 +25,7 @@ public class MainMenu extends Composite {
 	public MainMenu(MainShell parent, int style) {
 		super(parent, style);
 
-		setBackground(SWTResourceManager.getColor(SWT.COLOR_TRANSPARENT));
+		setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
 		RowLayout rl_composite = new RowLayout(SWT.VERTICAL);
         rl_composite.spacing = 5;
         rl_composite.marginHeight = 50;

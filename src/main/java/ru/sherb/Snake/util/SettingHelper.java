@@ -74,15 +74,15 @@ public class SettingHelper {
         setting.setProperty("Fullscreen", String.valueOf(Fullscreen));
 
         setting.setProperty("Grid_HEIGHT", String.valueOf(Grid_HEIGHT));
-        setting.setProperty("Grid_COLOR", String.valueOf(Grid_COLOR));
+        setting.setProperty("Grid_COLOR", String.valueOf(Grid_COLOR.getRGB()));
 
         setting.setProperty("Player1_UP", String.valueOf(Player1_UP));
         setting.setProperty("Player1_DOWN", String.valueOf(Player1_DOWN));
         setting.setProperty("Player1_RIGHT", String.valueOf(Player1_RIGHT));
         setting.setProperty("Player1_LEFT", String.valueOf(Player1_LEFT));
-        setting.setProperty("Player1_COLOR", String.valueOf(Player1_COLOR));
+        setting.setProperty("Player1_COLOR", String.valueOf(Player1_COLOR.getRGB()));
 
-        setting.setProperty("Fruit_COLOR", String.valueOf(Fruit_COLOR));
+        setting.setProperty("Fruit_COLOR", String.valueOf(Fruit_COLOR.getRGB()));
         //...
 
         try (OutputStream out = new FileOutputStream(path)) {
