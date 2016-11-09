@@ -32,7 +32,6 @@ public class Fruit extends GameObject{
      * @return {@code false} если фрукт уже существует на поле
      */
     public boolean createFruit(Cell cell, int scoreInc, int lengthSnakeInc, int existOfTime, Color color) {
-        //TODO доделать создания фрукта, в том числе начать отсчет времени его существования
         if (exist) return false;
         fruit = cell;
         this.color = color;

@@ -52,12 +52,6 @@ public class GameShellController {
 //        Snake player2 = new Snake(grid, 0, 0, "player2", java.awt.Color.MAGENTA, 3);
         final Game game = new Game(grid, fruitColor, player1);
 
-        org.eclipse.swt.graphics.Color player1Color = new org.eclipse.swt.graphics.Color(Main.display,
-                player1.getColor().getRed(),
-                player1.getColor().getGreen(),
-                player1.getColor().getBlue());
-        gameShell.setData(player1.getName(), player1Color, player1.getScore(), player1.getLength());
-
 
         new Thread(game).start();
 
@@ -71,8 +65,8 @@ public class GameShellController {
             if (Main.debug) {
                 gameShell.printMessage("Нажатие клавиши " + Integer.toString(e.keyCode, 16));
             }
-            //TODO добавить сохранение до двух нажатий в очередь
             if (player1Controller.containsKey(e.keyCode)) {
+                //TODO добавить сохранение до двух нажатий в очередь
                 player1Controller.changeDirection(e.keyCode);
             } else {
                 //TODO временное решение, пока не будет создано окно паузы

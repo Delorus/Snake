@@ -10,6 +10,7 @@ import java.awt.*;
 
 public class Grid implements Colorable {
     private Cell[][] grid;
+    //TODO [REFACTOR] переместить свойство в Cell
     private Color color;
 
     public Grid(int width, int height, Color color) {

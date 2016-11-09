@@ -131,6 +131,7 @@ public class Game implements Runnable {
 
     public synchronized void pause() {
         pause = true;
+        //TODO [DEBUG] не устанавливается значение в змейку, но во время пошаговой провекри все работает
         for (Snake player : players) {
             player.canMove(false);
         }
@@ -138,6 +139,7 @@ public class Game implements Runnable {
 
     public synchronized void start() {
         pause = false;
+        //TODO [DEBUG] не устанавливается значение в змейку, но во время пошаговой провекри все работает
         for (Snake player : players) {
             player.canMove(true);
         }

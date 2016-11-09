@@ -41,7 +41,7 @@ public class Snake extends GameObject implements Controllable {
         tail.add(pierce); // Добавление текущей частички змейки в хвост
         canMove = true;
         foods = new SimpleQueue<>();
-        changed = false;
+        changed = true;
         //TODO убрать
         transparentBorder = true;
     }

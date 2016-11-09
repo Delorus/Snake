@@ -96,7 +96,7 @@ public class Updater implements Runnable {
         Main.display.syncExec(() -> gc = new GC(gameShell.getGameField()));
 
 
-        while (/*!game.isPause() || */!game.isStop()) {
+        while (!game.isStop()) {
 
             //TODO [REFACTOR] блокировка FPS на ~60, убрать после оптимизации рендеринга
             try {
@@ -114,6 +114,7 @@ public class Updater implements Runnable {
             }
 
 
+            //TODO [ВОЗМОЖНО] оптимизировать операцию, что бы не проходить массив каждый раз
             for (Snake player: game.getPlayers()) {
                 if (player.isChanged()){
                     org.eclipse.swt.graphics.Color swtColor = new org.eclipse.swt.graphics.Color(Main.display,
