@@ -44,12 +44,8 @@ public class GameShellController {
         Grid grid = new Grid(cellCountWidth, cellCountHeight, setting.getGrid_COLOR());
 
         Color fruitColor = setting.getFruit_COLOR();
-        Snake player1 = new Snake(grid, 0, grid.getHeight() - 1, "player1", setting.getPlayer1_COLOR(), 3);
-        MovementController player1Controller = new MovementController(player1,
-                setting.getPlayer1_UP(),
-                setting.getPlayer1_DOWN(),
-                setting.getPlayer1_LEFT(),
-                setting.getPlayer1_RIGHT());
+        Snake player1 = new Snake(grid, 0, grid.getHeight() - 1, "Player1", setting.getPlayer1_COLOR(), 3);
+        MovementController player1Controller = new MovementController(player1, setting.getControlOver("Player1"));
 //        Snake player2 = new Snake(grid, 0, 0, "player2", java.awt.Color.MAGENTA, 3);
         final Game game = new Game(grid, fruitColor, player1);
 
