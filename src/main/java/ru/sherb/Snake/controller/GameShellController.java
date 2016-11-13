@@ -17,7 +17,8 @@ public class GameShellController {
     private GameShell gameShell;
 
     public GameShellController() {
-        SettingHelper setting = new SettingHelper("Snake.properties");
+        SettingHelper setting = SettingHelper.getInstance();
+        setting.setPath("Snake.properties");
         try {
             setting.loadOrDefault();
         } catch (IOException e) {
@@ -53,6 +54,7 @@ public class GameShellController {
         final Game game = new Game(grid, fruitColor, player1);
 
 
+        //TODO [ВОЗМОЖНО] объединить потоки игры и рендеринга в один
         new Thread(game).start();
 
         //Поток рендеринга игры

@@ -12,32 +12,45 @@ import java.util.Properties;
  * Created by sherb on 04.11.2016.
  */
 public class SettingHelper {
-    private String path;
-    private Properties defaultSetting;
+    private static SettingHelper ourInstance = new SettingHelper();
 
+    private String path;
+
+    private Properties defaultSetting;
     private int ScreenSizeX;
     private int ScreenSizeY;
+
     private boolean Fullscreen;
-
     private int Grid_HEIGHT;
-    private Color Grid_COLOR;
 
+    private Color Grid_COLOR;
     //TODO придумать где хранить управление змейками
     private int Player1_UP;
     private int Player1_DOWN;
     private int Player1_RIGHT;
     private int Player1_LEFT;
+
     private Color Player1_COLOR;
+
 
     private Color Fruit_COLOR;
 
+    public static SettingHelper getInstance() {
+        return ourInstance;
+    }
 
-    public SettingHelper(String pathToSetting) {
+    private SettingHelper() {
+    }
+
+    public void setPath(String pathToSetting) {
         path = pathToSetting;
-        HashMap<Integer, Integer> test = new HashMap<>();
     }
 
     public SettingHelper loadOrDefault() throws IOException {
+        return loadOrDefault(path);
+    }
+
+    public SettingHelper loadOrDefault(String path) throws IOException {
         if (defaultSetting == null) this.setDefault();
         Properties setting = new Properties(defaultSetting);
         try (InputStream in = new FileInputStream(path)) {
@@ -66,6 +79,10 @@ public class SettingHelper {
     }
 
     public void storeOrDefault() throws IOException {
+        storeOrDefault(path);
+    }
+
+    public void storeOrDefault(String path) throws IOException {
         if (defaultSetting == null) this.setDefault();
 
         Properties setting = new Properties(defaultSetting);
@@ -91,7 +108,13 @@ public class SettingHelper {
 
     }
 
-    public void setDefault() {
+    public void resetToDefault() {
+        try {
+            loadOrDefault("");
+        } catch (IOException ignored) {}
+    }
+
+    private void setDefault() {
         Properties setting = new Properties();
 
         setting.setProperty("ScreenSizeX", "864");
@@ -113,7 +136,7 @@ public class SettingHelper {
         this.setDefault(setting);
     }
 
-    public void setDefault(Properties defaultSetting) {
+    private void setDefault(Properties defaultSetting) {
         this.defaultSetting = new Properties();
         this.defaultSetting.putAll(defaultSetting);
     }
