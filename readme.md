@@ -35,14 +35,9 @@
     - Added ability to change color of the game object
     - Added multiplayer (hotseat)
 
-## Control keys (unchangeable):
+## Control keys:
 - The first player:
     - `arrow up` - up
     - `arrow right` - right
     - `arrow down` - down
     - `arrow left` - left
-- The second player:
-    - `w` - up
-    - `d` - right
-    - `s` - down
-    - `a` - left
