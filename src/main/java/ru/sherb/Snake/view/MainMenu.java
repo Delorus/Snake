@@ -5,7 +5,6 @@ import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.wb.swt.SWTResourceManager;
 import ru.sherb.Snake.Main;
 import ru.sherb.Snake.controller.GameShellController;
 

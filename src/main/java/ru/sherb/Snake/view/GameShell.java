@@ -6,7 +6,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
-import org.eclipse.wb.swt.SWTResourceManager;
+import ru.sherb.Snake.Main;
 import ru.sherb.Snake.controller.MainShellController;
 
 public class GameShell extends Shell {
@@ -101,7 +101,7 @@ public class GameShell extends Shell {
         toolComposite.setLayout(new FillLayout());
 
         lblPlayer = new Label(stateComposite, SWT.NONE);
-        lblPlayer.setBackground(SWTResourceManager.getColor(SWT.COLOR_TRANSPARENT));
+        lblPlayer.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
         lblPlayer.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
         GridData gd_lblPlayer = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
         gd_lblPlayer.widthHint = 76;
@@ -114,24 +114,24 @@ public class GameShell extends Shell {
 
         Label lblScore = new Label(stateComposite, SWT.NONE);
         lblScore.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
-        lblScore.setBackground(SWTResourceManager.getColor(SWT.COLOR_TRANSPARENT));
+        lblScore.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
         lblScore.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         lblScore.setText("Score");
 
         lblScoreValue = new Label(stateComposite, SWT.NONE);
-        lblScoreValue.setBackground(SWTResourceManager.getColor(SWT.COLOR_TRANSPARENT));
+        lblScoreValue.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
         lblScoreValue.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
         lblScoreValue.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 
         Label lblLength = new Label(stateComposite, SWT.NONE);
         lblLength.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
-        lblLength.setBackground(SWTResourceManager.getColor(SWT.COLOR_TRANSPARENT));
+        lblLength.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
         lblLength.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         lblLength.setText("Length");
 
         lblLengthValue = new Label(stateComposite, SWT.NONE);
         lblLengthValue.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
-        lblLengthValue.setBackground(SWTResourceManager.getColor(SWT.COLOR_TRANSPARENT));
+        lblLengthValue.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
         lblLengthValue.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 
 //        Label lblPlayer_1 = new Label(stateComposite, SWT.NONE);

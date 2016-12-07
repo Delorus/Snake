@@ -11,89 +11,109 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import ru.sherb.Snake.Main;
+import ru.sherb.Snake.util.Setting;
+
+import java.io.IOException;
+import java.util.Arrays;
 
 public class GameSetting extends Composite {
-        /**
-         * Create the composite.
-         * @param parent
-         * @param style
-         */
-        //TODO при открытии загружать состояние кнопок из файла
-        public GameSetting(MainShell parent, int style) {
-            super(parent, style);
+    private ButtonComposite buttonComposite;
+    private Combo comboCellCount;
+    private Button btnTransparentBorder;
+    private Button btnWalls;
+    /**
+     * Create the composite.
+     *
+     * @param parent
+     * @param style
+     */
+    public GameSetting(MainShell parent, int style) {
+        super(parent, style);
 
-            setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
-            FormLayout formLayout = new FormLayout();
-            formLayout.marginBottom = 5;
-            formLayout.marginRight = 5;
-            formLayout.marginLeft = 5;
-            formLayout.marginTop = 20;
-            setLayout(formLayout);
+        setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
+        FormLayout formLayout = new FormLayout();
+        formLayout.marginBottom = 5;
+        formLayout.marginRight = 5;
+        formLayout.marginLeft = 5;
+        formLayout.marginTop = 20;
+        setLayout(formLayout);
 
-            Composite compositeButton = new Composite(this, SWT.NONE);
-            compositeButton.setLayout(new GridLayout(2, true));
-            FormData compositeButtonData = new FormData();
-            compositeButtonData.right = new FormAttachment(100);
-            compositeButtonData.left = new FormAttachment(0);
-            compositeButtonData.bottom = new FormAttachment(100);
-            compositeButton.setLayoutData(compositeButtonData);
-            compositeButton.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
+        buttonComposite = new ButtonComposite(this, SWT.NONE);
+        FormData compositeButtonData = new FormData();
+        compositeButtonData.right = new FormAttachment(100);
+        compositeButtonData.left = new FormAttachment(0);
+        compositeButtonData.bottom = new FormAttachment(100);
+        buttonComposite.setLayoutData(compositeButtonData);
+        buttonComposite.getBtnExit().addListener(SWT.Selection, e -> parent.setComposite(new SettingMenu(parent, SWT.NONE)));
+        buttonComposite.getBtnApply().addListener(SWT.Selection, e -> {
+            try {
+                Setting.getInstance().store();
+            } catch (IOException exc) {
+                if (Main.debug) exc.printStackTrace();
+                //TODO добавить предупреждение для пользователя
+            }
+            parent.setComposite(new SettingMenu(parent, SWT.NONE));
+        });
 
-            Composite compositeMenu = new Composite(this, SWT.NONE);
-            compositeMenu.setLayout(new GridLayout(2, true));
-            FormData compositeMenuData = new FormData();
-            compositeMenuData.top = new FormAttachment(0);
-            compositeMenuData.left = new FormAttachment(0);
-            compositeMenuData.right = new FormAttachment(100);
-            compositeMenuData.bottom = new FormAttachment(compositeButton, -3);
-            compositeMenu.setLayoutData(compositeMenuData);
-            compositeMenu.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
+        createConponents();
 
-
-            Label lblCellsCount = new Label(compositeMenu, SWT.NONE);
-            lblCellsCount.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-            lblCellsCount.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
-            lblCellsCount.setText("Cells count");
-
-            Combo comboCellCount = new Combo(compositeMenu, SWT.READ_ONLY);
-            comboCellCount.setItems("Quick - 9", "Normal - 18", "Long - 27", "Very long - 36");
-            comboCellCount.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-
-            Label lblTransparentBorder = new Label(compositeMenu, SWT.NONE);
-            lblTransparentBorder.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
-            lblTransparentBorder.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-            lblTransparentBorder.setText("Transparent border");
-
-            Button btnTransparentBorder = new Button(compositeMenu, SWT.CHECK);
-            btnTransparentBorder.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, false, false, 1, 1));
-            btnTransparentBorder.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
-
-            Label lblWalls = new Label(compositeMenu, SWT.NONE);
-            lblWalls.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-            lblWalls.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
-            lblWalls.setText("Walls");
-
-            Button btnWalls = new Button(compositeMenu, SWT.CHECK);
-            btnWalls.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, false, false, 1, 1));
-            btnWalls.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
+        //TODO сохранять значение из других полей тоже
+        comboCellCount.addListener(SWT.Selection, e -> Setting.getInstance().setGrid_HEIGHT(Integer.valueOf(comboCellCount.getText())));
 
 
 
+    }
 
-            Button btnExit = new Button(compositeButton, SWT.NONE);
-            btnExit.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-            btnExit.setText("Exit");
-            btnExit.addListener(SWT.Selection, e -> parent.setComposite(new SettingMenu(parent, SWT.NONE)));
+    protected void createConponents() {
+        Composite compositeMenu = new Composite(this, SWT.NONE);
+        compositeMenu.setLayout(new GridLayout(2, true));
+        FormData compositeMenuData = new FormData();
+        compositeMenuData.top = new FormAttachment(0);
+        compositeMenuData.left = new FormAttachment(0);
+        compositeMenuData.right = new FormAttachment(100);
+        compositeMenuData.bottom = new FormAttachment(buttonComposite, -3);
+        compositeMenu.setLayoutData(compositeMenuData);
+        compositeMenu.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
 
-            Button btnApply = new Button(compositeButton, SWT.NONE);
-            btnApply.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-            btnApply.setText("Apply");
-            btnExit.addListener(SWT.Selection, e -> {});
+        Setting setting = Setting.getInstance();
 
-        }
+        Label lblCellsCount = new Label(compositeMenu, SWT.NONE);
+        lblCellsCount.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        lblCellsCount.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
+        lblCellsCount.setText("Cells count");
 
-        @Override
-        protected void checkSubclass() {
-            // Disable the check that prevents subclassing of SWT components
-        }
+
+        comboCellCount = new Combo(compositeMenu, SWT.READ_ONLY);
+        String[] buff = {"9", "18", "27", "36"};
+        comboCellCount.setItems(buff);
+        comboCellCount.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        comboCellCount.select(Arrays.binarySearch(buff, String.valueOf(setting.getGrid_HEIGHT())));
+
+
+        Label lblTransparentBorder = new Label(compositeMenu, SWT.NONE);
+        lblTransparentBorder.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
+        lblTransparentBorder.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+        lblTransparentBorder.setText("Transparent border");
+
+
+        btnTransparentBorder = new Button(compositeMenu, SWT.CHECK);
+        btnTransparentBorder.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, false, false, 1, 1));
+        btnTransparentBorder.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
+        //TODO добавить опцию в настройки
+
+        Label lblWalls = new Label(compositeMenu, SWT.NONE);
+        lblWalls.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+        lblWalls.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
+        lblWalls.setText("Walls");
+
+        btnWalls = new Button(compositeMenu, SWT.CHECK);
+        btnWalls.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, false, false, 1, 1));
+        btnWalls.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
+        // TODO добавить опцию в настройки
+    }
+
+    @Override
+    protected void checkSubclass() {
+        // Disable the check that prevents subclassing of SWT components
+    }
 }

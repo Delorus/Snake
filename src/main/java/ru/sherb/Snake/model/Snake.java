@@ -19,7 +19,7 @@ public class Snake extends GameObject implements Controllable {
     private Grid grid; // Поле на котором ползает змейка. Отказаться от этого
     private int direct;
     private Color color;
-    private SimpleQueue<Point> foods; // Хранит адрес фруктов, которые проглатила змейка
+    private SimpleQueue<Point> foods; // Хранит адрес фруктов, которые проглотила змейка
     private int countLength;
     //TODO сделать ввод пользователем своего имени при старте игры
     private String name;

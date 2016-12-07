@@ -1,22 +1,166 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.sherb</groupId>
     <artifactId>Snake</artifactId>
     <version>${product.version}</version>
-
-    <!-- Создавать .jar для каждой версии ОС отдельно -->
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!--<exeFileName>${project.name}</exeFileName>-->
-        <!--<product.title>Змейка</product.title>-->
-        <!--<product.year>2016</product.year>-->
         <product.version>0.1.1.9</product.version>
         <jdkVersion>1.8</jdkVersion>
+        <lwjgl.version>3.1.0</lwjgl.version>
+        <jogl.version>2.3.2</jogl.version>
+        <swt.version>4.6.1RC1</swt.version>
     </properties>
+
+    <profiles>
+
+        <profile>
+            <id>windows-x86</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                    <arch>x86</arch>
+                </os>
+            </activation>
+            <properties>
+                <platform>windows</platform>
+                <arch>i586</arch>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.eclipse.swt</groupId>
+                    <artifactId>org.eclipse.swt.win32.win32.x86</artifactId>
+                    <version>${swt.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>windows-amd64</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                    <arch>amd64</arch>
+                </os>
+            </activation>
+            <properties>
+                <platform>windows</platform>
+                <arch>amd64</arch>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.eclipse.swt</groupId>
+                    <artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
+                    <version>${swt.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+
+        <profile>
+            <id>linux-x86</id>
+            <activation>
+                <os>
+                    <family>Linux</family>
+                    <arch>x86</arch>
+                </os>
+            </activation>
+            <properties>
+                <platform>linux</platform>
+                <arch>i586</arch>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.eclipse.swt</groupId>
+                    <artifactId>org.eclipse.swt.gtk.linux.x86</artifactId>
+                    <version>${swt.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>linux-amd64</id>
+            <activation>
+                <os>
+                    <family>Linux</family>
+                    <arch>amd64</arch>
+                </os>
+            </activation>
+            <properties>
+                <platform>linux</platform>
+                <arch>amd64</arch>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.eclipse.swt</groupId>
+                    <artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
+                    <version>${swt.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <!--<profile>-->
+            <!--<id>mac</id>-->
+            <!--<activation>-->
+                <!--<os>-->
+                    <!--<family>Mac</family>-->
+                <!--</os>-->
+            <!--</activation>-->
+            <!--<properties>-->
+                <!--<platform>macosx-universal</platform>-->
+            <!--</properties>-->
+            <!--<dependencies>-->
+                <!--<dependency>-->
+                    <!--<groupId>org.eclipse.swt</groupId>-->
+                    <!--<artifactId>org.eclipse.swt.cocoa.macosx.x86_64</artifactId>-->
+                    <!--<version>${swt.version}</version>-->
+                <!--</dependency>-->
+            <!--</dependencies>-->
+        <!--</profile>-->
+    </profiles>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>ru.sherb.${project.name}/resources</directory>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>${jdkVersion}</source>
+                    <target>${jdkVersion}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>${groupId}.${artifactId}.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                            <finalName>snake-${product.version}</finalName>
+                            <outputDirectory>target/bin-version/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
     <repositories>
         <!-- SWT library  -->
@@ -24,116 +168,76 @@
             <id>maven-eclipse-repo-dev</id>
             <url>http://maven-eclipse.github.io/dev-releases/maven</url>
         </repository>
-
     </repositories>
 
     <dependencies>
-        <!-- SWT for win64 -->
+        <!-- JOGL dependencies START -->
         <dependency>
-            <groupId>org.eclipse.swt</groupId>
-            <artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
-            <version>4.6.1RC1</version>
+            <groupId>org.jogamp.gluegen</groupId>
+            <artifactId>gluegen-rt-main</artifactId>
+            <version>2.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jogamp.jogl</groupId>
+            <artifactId>jogl-all-main</artifactId>
+            <version>2.3.2</version>
         </dependency>
 
-        <!-- SWT for win32 -->
-        <!--<dependency>-->
-            <!--<groupId>org.eclipse.swt</groupId>-->
-            <!--<artifactId>org.eclipse.swt.win32.win32.x86</artifactId>-->
-            <!--<version>4.6.1RC1</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.jogamp.gluegen</groupId>
+            <artifactId>gluegen-rt</artifactId>
+            <version>${jogl.version}</version>
+            <classifier>natives-${platform}-${arch}</classifier>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jogamp.jogl</groupId>
+            <artifactId>jogl-all</artifactId>
+            <version>${jogl.version}</version>
+            <classifier>natives-${platform}-${arch}</classifier>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- JOGL dependencies END -->
 
-        <!-- SWT for linux32 -->
-        <!--<dependency>-->
-            <!--<groupId>org.eclipse.swt</groupId>-->
-            <!--<artifactId>org.eclipse.swt.gtk.linux.x86</artifactId>-->
-            <!--<version>4.6.1RC1</version>-->
-        <!--</dependency>-->
 
-        <!-- SWT for linux64 -->
-        <!--<dependency>-->
-            <!--<groupId>org.eclipse.swt</groupId>-->
-            <!--<artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>-->
-            <!--<version>4.6.1RC1</version>-->
-        <!--</dependency>-->
+        <!-- LWJGL dependencies START -->
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl</artifactId>
+            <version>${lwjgl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-opengl</artifactId>
+            <version>${lwjgl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-nanovg</artifactId>
+            <version>${lwjgl.version}</version>
+        </dependency>
 
-        <!-- SWT for macOS64 (?32?) -->
-        <!--<dependency>-->
-            <!--<groupId>org.eclipse.swt</groupId>-->
-            <!--<artifactId>org.eclipse.swt.cocoa.macosx.x86_64</artifactId>-->
-            <!--<version>4.6.1RC1</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl</artifactId>
+            <version>${lwjgl.version}</version>
+            <classifier>natives-${platform}</classifier>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-nanovg</artifactId>
+            <version>${lwjgl.version}</version>
+            <classifier>natives-${platform}</classifier>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- LWJGL dependencies END -->
 
+        <dependency>
+            <groupId>io.github.java-graphics</groupId>
+            <artifactId>glm</artifactId>
+            <version>1.0.1</version>
+        </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-
-            <!-- copy .properties in build directory -->
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.outputDirectory}/ru/sherb/${project.name}/resources</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.build.sourceDirectory}/ru/sherb/${project.name}/resources</directory>
-                                    <includes>
-                                        <include>*.png</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- just compiling .java files into .class -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${jdkVersion}</source>
-                    <target>${jdkVersion}</target>
-                </configuration>
-            </plugin>
-
-
-             <!--Copy all dependency into the .jar archive-->
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <outputDirectory>target/bin/</outputDirectory>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>ru.sherb.Snake</classpathPrefix>
-                            <classpathLayoutType>simple</classpathLayoutType>
-                            <mainClass>ru.sherb.Snake.Main</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-            </plugin>
-
-        </plugins>
-    </build>
-
 </project>
-
-

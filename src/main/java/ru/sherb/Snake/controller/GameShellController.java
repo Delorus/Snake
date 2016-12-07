@@ -1,14 +1,14 @@
 package ru.sherb.Snake.controller;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.graphics.Point;
 import ru.sherb.Snake.Main;
 import ru.sherb.Snake.model.*;
-import ru.sherb.Snake.util.SettingHelper;
+import ru.sherb.Snake.util.Setting;
 import ru.sherb.Snake.view.GameShell;
 
 import java.awt.Color;
-import java.io.IOException;
 
 /**
  * Created by sherb on 27.10.2016.
@@ -17,14 +17,8 @@ public class GameShellController {
     private GameShell gameShell;
 
     public GameShellController() {
-        SettingHelper setting = SettingHelper.getInstance();
-        setting.setPath("Snake.properties");
-        try {
-            setting.loadOrDefault();
-        } catch (IOException e) {
-            if (Main.debug) e.printStackTrace();
-        }
 
+        Setting setting = Setting.getInstance();
         Point defaultSize = new Point(setting.getScreenSizeX(), setting.getScreenSizeY());
         gameShell = new GameShell(Main.display, defaultSize, setting.isFullscreen());
         gameShell.open();
@@ -44,8 +38,9 @@ public class GameShellController {
         Grid grid = new Grid(cellCountWidth, cellCountHeight, setting.getGrid_COLOR());
 
         Color fruitColor = setting.getFruit_COLOR();
-        Snake player1 = new Snake(grid, 0, grid.getHeight() - 1, "Player1", setting.getPlayer1_COLOR(), 3);
-        MovementController player1Controller = new MovementController(player1, setting.getControlOver("Player1"));
+        String player1Name = setting.getPlayerNames()[0];
+        Snake player1 = new Snake(grid, 0, grid.getHeight() - 1, player1Name, setting.getPlayer_COLOR(player1Name), 3);
+        MovementController player1Controller = new MovementController(player1, setting.getControlOver(player1Name));
 //        Snake player2 = new Snake(grid, 0, 0, "player2", java.awt.Color.MAGENTA, 3);
         final Game game = new Game(grid, fruitColor, player1);
 

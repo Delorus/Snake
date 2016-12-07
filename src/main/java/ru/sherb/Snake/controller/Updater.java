@@ -89,7 +89,6 @@ public class Updater implements Runnable {
         timer.setTask(counter::printCount);
         Thread timerThread = new Thread(timer);
         timerThread.start();
-        Runnable updateData = null;
 
         //Это сделано для того что бы рисование происходило в другом потоке и не мешало игре
         // Уличная магия
@@ -121,7 +120,7 @@ public class Updater implements Runnable {
                             player.getColor().getRed(),
                             player.getColor().getGreen(),
                             player.getColor().getBlue());
-                    updateData = () -> gameShell.setData(player.getName(), swtColor, player.getScore(), player.getLength());
+                    Runnable updateData = () -> gameShell.setData(player.getName(), swtColor, player.getScore(), player.getLength());
                     Main.display.syncExec(updateData);
                     player.setChanged(false);
                 }
