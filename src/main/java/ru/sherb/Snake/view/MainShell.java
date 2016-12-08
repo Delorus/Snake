@@ -1,6 +1,8 @@
 package ru.sherb.Snake.view;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -10,17 +12,14 @@ import ru.sherb.Snake.Main;
 public class MainShell extends Shell {
     private Composite menu;
 
-	/**
-	 * Create the shell.
-	 * @param display
-	 */
 	public MainShell(Display display) {
 		super(display, SWT.CLOSE | SWT.MIN | SWT.TITLE);
 		setText("Main menu");
 		setSize(300, 480);
         setBackground(Main.display.getSystemColor(SWT.COLOR_MAGENTA));
         //TODO [DEBUG] Настроить нормальную загрузку ресурсов
-//        this.setBackgroundImage(SWTResourceManager.getImage("F:\\YandexDisk\\Documents\\Java\\Eclipse\\SnakeGUI\\src\\ru\\sherb\\Snake\\resources\\backgroundTmp.png"));
+        Image background = new Image(Main.display, Class.class.getResourceAsStream("/ru/sherb/Snake/res/backgroundTmp.png"));
+        setBackgroundImage(background);
 		createContents();
 	}
 
@@ -30,6 +29,7 @@ public class MainShell extends Shell {
 	protected void createContents() {
 
         Label lblLogo = new Label(this, SWT.CENTER);
+        lblLogo.setImage(new Image(Main.display, Class.class.getResourceAsStream("/ru/sherb/Snake/res/LogoTmp.png")));
 //        lblLogo.setImage(SWTResourceManager.getImage("F:\\YandexDisk\\Documents\\Java\\Eclipse\\SnakeGUI\\src\\ru\\sherb\\Snake\\resources\\LogoTmp.png"));
         lblLogo.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
         lblLogo.setAlignment(SWT.CENTER);
