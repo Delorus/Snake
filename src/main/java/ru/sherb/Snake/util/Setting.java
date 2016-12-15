@@ -120,9 +120,13 @@ public class Setting {
     public HashMap<Integer, Integer> getControlOver(String playerName) {
         HashMap<Integer, Integer> control = new HashMap<>(4);
         if (setting.getProperty(playerName + "_" + Controllable.UP) == null) return null;
-        for (int j = 0; j < 4; j++) {
-            control.put(j, Integer.valueOf(setting.getProperty(playerName + "_" + j)));
-        }
+//        for (int j = 0; j < 4; j++) {
+//            control.put(j, Integer.valueOf(setting.getProperty(playerName + "_" + j)));
+//        }
+        control.put(Controllable.UP, Integer.valueOf(setting.getProperty(playerName + "_" + Controllable.UP)));
+        control.put(Controllable.DOWN, Integer.valueOf(setting.getProperty(playerName + "_" + Controllable.DOWN)));
+        control.put(Controllable.LEFT, Integer.valueOf(setting.getProperty(playerName + "_" + Controllable.LEFT)));
+        control.put(Controllable.RIGHT, Integer.valueOf(setting.getProperty(playerName + "_" + Controllable.RIGHT)));
         return control;
     }
 
@@ -164,9 +168,13 @@ public class Setting {
     }
 
     public void setControlOver(String playerName, Map<Integer, Integer> control) {
-        for (int i = 0; i < 4; i++) {
-            setting.setProperty(playerName + "_" + i, String.valueOf(control.get(i)));
-        }
+//        for (int i = 0; i < 4; i++) {
+//            setting.setProperty(playerName + "_" + i, String.valueOf(control.get(i)));
+//        }
+        setting.setProperty(playerName + "_" + Controllable.UP, String.valueOf(control.get(Controllable.UP)));
+        setting.setProperty(playerName + "_" + Controllable.DOWN, String.valueOf(control.get(Controllable.DOWN)));
+        setting.setProperty(playerName + "_" + Controllable.LEFT, String.valueOf(control.get(Controllable.LEFT)));
+        setting.setProperty(playerName + "_" + Controllable.RIGHT, String.valueOf(control.get(Controllable.RIGHT)));
     }
 
     public void setGrid_COLOR(Color color) {
