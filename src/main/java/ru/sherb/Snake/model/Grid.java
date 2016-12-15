@@ -12,8 +12,9 @@ public class Grid implements Colorable {
     private Cell[][] grid;
     //TODO [REFACTOR] переместить свойство в Cell
     private Color color;
+    private boolean transparentBorder;
 
-    public Grid(int width, int height, Color color) {
+    public Grid(int width, int height, Color color/*, boolean transparentBorder*/) {
         this.color = color;
         grid = new Cell[width][height];
         for (int i = 0; i < width; i++) {
@@ -21,6 +22,7 @@ public class Grid implements Colorable {
                 grid[i][j] = new Cell(State.EMPTY, i, j, this.color);
             }
         }
+        this.transparentBorder = true;
         if (Main.debug) System.out.println("Создано игровое поле " + getWidth() + " на " + getHeight());
     }
 
@@ -33,12 +35,18 @@ public class Grid implements Colorable {
     }
 
     public int getHeight() {
+        // поле квадратное, поэтому проверяется размер только первого элемента
         if (grid[0] == null) {
             return 0;
         }
         return grid[0].length;
     }
 
+    public boolean isTransparentBorder() {
+        return transparentBorder;
+    }
+
+    @Deprecated
     @Override
     public Color getColor() {
         return color;

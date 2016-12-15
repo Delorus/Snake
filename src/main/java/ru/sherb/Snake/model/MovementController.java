@@ -15,7 +15,6 @@ public class MovementController {
      * Массив содержит код кнопок управления, каждая под индексом согласно константам {@link Controllable}
      */
     private HashMap<Integer, Integer> keyControl = new HashMap<>(4);
-    private int currentDirect;
     private Controllable object;
 
     public MovementController(Controllable object, Map<Integer, Integer> controlKey) {
@@ -31,7 +30,6 @@ public class MovementController {
     }
 
     public boolean changeDirection(int key) {
-
         object.setDirect(keyControl.get(key));
         return true;
     }

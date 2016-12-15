@@ -1,10 +1,8 @@
 package ru.sherb.Snake.model;
 
 
-import ru.sherb.Snake.util.SimpleQueue;
-
-import java.awt.Color;
-import java.awt.Point;
+import java.awt.*;
+import java.util.LinkedList;
 
 /**
  * Реализация змейки через связанный список
@@ -12,94 +10,191 @@ import java.awt.Point;
  * Created by sherb on 12.10.2016.
  */
 public class Snake extends GameObject implements Controllable {
-    private int length;// = 3; // длина змеи с головой, длина хвоста = length - 1, начальный размер 3?
-    private SimpleQueue<Cell> tail;
-    private Cell pierce; // элемент змейки
-    private int score; // очки за игру
-    private Grid grid; // Поле на котором ползает змейка. Отказаться от этого
+    /**
+     * Длина змейки, включая голову
+     */
+    private int length;
+    /**
+     * Сама змея, последний элемент является головой, первый - хвостом
+     */
+    private LinkedList<Cell> tail;
+    /**
+     * Очки за игру
+     */
+    private int score;
+    /**
+     * Ссылка на игрокое поле
+     */
+    private Grid grid;
+    /**
+     * Текущее направление движения змейки (см. {@link Controllable}
+     */
     private int direct;
+    //TODO заменить цвет на тональность текстурки
+    /**
+     * Текущий цвет змейки
+     */
     private Color color;
-    private SimpleQueue<Point> foods; // Хранит адрес фруктов, которые проглотила змейка
+    /**
+     * Хранит координаты фруктов, которые проглотила змейка
+     */
+    private LinkedList<Point> foods;
+    //TODO [DEBUG] возвращает длину последнего съеденного фрукта, т.е. если съесть сначала фрукт на +2 а потом на +1, то оба раза увеличиться на +1
+    /**
+     * Число, на которое вырастит змейка, после переваривания пищи
+     */
     private int countLength;
-    //TODO сделать ввод пользователем своего имени при старте игры
+    //TODO [ВОЗМОЖНО] сделать ввод пользователем своего имени при старте игры
     private String name;
-    //TODO [DEBUG] удалить
-    // временное решение бага, пока не изменится способ управления змейкой
-    private boolean canMove;
-    private boolean transparentBorder;
+    /**
+     * Блокирование изменение направления движения, если игрок уже его выбрал, а змейка еще не походила
+     * На всякий случай потокобезопасна, т.к. игрок в теории может одновременно попытаться задать несколько направлений движения
+     */
+    private volatile boolean lockChangeDirect;
+    /**
+     * Показывает, что змейка была изменена
+     * Нужен для того что бы внешние потоки могли видеть, когда нужно обновить информацию
+     */
     private volatile boolean changed;
+    /**
+     * Коэффициент скорости змейки, где
+     * <ul>
+     * <li>1 - максимальная скорость;</li>
+     * <li> 0 - не двигается.</li>
+     * </ul>
+     */
+    private double speedk;
+    /**
+     * Количество клеток, которые змейка проходит за один игровой шаг.
+     * Дробные числа округляются к ближайшему наименьшему значению
+     */
+    private double speed;
+    /**
+     * Временный флажок, показывающий что змейка на этом ходу съела фрукт
+     */
+    private boolean eatFruit;
 
     public Snake(Grid grid, int posX, int posY, String name, Color color, int length) {
-//        resetScore();
         this.name = name;
         this.color = color;
-        this.length = length; // Начальная длина змеи
+        this.length = length;
         this.grid = grid;
-        tail = new SimpleQueue<>();
-        pierce = grid.getCell(posX, posY); // Установка головы змейки по указанным координатам
-        pierce.setStatus(State.SNAKE, this);
-        tail.add(pierce); // Добавление текущей частички змейки в хвост
-        canMove = true;
-        foods = new SimpleQueue<>();
+        tail = new LinkedList<>();
+        tail.add(grid.getCell(posX, posY));
+        tail.getLast().setStatus(State.SNAKE, this);
+        lockChangeDirect = false;
+        foods = new LinkedList<>();
         changed = true;
-        //TODO убрать
-        transparentBorder = true;
+        speed = 1;
+        speedk = .13;
     }
 
 
     public boolean move() {
-        try {
-            //TODO [REFACTOR] изменить способ передвижения
-            //TODO [DEBUG] не изменять направление пока игра на паузе
-            Point buff = new Point(pierce.getPosition());
-            switch (direct) {
-                case UP:
-                    if (transparentBorder && pierce.getPosY() == 0) {
-                        buff.y = grid.getHeight();
-                    }
-                    pierce = grid.getCell(buff.x, buff.y - 1);
-                    break;
-                case DOWN:
-                    if (transparentBorder && pierce.getPosY() == grid.getHeight() - 1) {
-                        buff.y = -1;
-                    }
-                    pierce = grid.getCell(buff.x, buff.y + 1);
-                    break;
-                case LEFT:
-                    if (transparentBorder && pierce.getPosX() == 0) {
-                        buff.x = grid.getWidth();
-                    }
-                    pierce = grid.getCell(buff.x - 1, buff.y);
-                    break;
-                case RIGHT:
-                    if (transparentBorder && pierce.getPosX() == grid.getWidth() - 1) {
-                        buff.x = -1;
-                    }
-                    pierce = grid.getCell(buff.x + 1, buff.y);
-                    break;
-            }
+        //TODO [DEBUG] не изменять направление пока игра на паузе
 
-            // Если врезался в стенку
-        } catch (IndexOutOfBoundsException e) {
-            canMove = false;
-            return false;
-        }
+        if (step() == 0) return true; // пропуск хода
 
-        tail.add(pierce);
+        if (!moveToDirect(tail.getLast(), direct)) return false; // змейка влепилась в стенку
+        lockChangeDirect = false;
+
+        // Перемещение хвоста змейки в след за головой, либо рост змейки
         if (tail.size() > length) {
             tail.peek().setStatus(State.EMPTY, grid);
             tail.remove();
             if (foods.peek() != null) {
-                if (tail.peek().getPosX() == foods.peek().x && tail.peek().getPosY() == foods.peek().y) {
+                // Проверка, является ли хвост змейки на самом деле проглоченным фруктом, если да, то змейка растет
+                if (tail.peek().getPosition().equals(foods.peek())) {
                     grow();
                 }
             }
         }
 
-        canMove = true;
+        return collision(tail.getLast());
+    }
+
+    /**
+     * Определяет, нужно ли двигаться на этом ходу.
+     * Каждый вызов метода обрабатывает новый ход, поэтому, что бы избежать ошибок нужно вызывать этот метод один раз за ход
+     *
+     * @return 0 - если двигаться не надо, в противном случае 1
+     */
+    private int step() {
+        int maxSpeed = (int) Math.ceil(speedk);
+        final double E = 0.1;
+        // Формула определяет, будет ли на этом ходу ходить змейка
+        // Если ее текущая скорость достигла максимальной, то скорости присваивается начальная скорость
+        // Если ее текущая скорость отличается от максимальной на погрешность E, то скорости присваивается максимальная скорость
+        // В остальных случаях к текущей скорости прибавляется коэффициент скорости
+        speed = speed == maxSpeed ? speedk : ((Math.abs(maxSpeed - speed) < E) ? maxSpeed : speed + speedk);
+        return (int) Math.floor(speed);
+    }
+
+    /**
+     * Двигает змейку в указанном направлении
+     *
+     * @return {@code true} - если змейка успешно передвинулась, {@code false} - если змейка столкнулась со стенкой
+     */
+    private boolean moveToDirect(Cell head, int direct) {
+        Point buff = new Point(head.getPosition());
+        // Если направление на право или вниз, то знак положительный, иначе отрицательный
+        int sign = (direct & 0b0101) == 0 ? +1 : -1;
+        int x = buff.x + Integer.bitCount((direct & 0b1100)) * sign;
+        int y = buff.y + Integer.bitCount((direct & 0b0011)) * sign;
+
+        if (isOutOfBorder(x, y, grid)) {
+            if (grid.isTransparentBorder()) {
+                x = x < 0 ? grid.getWidth() - 1 : (x > grid.getWidth() - 1 ? 0 : x);
+                y = y < 0 ? grid.getHeight() - 1 : (y > grid.getHeight() - 1 ? 0 : y);
+            } else {
+                return false;
+            }
+        }
+        tail.add(grid.getCell(x, y));
         return true;
     }
 
+    private boolean isOutOfBorder(int x, int y, Grid grid) {
+        return x < 0 || y < 0 || x > grid.getWidth() - 1 || y > grid.getHeight() - 1;
+    }
+
+    /**
+     * Проверка чем была раньше ячейка, на которую встала змейка.
+     * <ul>
+     *     <li>Ячейка была пустой -- установка в эту ячейку голову змейки</li>
+     *     <li>В ячейке был фрукт -- добавление фрукта в съеденные</li>
+     *     <li>В ячейке была змея -- возвращается {@code false}</li>
+     * </ul>
+     * @return {@code false} если змейка наткнулась на змейку, иначе {@code true}
+     */
+    private boolean collision(Cell head) {
+        switch (head.getStatus()) {
+            case EMPTY:
+                head.setStatus(State.SNAKE, this);
+                break;
+            case FRUIT:
+                //TODO как обычно, переделать все к хуям
+                //сделать возможность получить фрукт из змейки
+                //TODO [REFACTOR] временное решение проблемы
+                eatFruit = true;
+                head.setColor(Color.MAGENTA);
+                foods.add(head.getPosition());
+                break;
+            case SNAKE:
+                return false;
+        }
+        return true;
+    }
+
+
+    public boolean eatFruit() {
+        return eatFruit;
+    }
+
+
+    /**
+     * Конверция съеденного фрукта в размер змейки
+     */
     private void grow() {
         length += countLength;
         changed = true;
@@ -107,23 +202,17 @@ public class Snake extends GameObject implements Controllable {
     }
 
     public void setDirect(int newDirect) {
-        //TODO [REFACTOR] попробовать как-нибудь сократить условие
-        if (canMove &&
-                !((direct == newDirect) ||
-                        (direct == RIGHT && newDirect == LEFT) ||
-                        (direct == LEFT && newDirect == RIGHT) ||
-                        (direct == UP && newDirect == DOWN) ||
-                        (direct == DOWN && newDirect == UP))) {
+        if (!lockChangeDirect && !((direct == newDirect) || direct == Controllable.reverseDirect(newDirect))) {
             direct = newDirect;
-            canMove = false;
+            lockChangeDirect = true;
         }
     }
 
 
-    //TODO съедать фрукт, а не его позицию
-    public void eat(Point location, int count) {
-        foods.add(location.getLocation());
+    //TODO съедать фрукт
+    public void eat(int count) {
         countLength = count;
+        eatFruit = false;
     }
 
     public void addScore(int count) {
@@ -140,29 +229,13 @@ public class Snake extends GameObject implements Controllable {
         return score;
     }
 
-    public Cell getPierce() {
-        return pierce;
+    public boolean isThisSnake(int x, int y) {
+        return !(y < 0 || x < 0 || x > (grid.getWidth() - 1) || y > (grid.getHeight() - 1)) && tail.contains(new Cell(State.SNAKE, x, y, color));
     }
 
-    public boolean isCanMove() {
-        return canMove;
+    public boolean isThisSnake(Cell cell) {
+        return isThisSnake(cell.getPosX(), cell.getPosY());
     }
-
-    public synchronized void canMove(boolean canMove) {
-        this.canMove = canMove;
-    }
-
-
-//    public boolean isThisSnake(int x, int y) {
-//        if (y < 0 || x < 0 || x > (grid.getWidth() - 1)  || y > (grid.getHeight() - 1)) {
-//            return false;
-//        }
-//        return tail.contains(new Cell(State.SNAKE, x, y, color));
-//    }
-
-//    public boolean isThisSnake(Cell cell) {
-//        return isThisSnake(cell.getPosX(), cell.getPosY());
-//    }
 
     @Override
     public Color getColor() {
@@ -183,5 +256,13 @@ public class Snake extends GameObject implements Controllable {
 
     public int getLength() {
         return length;
+    }
+
+    public void lockChangeDirect() {
+        lockChangeDirect = true;
+    }
+
+    public void unlockChangeDirect() {
+        lockChangeDirect = false;
     }
 }

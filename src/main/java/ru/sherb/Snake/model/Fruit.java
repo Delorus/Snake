@@ -9,7 +9,7 @@ import java.util.Random;
 //TODO сделать наследование от ячейки
 public class Fruit extends GameObject{
     private Grid grid;
-    private Cell fruit;
+    private Cell self;
     private int scoreInc; // число, на которое увеличиваются очки, когда змейка съест фрукт
     private int lengthSnakeInc; //число, на которое увеличится размер змейки, когда она съест фрукт
     private int existOfTime; //время, которое будет существовать фрукт, изменяется количестве ходов (например, для значения 2, змейка должна походить два хода, прежде чем он исчезнет)
@@ -33,12 +33,12 @@ public class Fruit extends GameObject{
      */
     public boolean createFruit(Cell cell, int scoreInc, int lengthSnakeInc, int existOfTime, Color color) {
         if (exist) return false;
-        fruit = cell;
+        self = cell;
         this.color = color;
         this.scoreInc = scoreInc;
         this.lengthSnakeInc = lengthSnakeInc;
         this.existOfTime = existOfTime;
-        fruit.setStatus(State.FRUIT, this);
+        self.setStatus(State.FRUIT, this);
         exist = true;
         return true;
     }
@@ -65,7 +65,7 @@ public class Fruit extends GameObject{
             existOfTime--;
         }
         if (existOfTime == 0) {
-            fruit.setStatus(State.EMPTY, grid);
+            self.setStatus(State.EMPTY, grid);
             destroyFruit();
             return false;
         }
@@ -74,14 +74,14 @@ public class Fruit extends GameObject{
 
     public void eatenBy(Snake snake) {
         snake.addScore(scoreInc);
-        snake.eat(fruit.getPosition(), lengthSnakeInc);
+        snake.eat(lengthSnakeInc);
         //TODO [REFACTOR] неверное использование методов
-        fruit.setStatus(State.SNAKE, () -> new Color(color.getRGB() + snake.getColor().getRGB()));
+//        self.setStatus(State.SNAKE, () -> new Color(color.getRGB() + snake.getColor().getRGB()));
         destroyFruit();
     }
 
     private void destroyFruit() {
-        fruit = null;
+        self = null;
         color = null;
         scoreInc = 0;
         lengthSnakeInc = 0;

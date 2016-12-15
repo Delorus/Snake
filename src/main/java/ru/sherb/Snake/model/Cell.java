@@ -6,7 +6,7 @@ import java.awt.*;
  * Created by sherb on 10.10.2016.
  */
 
-
+//TODO сделать из ячеек контейнеры, которые будут хранить ссылки на объекты, которые находятся в этой ячейке в текущий момент
 public class Cell extends GameObject {
     public static final int NORMAL_SIZE = 4;
     private static double sizeCoeff = 1;  //потому что маштаб должен сохраняться во всех объектах

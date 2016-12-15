@@ -2,8 +2,6 @@ package ru.sherb.Snake.model;
 
 
 import ru.sherb.Snake.Main;
-import ru.sherb.Snake.util.FPSCounter;
-import ru.sherb.Snake.util.Timer;
 
 import java.awt.*;
 import java.util.Random;
@@ -11,15 +9,22 @@ import java.util.Random;
 /**
  * Created by sherb on 12.10.2016.
  */
-public class Game implements Runnable {
+public class Game {
+    /**
+     * Игровое поле
+     */
     private Grid grid;
-    private Snake[] players; // Один игрок за раз //TODO сделать больше
+    /**
+     * Все игроки в этой игре
+     */
+    private Snake[] players;
     private Fruit fruit; // Один фрукт за раз
+    private long timeStart;
     private long gameTime;
     //TODO [REFACTOR] сделать что-нибудь с этим
     //TODO убрать настраиваемый цвет для фрукта, устанавливать цвет, в соответствии с созданным фруктом в самой игре
     private Color fruitColor;
-    private boolean pause;
+    private boolean end;
     private volatile boolean stop;
 
     public Game(Grid grid, Color fruitColor, Snake... players) {
@@ -27,99 +32,44 @@ public class Game implements Runnable {
         this.grid = grid;
         this.players = players;
         this.fruitColor = fruitColor;
-        pause = false;
         fruit = new Fruit(grid);
-        stop = false;
     }
 
-    private boolean collisionProc(Snake player) {
-        //TODO [REFACTOR] избавиться от switch-enum
-        //TODO [REFACTOR] не явно когда возвращает false, когда true
-        //TODO [REFACTOR] перенести обработку столкновений в классы, которым принадлежат объекты столкновений
-        switch (player.getPierce().getStatus()) {
-            case SNAKE:
-//                if (player.isThisSnake(player.getPierce())) {
-//                    return false;
-//                }
-                //TODO дописать, что будет если одна змейка столкнется с другой
-                return false;
-//                break;
-            case EMPTY:
-                //TODO перенести строчку в класс змейки
-                grid.getCell(player.getPierce().getPosX(), player.getPierce().getPosY()).setStatus(State.SNAKE, player);
-                break;
-            case FRUIT:
-                //работает только если на поле существует только один фрукт
-                fruit.eatenBy(player);
-                // шанс выпадения супер-фрукта 20%
-                if (new Random().nextInt(10) <= 2) {
-                    // TODO сделать зависимость времени существования от количеста клеток в игровом поле
-                    // Время существование = время, за которое змейка пройдет 70% пути до самой удаленной точки
-
-                    fruit.createFruitRandPos(10, 2, (int) (Math.max(grid.getWidth(), grid.getHeight()) * 0.7), Color.CYAN);
-                } else {
-                    fruit.createFruitRandPos(1, 1, -1, fruitColor);
-                }
-                break;
-        }
-        return true;
-    }
-
-
-    public void setScale(int scaleCoeff) {
-        Cell.setSizeCoeff(scaleCoeff);
-    }
-
-
-    public void run() {
-        long timeStart = System.currentTimeMillis();
-        int sleep = 5000 / Math.max(grid.getWidth(), grid.getHeight());
-        int minSleep = 1000 / Math.max(grid.getWidth(), grid.getHeight());
-        if (Main.debug) {
-            System.out.println("Время задержки = " + sleep);
-            System.out.println("Минимальное время задержки = " + minSleep);
-        }
-        int step = 0;
+    public void init() {
         //TODO [REFACTOR] изменить константные значения на переменные
         fruit.createFruitRandPos(1, 1, -1, fruitColor);
         for (Snake player : players) {
             player.setDirect(Controllable.RIGHT); // начальное направление движение всех игроков
         }
-//        grid.setActive(true);
-        while (!stop) {
-            try {
-                //TODO оптимизировать этот процесс
-                //TODO подобрать оптимальные значения задерки
-                //100 - минимальное знач. для комфортной игры
-                // максимальная скорость достигатся за примерно минуту игрового времени
-                int delay = sleep - (int) (step * 0.2) < minSleep ? minSleep : sleep - (int) (step * 0.2);
-                Thread.sleep(delay);
+        end = false;
+        start();
+    }
 
-                for (Snake player : players) {
-                    player.canMove(true);
-                    if (!player.move() || !collisionProc(player)) {
-                        stop = true;
-                    }
-                    if (!fruit.decExistOfTime()) {
-                        fruit.createFruitRandPos(1, 1, -1, fruitColor);
-                    }
+    /**
+     * Метод выполняет все действия, совершаемые за один игровой шаг.
+     */
+    public void step() {
+        if (stop || end) return;
+
+        for (Snake player : players) {
+            // если игрок не может двигаться или столкнулся с чем то плохим, то игра останавливается
+            if (!player.move()) {
+                end();
+            }
+
+            if (player.eatFruit()) {
+                fruit.eatenBy(player);
+                if (new Random().nextInt(10) <= 2) {
+                    //TODO добавить создание случайных фруктов в класс фрукт
+                    // Время существование = время, за которое змейка пройдет 70% пути до самой удаленной точки
+                    fruit.createFruitRandPos(10, 2, (int) (Math.max(grid.getWidth(), grid.getHeight()) * 0.7) + (60 * 3), Color.CYAN);
+                } else {
+                    fruit.createFruitRandPos(1, 1, -1, fruitColor);
                 }
-
-                ++step;
-
-                synchronized (this) {
-                    while (pause) {
-                        wait();
-                    }
-                }
-            } catch (InterruptedException e) {
-                if (Main.debug) e.printStackTrace();
-                stop = true;
+            }else if (!fruit.decExistOfTime()) {
+                fruit.createFruitRandPos(1, 1, -1, fruitColor);
             }
         }
-        stop = true;
-        gameTime = (System.currentTimeMillis() - timeStart);
-        if (Main.debug) System.out.println("Я завершил игру, прошло времени = " + gameTime);
     }
 
     /**
@@ -129,25 +79,26 @@ public class Game implements Runnable {
         return gameTime;
     }
 
-    public synchronized void pause() {
-        pause = true;
-        //TODO [DEBUG] не устанавливается значение в змейку, но во время пошаговой провекри все работает
+    public void stop() {
+        stop = true;
+        gameTime += System.currentTimeMillis() - timeStart;
         for (Snake player : players) {
-            player.canMove(false);
+            player.lockChangeDirect();
         }
     }
 
-    public synchronized void start() {
-        pause = false;
-        //TODO [DEBUG] не устанавливается значение в змейку, но во время пошаговой провекри все работает
+    public void start() {
+        stop = false;
+        timeStart = System.currentTimeMillis();
         for (Snake player : players) {
-            player.canMove(true);
+            player.unlockChangeDirect();
         }
-        notify();
     }
 
-    public boolean isPause() {
-        return pause;
+    public void end() {
+        end = true;
+        gameTime += System.currentTimeMillis() - timeStart;
+        if (Main.debug) System.out.println("Я закончил игру, прошло времени = " + gameTime);
     }
 
     public Grid getGrid() {
@@ -162,9 +113,7 @@ public class Game implements Runnable {
         return stop;
     }
 
-    public synchronized void stop() {
-        stop = true;
-        pause = false;
-        notifyAll();
+    public boolean isEnd() {
+        return end;
     }
 }
