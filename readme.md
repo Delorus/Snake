@@ -1,6 +1,14 @@
 # Snake the game
 **This is my student project!**
 ## Changelog:
+- 0.1.2.0
+    - Reworked game logic
+    - State of the game now displayed on the screen
+    - New visual components
+    - Created singleton setting loader
+    - Added ability to change setting
+    - Saving process of your settings was changed
+    - Acceleration was removed
 - 0.1.1.9
     - Extracted loading settings in the separate class 
     - Added FPS counter 
