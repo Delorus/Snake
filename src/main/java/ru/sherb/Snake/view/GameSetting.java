@@ -14,6 +14,7 @@ import ru.sherb.Snake.Main;
 import ru.sherb.Snake.util.Setting;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GameSetting extends Composite {
@@ -84,10 +85,15 @@ public class GameSetting extends Composite {
 
 
         comboCellCount = new Combo(compositeMenu, SWT.READ_ONLY);
-        String[] buff = {"9", "18", "27", "36"};
-        comboCellCount.setItems(buff);
+        ArrayList<String> buff = new ArrayList<>();
+        //TODO сделать набор ячеек по первым 4 делителям после 9 числа, который получается из высоты игрового поля
+        buff.add("9");
+        buff.add("18");
+        buff.add("27");
+        buff.add("36");
+        comboCellCount.setItems(buff.toArray(new String[0]));
         comboCellCount.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        comboCellCount.select(Arrays.binarySearch(buff, String.valueOf(setting.getGrid_HEIGHT())));
+        comboCellCount.select(buff.indexOf(String.valueOf(setting.getGrid_HEIGHT())));
 
 
         Label lblTransparentBorder = new Label(compositeMenu, SWT.NONE);

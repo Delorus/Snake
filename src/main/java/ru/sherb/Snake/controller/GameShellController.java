@@ -3,6 +3,7 @@ package ru.sherb.Snake.controller;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import ru.sherb.Snake.Main;
 import ru.sherb.Snake.model.*;
 import ru.sherb.Snake.util.Setting;
@@ -19,6 +20,7 @@ public class GameShellController {
     public GameShellController() {
 
         Setting setting = Setting.getInstance();
+
         Point defaultSize = new Point(setting.getScreenSizeX(), setting.getScreenSizeY());
         gameShell = new GameShell(Main.display, defaultSize, setting.isFullscreen());
         gameShell.open();
@@ -27,48 +29,40 @@ public class GameShellController {
 
         if (Main.debug) System.out.println("Game area = " + gameShell.getGameArea());
 
-
         //16:9
         assert setting.getGrid_HEIGHT() % 3 == 0;
-        int cellCountHeight = setting.getGrid_HEIGHT(); // Количество ячеек
-        int cellCountWidth = cellCountHeight / 9 * 16;
+        int cellCountHeight = setting.getGrid_HEIGHT(); // Количество ячеек по вертикали
+        int cellCountWidth = cellCountHeight / 9 * 16; // Количество ячеек по горизонтали
+        int size = gameShell.getGameArea().height / cellCountHeight;
+        Cell.setSizeCoeff((double) size / Cell.NORMAL_SIZE);
         //TODO [DEBUG] не верно работает функция масштабирования
         //количество ячеек по горизонтали задается в зависимости от начального размера окна
-        computeCellSize(Math.min(cellCountHeight, cellCountWidth), new Point(gameShell.getGameArea().width, gameShell.getGameArea().height));
-        Grid grid = new Grid(cellCountWidth, cellCountHeight, setting.getGrid_COLOR());
+//        computeCellSize(Math.min(cellCountHeight, cellCountWidth), new Point(gameShell.getGameArea().width, gameShell.getGameArea().height));
 
+        Grid grid = new Grid(cellCountWidth, cellCountHeight, setting.getGrid_COLOR());
         Color fruitColor = setting.getFruit_COLOR();
         String player1Name = setting.getPlayerNames()[0];
         Snake player1 = new Snake(grid, 0, grid.getHeight() - 1, player1Name, setting.getPlayer_COLOR(player1Name), 3);
         MovementController player1Controller = new MovementController(player1, setting.getControlOver(player1Name));
 //        Snake player2 = new Snake(grid, 0, 0, "player2", java.awt.Color.MAGENTA, 3);
         final Game game = new Game(grid, fruitColor, player1);
+        Updater updater = new Updater(game, gameShell);
+        updater.init();
 
-
-        //TODO [ВОЗМОЖНО] объединить потоки игры и рендеринга в один
-        new Thread(game).start();
-
-        //Поток рендеринга игры
-        //TODO избавиться от состояния гонок
-        new Thread(new Updater(game, gameShell)).start();
-
-        gameShell.addListener(SWT.Close, e -> new MainShellController());
+        gameShell.addListener(SWT.Close, e -> {
+            updater.stop();
+            new MainShellController();
+        });
 
         gameShell.getGameField().addListener(SWT.KeyDown, e -> {
-            if (Main.debug) {
-                gameShell.printMessage("Нажатие клавиши " + Integer.toString(e.keyCode, 16));
-            }
             if (player1Controller.containsKey(e.keyCode)) {
                 //TODO добавить сохранение до двух нажатий в очередь
                 player1Controller.changeDirection(e.keyCode);
             } else {
                 //TODO временное решение, пока не будет создано окно паузы
                 if (e.keyCode == 27) {
-                    if (game.isPause()) {
-                        game.start();
-                    } else {
-                        game.pause();
-                    }
+                    if (Main.debug) System.out.println("pause");
+                    if (updater.isPause()) updater.start(); else updater.pause();
                 }
             }
         });
@@ -83,6 +77,9 @@ public class GameShellController {
                 System.out.println("Game area = " + gameShell.getGameArea());
             }
         });
+
+        // Главный поток обновление графического окна.
+        new Thread(updater).start();
     }
 
 

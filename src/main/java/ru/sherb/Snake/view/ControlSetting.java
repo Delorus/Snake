@@ -158,10 +158,6 @@ public class ControlSetting extends Composite {
 
         //TODO [REFACTOR] сделать возможность изменять управления не только у первого игрока
         HashMap<Integer, Integer> control = setting.getControlOver(currentPlayer);
-        String[] controlName = new String[control.size()];
-        for (int i = 0; i < control.size(); i++) {
-            controlName[i] = decodeKey(control.get(i));
-        }
 
         Label lblMoveUp = new Label(compositeMenu, SWT.NONE);
         lblMoveUp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -171,7 +167,7 @@ public class ControlSetting extends Composite {
 
         txtMoveUp = new Text(compositeMenu, SWT.NONE);
         txtMoveUp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        txtMoveUp.setText(controlName[Controllable.UP]);
+        txtMoveUp.setText(decodeKey(control.get(Controllable.UP)));
         txtMoveUp.setEditable(false);
 
         Label lblMoveDown = new Label(compositeMenu, SWT.NONE);
@@ -182,7 +178,7 @@ public class ControlSetting extends Composite {
 
         txtMoveDown = new Text(compositeMenu, SWT.NONE);
         txtMoveDown.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        txtMoveDown.setText(controlName[Controllable.DOWN]);
+        txtMoveDown.setText(decodeKey(control.get(Controllable.DOWN)));
         txtMoveDown.setEditable(false);
 
         Label lblMoveLeft = new Label(compositeMenu, SWT.NONE);
@@ -193,7 +189,7 @@ public class ControlSetting extends Composite {
 
         txtMoveLeft = new Text(compositeMenu, SWT.NONE);
         txtMoveLeft.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        txtMoveLeft.setText(controlName[Controllable.LEFT]);
+        txtMoveLeft.setText(decodeKey(control.get(Controllable.LEFT)));
         txtMoveLeft.setEditable(false);
 
         Label lblMoveRight = new Label(compositeMenu, SWT.NONE);
@@ -204,7 +200,7 @@ public class ControlSetting extends Composite {
 
         txtMoveRight = new Text(compositeMenu, SWT.NONE);
         txtMoveRight.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        txtMoveRight.setText(controlName[Controllable.RIGHT]);
+        txtMoveRight.setText(decodeKey(control.get(Controllable.RIGHT)));
         txtMoveRight.setEditable(false);
 
 

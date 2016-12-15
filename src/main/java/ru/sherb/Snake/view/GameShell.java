@@ -14,6 +14,7 @@ public class GameShell extends Shell {
     private Canvas gameField;
     private Composite stateComposite;
     private Composite toolComposite;
+    public Composite gameComposite;
     //TODO [REFACTOR] после того как будут добавлены остальные игроки, добавить возможность создания многих полей
     private Label lblPlayer;
     private Composite compPlayerColor;
@@ -26,8 +27,9 @@ public class GameShell extends Shell {
      * @param display
      */
     public GameShell(Display display, Point defaultSize, boolean fullscreen) {
-        super(display, SWT.SHELL_TRIM & (~SWT.RESIZE));
+//        super(display, SWT.SHELL_TRIM & (~SWT.RESIZE));
 //        super(display, (fullscreen ? SWT.NO_TRIM : SWT.SHELL_TRIM));
+        super(display, SWT.DIALOG_TRIM);
         setLayout(new FormLayout());
         setMinimumSize(432, 243);
         setText("The Snake");

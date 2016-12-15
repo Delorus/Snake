@@ -9,6 +9,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import ru.sherb.Snake.Main;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
+
 public class MainShell extends Shell {
     private Composite menu;
 
@@ -17,9 +21,16 @@ public class MainShell extends Shell {
 		setText("Main menu");
 		setSize(300, 480);
         setBackground(Main.display.getSystemColor(SWT.COLOR_MAGENTA));
-        //TODO [DEBUG] Настроить нормальную загрузку ресурсов
-        Image background = new Image(Main.display, Class.class.getResourceAsStream("/ru/sherb/Snake/res/backgroundTmp.png"));
-        setBackgroundImage(background);
+        try (InputStream is =  Class.class.getResourceAsStream("/ru/sherb/Snake/res/backgroundTmp.png")) {
+            if (Objects.nonNull(is)) {
+                setBackgroundImage(new Image(Main.display, is));
+            } else {
+                setBackground(Main.display.getSystemColor(SWT.COLOR_WHITE));
+            }
+        } catch (IOException e) {
+            if (Main.debug) e.printStackTrace();
+        }
+
 		createContents();
 	}
 
@@ -29,8 +40,12 @@ public class MainShell extends Shell {
 	protected void createContents() {
 
         Label lblLogo = new Label(this, SWT.CENTER);
-        lblLogo.setImage(new Image(Main.display, Class.class.getResourceAsStream("/ru/sherb/Snake/res/LogoTmp.png")));
-//        lblLogo.setImage(SWTResourceManager.getImage("F:\\YandexDisk\\Documents\\Java\\Eclipse\\SnakeGUI\\src\\ru\\sherb\\Snake\\resources\\LogoTmp.png"));
+        try (InputStream is =  Class.class.getResourceAsStream("/ru/sherb/Snake/res/LogoTmp.png")) {
+            if (Objects.nonNull(is))
+                lblLogo.setImage(new Image(Main.display, is));
+        } catch (IOException e) {
+            if (Main.debug) e.printStackTrace();
+        }
         lblLogo.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
         lblLogo.setAlignment(SWT.CENTER);
         lblLogo.setLocation(0, 0);
