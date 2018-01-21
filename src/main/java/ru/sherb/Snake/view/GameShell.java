@@ -60,7 +60,7 @@ public class GameShell extends Shell {
         MenuItem item = new MenuItem(submenu, SWT.PUSH);
         //TODO [REFACTOR] переместить в контроллер
         item.addListener(SWT.Selection, e -> {
-            new MainShellController();
+            new MainShellController().open();
             this.dispose();
         });
         item.setText("&Exit\tESC");

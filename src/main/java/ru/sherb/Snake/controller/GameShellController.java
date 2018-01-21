@@ -53,7 +53,7 @@ public class GameShellController {
 
         gameShell.addListener(SWT.Close, e -> {
             updater.stop();
-            new MainShellController();
+            new MainShellController().open();
         });
 
         gameShell.getGameField().addListener(SWT.KeyDown, e -> {

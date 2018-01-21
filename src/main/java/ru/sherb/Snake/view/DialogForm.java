@@ -40,7 +40,7 @@ public class DialogForm {
             }
         }
         callBox.dispose();
-        new MainShellController();
+        new MainShellController().open();
         if (Main.isDebug()) System.out.println("Я закрыл окно");
     }
 }
