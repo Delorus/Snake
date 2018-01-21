@@ -3,6 +3,7 @@ package ru.sherb.Snake.controller;
 import ru.sherb.Snake.Main;
 import ru.sherb.Snake.model.Game;
 import ru.sherb.Snake.model.Snake;
+import ru.sherb.Snake.view.DialogForm;
 import ru.sherb.Snake.view.GameShell;
 
 /**
@@ -111,6 +112,12 @@ public class Updater implements Runnable {
 
             if (game.isEnd()) {
                 stop();
+                StringBuilder buffScore = new StringBuilder();
+                for (Snake player : game.getPlayers()) {
+                    buffScore.append(player.getName()).append(" score = ").append(player.getScore()).append("\n");
+                }
+
+                Main.display.syncExec(() -> new DialogForm(gameShell, "You lose", "You time: " + (game.getGameTime() / 1000) + "sec." + "\n" + buffScore));
             }
 
         }
