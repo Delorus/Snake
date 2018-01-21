@@ -191,59 +191,6 @@
     </repositories>
 
     <dependencies>
-        <!-- JOGL dependencies START -->
-        <dependency>
-            <groupId>org.jogamp.gluegen</groupId>
-            <artifactId>gluegen-rt</artifactId>
-            <version>${jogl.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jogamp.jogl</groupId>
-            <artifactId>jogl-all</artifactId>
-            <version>${jogl.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jogamp.gluegen</groupId>
-            <artifactId>gluegen-rt</artifactId>
-            <version>${jogl.version}</version>
-            <classifier>natives-${platform}-${arch}</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.jogamp.jogl</groupId>
-            <artifactId>jogl-all</artifactId>
-            <version>${jogl.version}</version>
-            <classifier>natives-${platform}-${arch}</classifier>
-        </dependency>
-        <!-- JOGL dependencies END -->
-
-
-        <!-- LWJGL dependencies START -->
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl</artifactId>
-            <version>${lwjgl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-opengl</artifactId>
-            <version>${lwjgl.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl</artifactId>
-            <version>${lwjgl.version}</version>
-            <classifier>natives-${platform}</classifier>
-        </dependency>
-        <!-- LWJGL dependencies END -->
-
-        <dependency>
-            <groupId>io.github.java-graphics</groupId>
-            <artifactId>glm</artifactId>
-            <version>1.0.1</version>
-        </dependency>
     </dependencies>
 
 </project>
