@@ -86,13 +86,11 @@ public class Snake extends GameObject implements Controllable {
         foods = new LinkedList<>();
         changed = true;
         speed = 1;
-        speedk = .13;
+        speedk = .11;
     }
 
 
     public boolean move() {
-        //TODO [DEBUG] не изменять направление пока игра на паузе
-
         if (step() == 0) return true; // пропуск хода
 
         if (!moveToDirect(tail.getLast(), direct)) return false; // змейка влепилась в стенку
@@ -173,7 +171,6 @@ public class Snake extends GameObject implements Controllable {
                 head.setStatus(State.SNAKE, this);
                 break;
             case FRUIT:
-                //TODO как обычно, переделать все к хуям
                 //сделать возможность получить фрукт из змейки
                 //TODO [REFACTOR] временное решение проблемы
                 eatFruit = true;

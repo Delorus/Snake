@@ -11,6 +11,7 @@ import java.io.IOException;
  */
 public class Main {
     public static final Display display = Display.getDefault();
+    //TODO [REFACTOR] скрыть реализацию в рид-онли
     public static boolean debug = false;
 
     public static void main(String[] args) {

@@ -46,7 +46,7 @@ public class MainMenu extends Composite {
 		btnGameLoad.setText("Game load");
 
         btnState = new Button(this, SWT.NONE);
-		btnState.setText("Statistics");
+		btnState.setText("Statistic");
 
         btnSetting = new Button(this, SWT.NONE);
 		btnSetting.setText("Setting");

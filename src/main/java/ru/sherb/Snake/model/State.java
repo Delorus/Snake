@@ -1,6 +1,7 @@
 package ru.sherb.Snake.model;
 
 //TODO [REFACTOR] переместить статусы каждый в свой объект либо добавить их в GameObject
+//TODO сделать другие игровые объекты, в том числе shit, wall
 public enum State {
     EMPTY {
 //        @Override

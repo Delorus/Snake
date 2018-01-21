@@ -3,6 +3,7 @@ package ru.sherb.Snake.controller;
 import ru.sherb.Snake.Main;
 import ru.sherb.Snake.model.Game;
 import ru.sherb.Snake.model.Snake;
+import ru.sherb.Snake.view.DialogForm;
 import ru.sherb.Snake.view.GameShell;
 
 /**
@@ -78,11 +79,7 @@ public class Updater implements Runnable {
             //TODO [REFACTOR] большую часть времени цикл проходит в "холостую", что излишне нагружает процессор
             // освобождение ресурсов процессора на 2мс,
             // пока остальные потоки не требовательны этого времени хватает, что бы ресурсы ЦП не простаивали
-            try {
-                Thread.sleep(2);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Thread.yield();
 
             if (shouldRender) {
                 frames++;
@@ -90,18 +87,18 @@ public class Updater implements Runnable {
             }
 
             //TODO [ВОЗМОЖНО] оптимизировать операцию, что бы не проходить массив каждый раз
-                for (Snake player : game.getPlayers()) {
-                    if (player.isChanged()) {
-                        org.eclipse.swt.graphics.Color swtColor = new org.eclipse.swt.graphics.Color(Main.display,
-                                player.getColor().getRed(),
-                                player.getColor().getGreen(),
-                                player.getColor().getBlue());
-                        //TODO [DEBUG] если закрыть окно в то время как идет обновление информации, то вылетит ошибка и закроет приложение.
-                        // Попытка перехватить исключение и обработать не возымела эффекта
-                        Main.display.syncExec(() -> gameShell.setData(player.getName(), swtColor, player.getScore(), player.getLength()));
-                        player.setChanged(false);
-                    }
+            for (Snake player : game.getPlayers()) {
+                if (player.isChanged()) {
+                    org.eclipse.swt.graphics.Color swtColor = new org.eclipse.swt.graphics.Color(Main.display,
+                            player.getColor().getRed(),
+                            player.getColor().getGreen(),
+                            player.getColor().getBlue());
+                    //TODO [DEBUG] если закрыть окно в то время как идет обновление информации, то вылетит ошибка и закроет приложение.
+                    // Попытка перехватить исключение и обработать не возымела эффекта
+                    Main.display.syncExec(() -> gameShell.setData(player.getName(), swtColor, player.getScore(), player.getLength()));
+                    player.setChanged(false);
                 }
+            }
 
             // выводить каждую секунду
             if (System.currentTimeMillis() - lastTimer > 1000) {
@@ -118,12 +115,6 @@ public class Updater implements Runnable {
         }
         if (Main.debug) System.out.println("Я закончил обновляться");
 
-//            String buffScore = "";
-        //TODO [REFACTOR] засунуть всех игроков в один массив
-//        buffScore += player1.getName() + "= " + player1.getScore() + "\n";
-////            buffScore += player2.getName() + "= " + player2.getScore() + "\n";
-//        final String CountPlayerScore = buffScore;
-//        Main.display.syncExec(() -> new DialogForm(gameShell, "You lose", "You score: \n" + CountPlayerScore + " \n You time: " + (game.getGameTime() / 1000) + " сек."));
 
     }
 
