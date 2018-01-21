@@ -124,7 +124,11 @@ public class Snake extends GameObject implements Controllable {
         // Если ее текущая скорость достигла максимальной, то скорости присваивается начальная скорость
         // Если ее текущая скорость отличается от максимальной на погрешность E, то скорости присваивается максимальная скорость
         // В остальных случаях к текущей скорости прибавляется коэффициент скорости
-        speed = speed == maxSpeed ? speedk : ((Math.abs(maxSpeed - speed) < E) ? maxSpeed : speed + speedk);
+        speed = Double.compare(speed, (double) maxSpeed) == 0
+                ? speedk
+                : ((Math.abs(maxSpeed - speed) < E)
+                ? maxSpeed
+                : speed + speedk);
         return (int) Math.floor(speed);
     }
 

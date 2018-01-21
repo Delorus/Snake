@@ -23,7 +23,8 @@ public class Grid implements Colorable {
             }
         }
         this.transparentBorder = true;
-        if (Main.debug) System.out.println("Создано игровое поле " + getWidth() + " на " + getHeight());
+        if (Main.isDebug())
+            System.out.println("Создано игровое поле " + getWidth() + " на " + getHeight());
     }
 
     public Cell getCell(int x, int y) {

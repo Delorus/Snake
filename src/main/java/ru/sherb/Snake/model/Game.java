@@ -4,6 +4,9 @@ package ru.sherb.Snake.model;
 import ru.sherb.Snake.Main;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -17,7 +20,7 @@ public class Game {
     /**
      * Все игроки в этой игре
      */
-    private Snake[] players;
+    private List<Snake> players;
     private Fruit fruit; // Один фрукт за раз
     private long timeStart;
     private long gameTime;
@@ -30,7 +33,7 @@ public class Game {
     public Game(Grid grid, Color fruitColor, Snake... players) {
         // Создание поля для игры
         this.grid = grid;
-        this.players = players;
+        this.players = Arrays.asList(players);
         this.fruitColor = fruitColor;
         fruit = new Fruit(grid);
     }
@@ -98,15 +101,15 @@ public class Game {
     public void end() {
         end = true;
         gameTime += System.currentTimeMillis() - timeStart;
-        if (Main.debug) System.out.println("Я закончил игру, прошло времени = " + gameTime);
+        if (Main.isDebug()) System.out.println("Я закончил игру, прошло времени = " + gameTime);
     }
 
     public Grid getGrid() {
         return grid;
     }
 
-    public Snake[] getPlayers() {
-        return players;
+    public List<Snake> getPlayers() {
+        return Collections.unmodifiableList(players);
     }
 
     public boolean isStop() {

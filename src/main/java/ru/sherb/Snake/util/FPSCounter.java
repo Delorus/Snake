@@ -1,6 +1,5 @@
 package ru.sherb.Snake.util;
 
-import java.io.IOException;
 import java.io.PrintStream;
 
 /**
@@ -26,7 +25,7 @@ public class FPSCounter {
         count = 0;
     }
 
-    public void printCount() throws IOException {
+    public synchronized void printCount() {
         out.println("FPS = " + count);
         reset();
     }

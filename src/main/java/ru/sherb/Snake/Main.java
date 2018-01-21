@@ -12,7 +12,7 @@ import java.io.IOException;
 public class Main {
     public static final Display display = Display.getDefault();
     //TODO [REFACTOR] скрыть реализацию в рид-онли
-    public static boolean debug = false;
+    private static boolean debug = false;
 
     public static void main(String[] args) {
         if (args.length > 0 && args[0].equals("-debug")) debug = true;
@@ -22,11 +22,11 @@ public class Main {
         try {
             setting.loadOrDefault();
         } catch (IOException e) {
-            if (Main.debug) e.printStackTrace();
+            if (Main.isDebug()) e.printStackTrace();
         }
 
         try {
-            MainShellController mainShellController = new MainShellController();
+            new MainShellController().open();
 
             while (!display.isDisposed()) {
                 if (!display.readAndDispatch()) {
@@ -38,6 +38,9 @@ public class Main {
         }
     }
 
+    public static boolean isDebug() {
+        return debug;
+    }
 }
 
 

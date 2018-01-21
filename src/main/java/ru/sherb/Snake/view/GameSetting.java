@@ -5,7 +5,11 @@ package ru.sherb.Snake.view;
  */
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -15,7 +19,6 @@ import ru.sherb.Snake.util.Setting;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class GameSetting extends Composite {
     private ButtonComposite buttonComposite;
@@ -50,7 +53,7 @@ public class GameSetting extends Composite {
             try {
                 Setting.getInstance().store();
             } catch (IOException exc) {
-                if (Main.debug) exc.printStackTrace();
+                if (Main.isDebug()) exc.printStackTrace();
                 //TODO добавить предупреждение для пользователя
             }
             parent.setComposite(new SettingMenu(parent, SWT.NONE));

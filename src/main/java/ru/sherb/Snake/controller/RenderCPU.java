@@ -1,10 +1,11 @@
 package ru.sherb.Snake.controller;
 
-import org.eclipse.swt.graphics.*;
-import ru.sherb.Snake.Main;
-import ru.sherb.Snake.model.*;
-
-import java.io.InputStream;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Drawable;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
+import ru.sherb.Snake.model.Cell;
+import ru.sherb.Snake.model.Grid;
 
 /**
  * Класс предназначен для визуализации логической части игры. Отрисовка графических объектов происходит на ЦП.
@@ -12,15 +13,11 @@ import java.io.InputStream;
  * Created by sherb on 08.12.2016.
  */
 public class RenderCPU implements IRender {
+    private GC gc;
     /**
      * Ссылка на игру, с которой будут браться данные для отрисовки
      */
     private Grid grid;
-    /**
-     * Ссылка на поле, на котором нужно нарисовать графику
-     */
-    private Drawable field;
-    private GC gc;
 
     /**
      * @param grid  логическая часть игры, из которой берутся данные
@@ -28,7 +25,6 @@ public class RenderCPU implements IRender {
      */
     public RenderCPU(Grid grid, Drawable field) {
         this.grid = grid;
-        this.field = field;
         gc = new GC(field);
     }
 

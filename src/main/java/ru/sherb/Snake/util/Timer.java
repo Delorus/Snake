@@ -23,7 +23,7 @@ public class Timer implements Runnable {
             Thread.sleep(delay);
             task.performTask();
         } catch (Exception e) {
-            if (Main.debug) e.printStackTrace();
+            if (Main.isDebug()) e.printStackTrace();
         }
     }
 }

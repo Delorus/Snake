@@ -2,10 +2,21 @@ package ru.sherb.Snake.view;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.internal.SWTEventListener;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Widget;
 import ru.sherb.Snake.Main;
 import ru.sherb.Snake.model.Controllable;
 import ru.sherb.Snake.util.Setting;
@@ -86,7 +97,7 @@ public class ControlSetting extends Composite {
                 setting.setControlOver(tbtmPlayer.getText(), control);
                 Setting.getInstance().store();
             } catch (IOException exc) {
-                if (Main.debug) exc.printStackTrace();
+                if (Main.isDebug()) exc.printStackTrace();
                 //TODO добавить предупреждение для пользователя
             }
             parent.setComposite(new SettingMenu(parent, SWT.NONE));

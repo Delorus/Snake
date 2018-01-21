@@ -3,7 +3,6 @@ package ru.sherb.Snake.controller;
 import ru.sherb.Snake.Main;
 import ru.sherb.Snake.model.Game;
 import ru.sherb.Snake.model.Snake;
-import ru.sherb.Snake.view.DialogForm;
 import ru.sherb.Snake.view.GameShell;
 
 /**
@@ -13,13 +12,15 @@ import ru.sherb.Snake.view.GameShell;
  * Created by sherb on 07.11.2016.
  */
 public class Updater implements Runnable {
-    private Game game;
-    private GameShell gameShell;
-    private IRender render;
     /**
      * Количество наносекунд, за которое должен обработаться один логический фрейм
      */
-    private final double nsPerTick = 1_000_000_000.0 / 60;
+    private static final double NS_PER_TICK = 1_000_000_000.0 / 60;
+
+    private Game game;
+    private GameShell gameShell;
+    private IRender render;
+
     private boolean stop;
     private volatile boolean pause;
 
@@ -52,7 +53,7 @@ public class Updater implements Runnable {
             // "необработанное" время, прошедшее с последней обработки
             // делится на время одного "тика"
             // в результате получается количество операций, которые должны быть обработаны
-            unprocessed += (now - lastTime) / nsPerTick;
+            unprocessed += (now - lastTime) / NS_PER_TICK;
             if (pause) {
                 game.stop();
                 synchronized (this) {
@@ -103,7 +104,7 @@ public class Updater implements Runnable {
             // выводить каждую секунду
             if (System.currentTimeMillis() - lastTimer > 1000) {
                 lastTimer += 1000;
-                if (Main.debug) System.out.println(ticks + " ticks, " + frames + " fps");
+                if (Main.isDebug()) System.out.println(ticks + " ticks, " + frames + " fps");
                 frames = 0;
                 ticks = 0;
             }
@@ -113,7 +114,7 @@ public class Updater implements Runnable {
             }
 
         }
-        if (Main.debug) System.out.println("Я закончил обновляться");
+        if (Main.isDebug()) System.out.println("Я закончил обновляться");
 
 
     }
@@ -137,7 +138,7 @@ public class Updater implements Runnable {
         game.stop();
     }
 
-    public boolean isStop() {
+    public synchronized boolean isStop() {
         return stop;
     }
 

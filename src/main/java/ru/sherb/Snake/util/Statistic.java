@@ -19,7 +19,6 @@ import java.io.IOException;
 public final class Statistic {
     private static final Statistic ourInstance = new Statistic();
 
-    private String path;
     private DocumentBuilder documentBuilder;
     private Document document;
 
@@ -33,7 +32,6 @@ public final class Statistic {
     }
 
     public void setPath(String path) throws IOException, SAXException {
-        this.path = path;
         document = documentBuilder.parse(path);
     }
 

@@ -1,15 +1,17 @@
 package ru.sherb.Snake.controller;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import ru.sherb.Snake.Main;
-import ru.sherb.Snake.model.*;
+import ru.sherb.Snake.model.Cell;
+import ru.sherb.Snake.model.Game;
+import ru.sherb.Snake.model.Grid;
+import ru.sherb.Snake.model.MovementController;
+import ru.sherb.Snake.model.Snake;
 import ru.sherb.Snake.util.Setting;
 import ru.sherb.Snake.view.GameShell;
 
-import java.awt.Color;
+import java.awt.*;
 
 /**
  * Created by sherb on 27.10.2016.
@@ -27,7 +29,7 @@ public class GameShellController {
         gameShell.layout();
         gameShell.getGameField().setFocus();
 
-        if (Main.debug) System.out.println("Game area = " + gameShell.getGameArea());
+        if (Main.isDebug()) System.out.println("Game area = " + gameShell.getGameArea());
 
         //16:9
         assert setting.getGrid_HEIGHT() % 3 == 0;
@@ -61,18 +63,18 @@ public class GameShellController {
             } else {
                 //TODO временное решение, пока не будет создано окно паузы
                 if (e.keyCode == 27) {
-                    if (Main.debug) System.out.println("pause");
+                    if (Main.isDebug()) System.out.println("pause");
                     if (updater.isPause()) updater.start(); else updater.pause();
                 }
             }
         });
 
-        if (Main.debug) System.out.println("Размер окна = " + gameShell.getSize());
+        if (Main.isDebug()) System.out.println("Размер окна = " + gameShell.getSize());
         gameShell.addListener(SWT.Resize, event -> {
             //TODO [DEBUG] пока лучший вариант для стирания старой картинки, но из-за этого происходят фризы при изменениех размера окна
 //            gameShell.getGameField().pack();
             computeCellSize(Math.min(cellCountHeight, cellCountWidth), new Point(gameShell.getGameArea().width, gameShell.getGameArea().height));
-            if (Main.debug) {
+            if (Main.isDebug()) {
                 System.out.println("Размер окна = " + gameShell.getSize());
                 System.out.println("Game area = " + gameShell.getGameArea());
             }
@@ -88,7 +90,7 @@ public class GameShellController {
     public void computeCellSize(int minCellCount, Point canvasSize) {
         //TODO [DEBUG] не верно выравнивает число клеток, если уменьшать по х
         int size = (int) Math.ceil((double) Math.min(canvasSize.x, canvasSize.y) / minCellCount);
-        if (Main.debug) System.out.println("Размер ячейки = " + size);
+        if (Main.isDebug()) System.out.println("Размер ячейки = " + size);
         Cell.setSizeCoeff((double) size / Cell.NORMAL_SIZE); //Расчет размера каждой ячейки
     }
 }

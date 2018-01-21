@@ -1,7 +1,6 @@
 package ru.sherb.Snake.view;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -28,7 +27,7 @@ public class MainShell extends Shell {
                 setBackground(Main.display.getSystemColor(SWT.COLOR_WHITE));
             }
         } catch (IOException e) {
-            if (Main.debug) e.printStackTrace();
+            if (Main.isDebug()) e.printStackTrace();
         }
 
 		createContents();
@@ -44,7 +43,7 @@ public class MainShell extends Shell {
             if (Objects.nonNull(is))
                 lblLogo.setImage(new Image(Main.display, is));
         } catch (IOException e) {
-            if (Main.debug) e.printStackTrace();
+            if (Main.isDebug()) e.printStackTrace();
         }
         lblLogo.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
         lblLogo.setAlignment(SWT.CENTER);

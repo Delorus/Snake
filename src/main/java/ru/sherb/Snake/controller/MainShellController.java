@@ -13,6 +13,9 @@ public class MainShellController {
 
     public MainShellController() {
         shell = new MainShell(Main.display);
+    }
+
+    public void open() {
         shell.setComposite(new MainMenu(shell, SWT.NONE));
         shell.open();
         shell.layout();

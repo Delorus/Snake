@@ -4,8 +4,17 @@ import org.eclipse.swt.SWT;
 import ru.sherb.Snake.model.Controllable;
 
 import java.awt.*;
-import java.io.*;
-import java.util.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
 
 /**
  * Created by sherb on 04.11.2016.
@@ -102,11 +111,11 @@ public class Setting {
     }
 
     public int getScreenSizeX() {
-        return Integer.valueOf(setting.getProperty("ScreenSizeX"));
+        return Integer.parseInt(setting.getProperty("ScreenSizeX"));
     }
 
     public int getScreenSizeY() {
-        return Integer.valueOf(setting.getProperty("ScreenSizeY"));
+        return Integer.parseInt(setting.getProperty("ScreenSizeY"));
     }
 
     public boolean isFullscreen() {
@@ -114,7 +123,7 @@ public class Setting {
     }
 
     public int getGrid_HEIGHT() {
-        return Integer.valueOf(setting.getProperty("Grid_HEIGHT"));
+        return Integer.parseInt(setting.getProperty("Grid_HEIGHT"));
     }
 
     public HashMap<Integer, Integer> getControlOver(String playerName) {

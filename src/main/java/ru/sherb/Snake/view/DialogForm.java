@@ -41,6 +41,6 @@ public class DialogForm {
         }
         callBox.dispose();
         new MainShellController();
-        if (Main.debug) System.out.println("Я закрыл окно");
+        if (Main.isDebug()) System.out.println("Я закрыл окно");
     }
 }
