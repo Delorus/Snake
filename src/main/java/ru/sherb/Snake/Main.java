@@ -2,7 +2,7 @@ package ru.sherb.Snake;
 
 import org.eclipse.swt.widgets.Display;
 import ru.sherb.Snake.controller.MainShellController;
-import ru.sherb.Snake.util.Setting;
+import ru.sherb.Snake.setting.Setting;
 
 import java.io.IOException;
 

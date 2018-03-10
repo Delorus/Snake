@@ -8,7 +8,7 @@ import ru.sherb.Snake.model.Game;
 import ru.sherb.Snake.model.Grid;
 import ru.sherb.Snake.model.MovementController;
 import ru.sherb.Snake.model.Snake;
-import ru.sherb.Snake.util.Setting;
+import ru.sherb.Snake.setting.Setting;
 import ru.sherb.Snake.view.GameShell;
 
 import java.awt.*;

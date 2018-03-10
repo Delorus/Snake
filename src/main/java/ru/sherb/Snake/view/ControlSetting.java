@@ -19,10 +19,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 import ru.sherb.Snake.Main;
 import ru.sherb.Snake.model.Controllable;
-import ru.sherb.Snake.util.Setting;
+import ru.sherb.Snake.setting.Setting;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by sherb on 09.11.2016.
@@ -168,7 +169,7 @@ public class ControlSetting extends Composite {
 
 
         //TODO [REFACTOR] сделать возможность изменять управления не только у первого игрока
-        HashMap<Integer, Integer> control = setting.getControlOver(currentPlayer);
+        Map<Integer, Integer> control = setting.getControlOver(currentPlayer);
 
         Label lblMoveUp = new Label(compositeMenu, SWT.NONE);
         lblMoveUp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));

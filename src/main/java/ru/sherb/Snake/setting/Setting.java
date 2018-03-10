@@ -1,4 +1,4 @@
-package ru.sherb.Snake.util;
+package ru.sherb.Snake.setting;
 
 import org.eclipse.swt.SWT;
 import ru.sherb.Snake.model.Controllable;
@@ -10,7 +10,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -92,6 +95,8 @@ public class Setting {
         defaultSetting.setProperty("Player1_COLOR", String.valueOf(Color.GREEN.getRGB()));
 
         defaultSetting.setProperty("Fruit_COLOR", String.valueOf(Color.RED.getRGB()));
+
+        defaultSetting.setProperty("PlayersStatisticPath", "players_statistic.xml");
         //...
 
         this.setDefault(defaultSetting);
@@ -126,12 +131,11 @@ public class Setting {
         return Integer.parseInt(setting.getProperty("Grid_HEIGHT"));
     }
 
-    public HashMap<Integer, Integer> getControlOver(String playerName) {
+    public Map<Integer, Integer> getControlOver(String playerName) {
         HashMap<Integer, Integer> control = new HashMap<>(4);
-        if (setting.getProperty(playerName + "_" + Controllable.UP) == null) return null;
-//        for (int j = 0; j < 4; j++) {
-//            control.put(j, Integer.valueOf(setting.getProperty(playerName + "_" + j)));
-//        }
+        if (setting.getProperty(playerName + "_" + Controllable.UP) == null) {
+            return Collections.emptyMap();
+        }
         control.put(Controllable.UP, Integer.valueOf(setting.getProperty(playerName + "_" + Controllable.UP)));
         control.put(Controllable.DOWN, Integer.valueOf(setting.getProperty(playerName + "_" + Controllable.DOWN)));
         control.put(Controllable.LEFT, Integer.valueOf(setting.getProperty(playerName + "_" + Controllable.LEFT)));
@@ -160,6 +164,10 @@ public class Setting {
         return Color.decode(setting.getProperty("Fruit_COLOR"));
     }
 
+    public Path getStatisticPath() {
+        return Paths.get(setting.getProperty("PlayersStatisticPath"));
+    }
+
     public void setScreenSizeX(int width) {
         setting.setProperty("ScreenSizeX", String.valueOf(width));
     }
@@ -177,9 +185,6 @@ public class Setting {
     }
 
     public void setControlOver(String playerName, Map<Integer, Integer> control) {
-//        for (int i = 0; i < 4; i++) {
-//            setting.setProperty(playerName + "_" + i, String.valueOf(control.get(i)));
-//        }
         setting.setProperty(playerName + "_" + Controllable.UP, String.valueOf(control.get(Controllable.UP)));
         setting.setProperty(playerName + "_" + Controllable.DOWN, String.valueOf(control.get(Controllable.DOWN)));
         setting.setProperty(playerName + "_" + Controllable.LEFT, String.valueOf(control.get(Controllable.LEFT)));
@@ -200,5 +205,9 @@ public class Setting {
 
     public void setPlayerName(int playerNum, String playerName) {
         setting.setProperty("Player" + playerNum + "_NAME", playerName);
+    }
+
+    public void setStatisticPath(String path) {
+        setting.setProperty("PlayersStatisticPath", path);
     }
 }

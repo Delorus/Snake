@@ -3,8 +3,14 @@ package ru.sherb.Snake.controller;
 import ru.sherb.Snake.Main;
 import ru.sherb.Snake.model.Game;
 import ru.sherb.Snake.model.Snake;
+import ru.sherb.Snake.statistic.Player;
+import ru.sherb.Snake.statistic.PlayerList;
+import ru.sherb.Snake.statistic.PlayerStatisticLoader;
 import ru.sherb.Snake.view.DialogForm;
 import ru.sherb.Snake.view.GameShell;
+
+import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Collectors;
 
 /**
  * Класс обновляет игровое состояние, рисует графическую часть и обновляет данные в графических объектах.
@@ -112,12 +118,30 @@ public class Updater implements Runnable {
 
             if (game.isEnd()) {
                 stop();
-                StringBuilder buffScore = new StringBuilder();
+                PlayerList currentPlayers = new PlayerList();
                 for (Snake player : game.getPlayers()) {
-                    buffScore.append(player.getName()).append(" score = ").append(player.getScore()).append("\n");
+                    Player statisticPlayer = new Player();
+                    statisticPlayer.setName(player.getName());
+                    statisticPlayer.setScore(player.getScore());
+                    statisticPlayer.setTime(game.getGameTime());
+                    currentPlayers.add(statisticPlayer);
                 }
 
-                Main.display.syncExec(() -> new DialogForm(gameShell, "You lose", "You time: " + (game.getGameTime() / 1000) + "sec." + "\n" + buffScore));
+                PlayerStatisticLoader.getInstance().addAllRecord(currentPlayers);
+
+                String scores = currentPlayers.getPlayers().stream()
+                        .map(Player::toString)
+                        .collect(Collectors.joining());
+
+                // TODO: 10.03.2018 i/o in common pool
+                ForkJoinPool.commonPool().execute(PlayerStatisticLoader.getInstance()::save);
+
+                Main.display.syncExec(() ->
+                        new DialogForm(
+                                gameShell,
+                                "You lose",
+                                "You time: " + (game.getGameTime() / 1000) + "sec." + "\n"
+                                        + scores));
             }
 
         }
@@ -145,7 +169,7 @@ public class Updater implements Runnable {
         game.stop();
     }
 
-    public synchronized boolean isStop() {
+    public boolean isStop() {
         return stop;
     }
 

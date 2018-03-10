@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import ru.sherb.Snake.Main;
-import ru.sherb.Snake.util.Setting;
+import ru.sherb.Snake.setting.Setting;
 
 import java.io.IOException;
 import java.util.ArrayList;
