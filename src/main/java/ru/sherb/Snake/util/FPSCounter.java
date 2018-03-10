@@ -5,9 +5,9 @@ import java.io.PrintStream;
 /**
  * Created by sherb on 03.11.2016.
  */
-public class FPSCounter {
+class FPSCounter {
     private int count;
-    private PrintStream out;
+    private final PrintStream out;
 
     public FPSCounter(PrintStream out) {
         this.out = out;
@@ -21,7 +21,7 @@ public class FPSCounter {
         this.count++;
     }
 
-    synchronized public void reset() {
+    private synchronized void reset() {
         count = 0;
     }
 

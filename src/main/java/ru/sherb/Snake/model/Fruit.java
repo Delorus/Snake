@@ -8,7 +8,7 @@ import java.util.Random;
  */
 //TODO сделать наследование от ячейки
 public class Fruit extends GameObject{
-    private Grid grid;
+    private final Grid grid;
     private Cell self;
     private int scoreInc; // число, на которое увеличиваются очки, когда змейка съест фрукт
     private int lengthSnakeInc; //число, на которое увеличится размер змейки, когда она съест фрукт
@@ -31,7 +31,7 @@ public class Fruit extends GameObject{
      * @param color цвет, на который поменяется цвет указанной ячейки
      * @return {@code false} если фрукт уже существует на поле
      */
-    public boolean createFruit(Cell cell, int scoreInc, int lengthSnakeInc, int existOfTime, Color color) {
+    private boolean createFruit(Cell cell, int scoreInc, int lengthSnakeInc, int existOfTime, Color color) {
         if (exist) return false;
         self = cell;
         this.color = color;
@@ -51,13 +51,13 @@ public class Fruit extends GameObject{
      * @param color цвет, на который поменяется цвет указанной ячейки
      * @return {@code false} если фрукт уже существует на поле
      */
-    public boolean createFruitRandPos(int scoreInc, int lengthSnakeInc, int existOfTime, Color color) {
+    public void createFruitRandPos(int scoreInc, int lengthSnakeInc, int existOfTime, Color color) {
         Cell buff;
         //работает только если на поле есть хотя бы одна пустая ячейка, иначе уйдет в бесконечный цикл
         do {
             buff = grid.getCell(new Random().nextInt(grid.getWidth()), new Random().nextInt(grid.getHeight()));
         } while (buff.getStatus() != State.EMPTY);
-        return createFruit(buff, scoreInc, lengthSnakeInc, existOfTime, color);
+        createFruit(buff, scoreInc, lengthSnakeInc, existOfTime, color);
     }
 
     public boolean decExistOfTime() {

@@ -2,15 +2,17 @@ package ru.sherb.Snake.view;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Widget;
 import ru.sherb.Snake.Main;
 
 /**
  * Created by sherb on 29.11.2016.
  */
-public class ButtonComposite extends Composite {
+class ButtonComposite extends Composite {
     private Button btnExit;
     private Button btnApply;
 
@@ -54,7 +56,7 @@ public class ButtonComposite extends Composite {
 
     }
 
-    protected void createComponents() {
+    private void createComponents() {
         btnExit = new Button(this, SWT.NONE);
         btnExit.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         btnExit.setText("Exit");

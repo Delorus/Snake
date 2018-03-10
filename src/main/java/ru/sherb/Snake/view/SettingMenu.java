@@ -7,17 +7,15 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import ru.sherb.Snake.Main;
 
-public class SettingMenu extends Composite {
-	public Button btnGame;
-    public Button btnGraphics;
-    public Button btnAudio;
-    public Button btnControl;
-    public Button btnExit;
+class SettingMenu extends Composite {
+	private final Button btnGame;
+	private final Button btnGraphics;
+	private final Button btnAudio;
+	private final Button btnControl;
+	private final Button btnExit;
 
 	/**
 	 * Create the composite.
-	 * @param parent
-	 * @param style
 	 */
 	public SettingMenu(MainShell parent, int style) {
 		super(parent, style);

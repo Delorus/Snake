@@ -17,7 +17,7 @@ import java.awt.*;
  * Created by sherb on 27.10.2016.
  */
 public class GameShellController {
-    private GameShell gameShell;
+    private final GameShell gameShell;
 
     public GameShellController() {
 
@@ -64,7 +64,8 @@ public class GameShellController {
                 //TODO временное решение, пока не будет создано окно паузы
                 if (e.keyCode == 27) {
                     if (Main.isDebug()) System.out.println("pause");
-                    if (updater.isPause()) updater.start(); else updater.pause();
+                    if (updater.isPause()) updater.start();
+                    else updater.pause();
                 }
             }
         });
@@ -84,10 +85,7 @@ public class GameShellController {
         new Thread(updater).start();
     }
 
-
-
-
-    public void computeCellSize(int minCellCount, Point canvasSize) {
+    private void computeCellSize(int minCellCount, Point canvasSize) {
         //TODO [DEBUG] не верно выравнивает число клеток, если уменьшать по х
         int size = (int) Math.ceil((double) Math.min(canvasSize.x, canvasSize.y) / minCellCount);
         if (Main.isDebug()) System.out.println("Размер ячейки = " + size);

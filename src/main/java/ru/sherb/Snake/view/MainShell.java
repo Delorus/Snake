@@ -36,7 +36,7 @@ public class MainShell extends Shell {
 	/**
 	 * Create contents of the shell.
 	 */
-	protected void createContents() {
+    private void createContents() {
 
         Label lblLogo = new Label(this, SWT.CENTER);
         try (InputStream is =  Class.class.getResourceAsStream("/ru/sherb/Snake/res/LogoTmp.png")) {

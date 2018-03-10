@@ -9,17 +9,15 @@ import ru.sherb.Snake.Main;
 import ru.sherb.Snake.controller.GameShellController;
 
 public class MainMenu extends Composite {
-    public Button btnNewGame;
-    public Button btnGameLoad;
-    public Button btnState;
-    public Button btnSetting;
-    public Button btnHelp;
-    public Button btnExit;
+	private final Button btnNewGame;
+	private final Button btnGameLoad;
+	private final Button btnState;
+	private final Button btnSetting;
+	private final Button btnHelp;
+	private final Button btnExit;
 
 	/**
 	 * Create the composite.
-	 * @param parent
-	 * @param style
 	 */
 	public MainMenu(MainShell parent, int style) {
 		super(parent, style);

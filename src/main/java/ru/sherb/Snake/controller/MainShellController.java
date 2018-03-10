@@ -9,7 +9,7 @@ import ru.sherb.Snake.view.MainShell;
  * Created by sherb on 27.10.2016.
  */
 public class MainShellController {
-    private MainShell shell;
+    private final MainShell shell;
 
     public MainShellController() {
         shell = new MainShell(Main.display);

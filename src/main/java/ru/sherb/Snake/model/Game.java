@@ -16,17 +16,17 @@ public class Game {
     /**
      * Игровое поле
      */
-    private Grid grid;
+    private final Grid grid;
     /**
      * Все игроки в этой игре
      */
-    private List<Snake> players;
-    private Fruit fruit; // Один фрукт за раз
+    private final List<Snake> players;
+    private final Fruit fruit; // Один фрукт за раз
     private long timeStart;
     private long gameTime;
     //TODO [REFACTOR] сделать что-нибудь с этим
     //TODO убрать настраиваемый цвет для фрукта, устанавливать цвет, в соответствии с созданным фруктом в самой игре
-    private Color fruitColor;
+    private final Color fruitColor;
     private boolean end;
     private volatile boolean stop;
 

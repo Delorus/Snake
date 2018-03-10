@@ -34,8 +34,6 @@ public class GameShell extends Shell {
 
     /**
      * Create the shell.
-     *
-     * @param display
      */
     public GameShell(Display display, Point defaultSize, boolean fullscreen) {
 //        super(display, SWT.SHELL_TRIM & (~SWT.RESIZE));

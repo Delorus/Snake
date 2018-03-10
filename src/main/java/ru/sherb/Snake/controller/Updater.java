@@ -18,15 +18,15 @@ import java.util.stream.Collectors;
  * <p>
  * Created by sherb on 07.11.2016.
  */
-public class Updater implements Runnable {
+class Updater implements Runnable {
     /**
      * Количество наносекунд, за которое должен обработаться один логический фрейм
      */
     private static final double NS_PER_TICK = 1_000_000_000.0 / 60;
 
-    private Game game;
-    private GameShell gameShell;
-    private IRender render;
+    private final Game game;
+    private final GameShell gameShell;
+    private final IRender render;
 
     private boolean stop;
     private volatile boolean pause;

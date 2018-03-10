@@ -1,8 +1,5 @@
 package ru.sherb.Snake.view;
 
-/**
- * Created by sherb on 09.11.2016.
- */
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
@@ -20,16 +17,15 @@ import ru.sherb.Snake.setting.Setting;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class GameSetting extends Composite {
-    private ButtonComposite buttonComposite;
+/**
+ * Created by sherb on 09.11.2016.
+ */
+class GameSetting extends Composite {
+    private final ButtonComposite buttonComposite;
     private Combo comboCellCount;
-    private Button btnTransparentBorder;
-    private Button btnWalls;
+
     /**
      * Create the composite.
-     *
-     * @param parent
-     * @param style
      */
     public GameSetting(MainShell parent, int style) {
         super(parent, style);
@@ -68,7 +64,7 @@ public class GameSetting extends Composite {
 
     }
 
-    protected void createConponents() {
+    private void createConponents() {
         Composite compositeMenu = new Composite(this, SWT.NONE);
         compositeMenu.setLayout(new GridLayout(2, true));
         FormData compositeMenuData = new FormData();
@@ -105,7 +101,7 @@ public class GameSetting extends Composite {
         lblTransparentBorder.setText("Transparent border");
 
 
-        btnTransparentBorder = new Button(compositeMenu, SWT.CHECK);
+        final Button btnTransparentBorder = new Button(compositeMenu, SWT.CHECK);
         btnTransparentBorder.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, false, false, 1, 1));
         btnTransparentBorder.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
         //TODO добавить опцию в настройки
@@ -115,7 +111,7 @@ public class GameSetting extends Composite {
         lblWalls.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
         lblWalls.setText("Walls");
 
-        btnWalls = new Button(compositeMenu, SWT.CHECK);
+        final Button btnWalls = new Button(compositeMenu, SWT.CHECK);
         btnWalls.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, false, false, 1, 1));
         btnWalls.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
         // TODO добавить опцию в настройки

@@ -22,13 +22,13 @@ import java.util.Properties;
 /**
  * Created by sherb on 04.11.2016.
  */
-public class Setting {
+public final class Setting {
     private static final Setting ourInstance = new Setting();
 
     private String path;
 
     private Properties defaultSetting;
-    private Properties setting;
+    private final Properties setting;
 
     public static Setting getInstance() {
         return ourInstance;
@@ -43,8 +43,8 @@ public class Setting {
         path = pathToSetting;
     }
 
-    // загрузка настроек в ОЗУ из файла, либо стандартных
-    public Setting loadOrDefault() throws IOException {
+    // загрузка настроек из файла, либо из {@link defaultSetting}
+    public void loadOrDefault() throws IOException {
         //TODO [DEBUG] если в настройках отсутствует хотя бы один параметр, происходит ошибка
         try (InputStream in = new FileInputStream(path)) {
             setting.load(in);
@@ -52,7 +52,6 @@ public class Setting {
             setting.putAll(defaultSetting);
             storeDefault();
         }
-        return this;
     }
 
     // сохранение настроек в ПЗУ
@@ -64,7 +63,7 @@ public class Setting {
     }
 
     // сохранение стандартных настроек в ПЗУ
-    public void storeDefault() throws IOException {
+    private void storeDefault() throws IOException {
         try (OutputStream out = new FileOutputStream(path)) {
             defaultSetting.store(out, "Snake setting");
         }

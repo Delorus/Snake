@@ -17,7 +17,7 @@ public class Snake extends GameObject implements Controllable {
     /**
      * Сама змея, последний элемент является головой, первый - хвостом
      */
-    private LinkedList<Cell> tail;
+    private final LinkedList<Cell> tail;
     /**
      * Очки за игру
      */
@@ -25,7 +25,7 @@ public class Snake extends GameObject implements Controllable {
     /**
      * Ссылка на игрокое поле
      */
-    private Grid grid;
+    private final Grid grid;
     /**
      * Текущее направление движения змейки (см. {@link Controllable}
      */
@@ -34,18 +34,18 @@ public class Snake extends GameObject implements Controllable {
     /**
      * Текущий цвет змейки
      */
-    private Color color;
+    private final Color color;
     /**
      * Хранит координаты фруктов, которые проглотила змейка
      */
-    private LinkedList<Point> foods;
+    private final LinkedList<Point> foods;
     //TODO [DEBUG] возвращает длину последнего съеденного фрукта, т.е. если съесть сначала фрукт на +2 а потом на +1, то оба раза увеличиться на +1
     /**
      * Число, на которое вырастит змейка, после переваривания пищи
      */
     private int countLength;
     //TODO [ВОЗМОЖНО] сделать ввод пользователем своего имени при старте игры
-    private String name;
+    private final String name;
     /**
      * Блокирование изменение направления движения, если игрок уже его выбрал, а змейка еще не походила
      * На всякий случай потокобезопасна, т.к. игрок в теории может одновременно попытаться задать несколько направлений движения
@@ -63,7 +63,7 @@ public class Snake extends GameObject implements Controllable {
      * <li> 0 - не двигается.</li>
      * </ul>
      */
-    private double speedk;
+    private final double speedk;
     /**
      * Количество клеток, которые змейка проходит за один игровой шаг.
      * Дробные числа округляются к ближайшему наименьшему значению
@@ -230,7 +230,7 @@ public class Snake extends GameObject implements Controllable {
         return score;
     }
 
-    public boolean isThisSnake(int x, int y) {
+    private boolean isThisSnake(int x, int y) {
         return !(y < 0 || x < 0 || x > (grid.getWidth() - 1) || y > (grid.getHeight() - 1)) && tail.contains(new Cell(State.SNAKE, x, y, color));
     }
 

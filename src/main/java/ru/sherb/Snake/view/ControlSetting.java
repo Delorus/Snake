@@ -28,8 +28,8 @@ import java.util.Map;
 /**
  * Created by sherb on 09.11.2016.
  */
-public class ControlSetting extends Composite {
-    private ButtonComposite buttonComposite;
+class ControlSetting extends Composite {
+    private final ButtonComposite buttonComposite;
     //TODO [REFACTOR] такой способ индентификации игрока не подходит для случая, когда игроков больше чем 1
     private TabItem tbtmPlayer;
     private Text txtMoveUp;
@@ -148,7 +148,7 @@ public class ControlSetting extends Composite {
         txtMoveLeft.addKeyListener(onPressed);
     }
 
-    protected void createContents() {
+    private void createContents() {
 
         TabFolder tabFolder = new TabFolder(this, SWT.NONE);
         FormData tabFolderData = new FormData();

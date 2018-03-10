@@ -2,14 +2,22 @@ package ru.sherb.Snake.view;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Widget;
 import ru.sherb.Snake.Main;
 
 /**
  * Created by sherb on 09.11.2016.
  */
-public class GraphicSetting extends Composite {
+class GraphicSetting extends Composite {
     /**
      * Constructs a new instance of this class given its parent
      * and a style value describing its behavior and appearance.

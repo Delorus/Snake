@@ -13,11 +13,11 @@ import ru.sherb.Snake.model.Grid;
  * Created by sherb on 08.12.2016.
  */
 public class RenderCPU implements IRender {
-    private GC gc;
+    private final GC gc;
     /**
      * Ссылка на игру, с которой будут браться данные для отрисовки
      */
-    private Grid grid;
+    private final Grid grid;
 
     /**
      * @param grid  логическая часть игры, из которой берутся данные

@@ -12,7 +12,7 @@ public class Cell extends GameObject {
     private static double sizeCoeff = 1;  //потому что маштаб должен сохраняться во всех объектах
     private static int size = (int) Math.round(sizeCoeff * NORMAL_SIZE); //NotNull
     private Color color;
-    private Point position;
+    private final Point position;
     private State status;
 
     private static void resize() {

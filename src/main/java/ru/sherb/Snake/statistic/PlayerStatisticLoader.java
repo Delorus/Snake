@@ -64,7 +64,7 @@ public final class PlayerStatisticLoader {
 
         Path statisticFile = Setting.getInstance().getStatisticPath();
         try (Writer writer = Files.newBufferedWriter(statisticFile, CREATE, WRITE)) {
-            JAXBContext.newInstance(PlayerList.class).createMarshaller().marshal(players, writer);
+            marshaller.marshal(players, writer);
         } catch (JAXBException | IOException e) {
             if (Main.isDebug()) e.printStackTrace();
             return false;
