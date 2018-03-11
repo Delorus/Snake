@@ -6,6 +6,7 @@ import ru.sherb.Snake.model.Snake;
 import ru.sherb.Snake.statistic.Player;
 import ru.sherb.Snake.statistic.PlayerList;
 import ru.sherb.Snake.statistic.PlayerStatisticLoader;
+import ru.sherb.Snake.util.AwtToSwt;
 import ru.sherb.Snake.view.DialogForm;
 import ru.sherb.Snake.view.GameShell;
 
@@ -31,6 +32,12 @@ class Updater implements Runnable {
     private boolean stop;
     private volatile boolean pause;
 
+    private long lastTime;
+    private double unprocessed;
+    private long lastTimer;
+    private int frames;
+    private int ticks;
+
 
     public Updater(Game game, GameShell gameShell) {
         this.game = game;
@@ -42,112 +49,109 @@ class Updater implements Runnable {
         render.init();
         game.init();
         start();
+
+        lastTime = System.nanoTime();
+        unprocessed = 0;
+        lastTimer = System.currentTimeMillis();
+        frames = 0;
+        ticks = 0;
     }
 
     @Override
     public void run() {
-        if (gameShell.isDisposed()) return;
+        if (gameShell.isDisposed() || stop) {
+            if (Main.isDebug()) System.out.println("Я закончил обновляться");
+            return;
+        }
 
-        long lastTime = System.nanoTime();
-        double unprocessed = 0;
-        long lastTimer = System.currentTimeMillis();
-        int frames = 0;
-        int ticks = 0;
-
-        while (!stop) {
-
-            long now = System.nanoTime();
-            // "необработанное" время, прошедшее с последней обработки
-            // делится на время одного "тика"
-            // в результате получается количество операций, которые должны быть обработаны
-            unprocessed += (now - lastTime) / NS_PER_TICK;
-            if (pause) {
-                game.stop();
-                synchronized (this) {
-                    while (pause) {
-                        try {
-                            wait();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+        long now = System.nanoTime();
+        // "необработанное" время, прошедшее с последней обработки
+        // делится на время одного "тика"
+        // в результате получается количество операций, которые должны быть обработаны
+        unprocessed += (now - lastTime) / NS_PER_TICK;
+        if (pause) {
+            game.stop();
+            synchronized (this) {
+                while (pause) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
-                game.start();
             }
-            lastTime = System.nanoTime();
-            boolean shouldRender = false;
-            while (unprocessed >= 1) {
-                ticks++;
-                game.step();
-                unprocessed -= 1;
-                shouldRender = true;
-            }
-
-
-            //TODO [REFACTOR] большую часть времени цикл проходит в "холостую", что излишне нагружает процессор
-            // освобождение ресурсов процессора на 2мс,
-            // пока остальные потоки не требовательны этого времени хватает, что бы ресурсы ЦП не простаивали
-            Thread.yield();
-
-            if (shouldRender) {
-                frames++;
-                render.paint();
-            }
-
-            //TODO [ВОЗМОЖНО] оптимизировать операцию, что бы не проходить массив каждый раз
-            for (Snake player : game.getPlayers()) {
-                if (player.isChanged()) {
-                    org.eclipse.swt.graphics.Color swtColor = new org.eclipse.swt.graphics.Color(Main.display,
-                            player.getColor().getRed(),
-                            player.getColor().getGreen(),
-                            player.getColor().getBlue());
-                    //TODO [DEBUG] если закрыть окно в то время как идет обновление информации, то вылетит ошибка и закроет приложение.
-                    // Попытка перехватить исключение и обработать не возымела эффекта
-                    Main.display.syncExec(() -> gameShell.setData(player.getName(), swtColor, player.getScore(), player.getLength()));
-                    player.setChanged(false);
-                }
-            }
-
-            // выводить каждую секунду
-            if (System.currentTimeMillis() - lastTimer > 1000) {
-                lastTimer += 1000;
-                if (Main.isDebug()) System.out.println(ticks + " ticks, " + frames + " fps");
-                frames = 0;
-                ticks = 0;
-            }
-
-            if (game.isEnd()) {
-                stop();
-                PlayerList currentPlayers = new PlayerList();
-                for (Snake player : game.getPlayers()) {
-                    Player statisticPlayer = new Player();
-                    statisticPlayer.setName(player.getName());
-                    statisticPlayer.setScore(player.getScore());
-                    statisticPlayer.setTime(game.getGameTime());
-                    currentPlayers.add(statisticPlayer);
-                }
-
-                PlayerStatisticLoader.getInstance().addAllRecord(currentPlayers);
-
-                String scores = currentPlayers.getPlayers().stream()
-                        .map(Player::toString)
-                        .collect(Collectors.joining());
-
-                // TODO: 10.03.2018 i/o in common pool
-                ForkJoinPool.commonPool().execute(PlayerStatisticLoader.getInstance()::save);
-
-                Main.display.syncExec(() ->
-                        new DialogForm(
-                                gameShell,
-                                "You lose",
-                                "You time: " + (game.getGameTime() / 1000) + "sec." + "\n"
-                                        + scores));
-            }
-
+            game.start();
         }
-        if (Main.isDebug()) System.out.println("Я закончил обновляться");
+        lastTime = System.nanoTime();
+        boolean shouldRender = false;
+        while (unprocessed >= 1) {
+            ticks++;
+            game.step();
+            unprocessed -= 1;
+            shouldRender = true;
+        }
 
 
+        //TODO [REFACTOR] большую часть времени цикл проходит в "холостую", что излишне нагружает процессор
+        // освобождение ресурсов процессора на 2мс,
+        // пока остальные потоки не требовательны этого времени хватает, что бы ресурсы ЦП не простаивали
+//            Thread.yield();
+
+        if (shouldRender) {
+            frames++;
+            render.paint();
+        }
+
+        //TODO [ВОЗМОЖНО] оптимизировать операцию, что бы не проходить массив каждый раз
+        for (Snake player : game.getPlayers()) {
+            if (player.isChanged()) {
+                //TODO [DEBUG] если закрыть окно в то время как идет обновление информации, то вылетит ошибка и закроет приложение.
+                // Попытка перехватить исключение и обработать не возымела эффекта
+                gameShell.setData(
+                        player.getName(),
+                        AwtToSwt.toSwtColor(player.getColor()),
+                        player.getScore(),
+                        player.getLength());
+                player.setChanged(false);
+            }
+        }
+
+        // выводить каждую секунду
+        if (System.currentTimeMillis() - lastTimer > 1000) {
+            lastTimer += 1000;
+            if (Main.isDebug()) System.out.println(ticks + " ticks, " + frames + " fps");
+            frames = 0;
+            ticks = 0;
+        }
+
+        if (game.isEnd()) {
+            stop();
+            PlayerList currentPlayers = new PlayerList();
+            for (Snake player : game.getPlayers()) {
+                Player statisticPlayer = new Player();
+                statisticPlayer.setName(player.getName());
+                statisticPlayer.setScore(player.getScore());
+                statisticPlayer.setTime(game.getGameTime());
+                currentPlayers.add(statisticPlayer);
+            }
+
+            PlayerStatisticLoader.getInstance().addAllRecord(currentPlayers);
+
+            String scores = currentPlayers.getPlayers().stream()
+                    .map(Player::toString)
+                    .collect(Collectors.joining());
+
+            // TODO: 10.03.2018 i/o in common pool
+            ForkJoinPool.commonPool().execute(PlayerStatisticLoader.getInstance()::save);
+
+            Main.display.syncExec(() -> new DialogForm(
+                    gameShell,
+                    "You lose",
+                    "You time: " + (game.getGameTime() / 1000) + "sec." + "\n"
+                            + scores));
+        }
+
+        Main.display.asyncExec(this);
     }
 
     public synchronized void stop() {

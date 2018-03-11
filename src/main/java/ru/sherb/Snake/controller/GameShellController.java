@@ -9,6 +9,7 @@ import ru.sherb.Snake.model.Grid;
 import ru.sherb.Snake.model.MovementController;
 import ru.sherb.Snake.model.Snake;
 import ru.sherb.Snake.setting.Setting;
+import ru.sherb.Snake.view.CreatePlayerDialog;
 import ru.sherb.Snake.view.GameShell;
 
 import java.awt.*;
@@ -17,17 +18,15 @@ import java.awt.*;
  * Created by sherb on 27.10.2016.
  */
 public class GameShellController {
-    private final GameShell gameShell;
 
-    public GameShellController() {
-
+    public void open() {
         Setting setting = Setting.getInstance();
 
         Point defaultSize = new Point(setting.getScreenSizeX(), setting.getScreenSizeY());
-        gameShell = new GameShell(Main.display, defaultSize, setting.isFullscreen());
-        gameShell.open();
+        GameShell gameShell = new GameShell(Main.display, defaultSize, setting.isFullscreen());
+
         gameShell.layout();
-        gameShell.getGameField().setFocus();
+        gameShell.open();
 
         if (Main.isDebug()) System.out.println("Game area = " + gameShell.getGameArea());
 
@@ -81,8 +80,25 @@ public class GameShellController {
             }
         });
 
+        // TODO: 11.03.2018 сделать нормальное открытие формы
+        CreatePlayerDialog dialog = new CreatePlayerDialog(gameShell);
+        Main.display.syncExec(dialog::open);
+
+        while (!dialog.isDisposed()) {
+            if (!Main.display.readAndDispatch()) {
+                Main.display.sleep();
+            }
+        }
+
+        CreatePlayerDialog.Player playerSetting = dialog.getPlayers().get(0);
+        player1.setName(playerSetting.getName());
+        player1.setColor(playerSetting.getColor());
+
+        gameShell.getGameField().setFocus();
+
         // Главный поток обновление графического окна.
-        new Thread(updater).start();
+        Main.display.asyncExec(updater);
+//        new Thread(updater).start();
     }
 
     private void computeCellSize(int minCellCount, Point canvasSize) {

@@ -34,7 +34,7 @@ public class Snake extends GameObject implements Controllable {
     /**
      * Текущий цвет змейки
      */
-    private final Color color;
+    private Color color;
     /**
      * Хранит координаты фруктов, которые проглотила змейка
      */
@@ -45,7 +45,7 @@ public class Snake extends GameObject implements Controllable {
      */
     private int countLength;
     //TODO [ВОЗМОЖНО] сделать ввод пользователем своего имени при старте игры
-    private final String name;
+    private String name;
     /**
      * Блокирование изменение направления движения, если игрок уже его выбрал, а змейка еще не походила
      * На всякий случай потокобезопасна, т.к. игрок в теории может одновременно попытаться задать несколько направлений движения
@@ -265,5 +265,13 @@ public class Snake extends GameObject implements Controllable {
 
     public void unlockChangeDirect() {
         lockChangeDirect = false;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
