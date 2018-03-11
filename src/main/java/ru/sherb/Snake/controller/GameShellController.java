@@ -13,6 +13,7 @@ import ru.sherb.Snake.view.CreatePlayerDialog;
 import ru.sherb.Snake.view.GameShell;
 
 import java.awt.*;
+import java.util.Map;
 
 /**
  * Created by sherb on 27.10.2016.
@@ -25,10 +26,20 @@ public class GameShellController {
         Point defaultSize = new Point(setting.getScreenSizeX(), setting.getScreenSizeY());
         GameShell gameShell = new GameShell(Main.display, defaultSize, setting.isFullscreen());
 
-        gameShell.layout();
-        gameShell.open();
-
         if (Main.isDebug()) System.out.println("Game area = " + gameShell.getGameArea());
+
+        CreatePlayerDialog dialog = new CreatePlayerDialog(gameShell);
+        dialog.open();
+
+        while (!dialog.isDisposed()) {
+            if (!Main.display.readAndDispatch()) {
+                Main.display.sleep();
+            }
+        }
+        if (gameShell.isDisposed()) {
+            new MainShellController().open();
+            return;
+        }
 
         //16:9
         assert setting.getGrid_HEIGHT() % 3 == 0;
@@ -42,9 +53,12 @@ public class GameShellController {
 
         Grid grid = new Grid(cellCountWidth, cellCountHeight, setting.getGrid_COLOR());
         Color fruitColor = setting.getFruit_COLOR();
-        String player1Name = setting.getPlayerNames()[0];
-        Snake player1 = new Snake(grid, 0, grid.getHeight() - 1, player1Name, setting.getPlayer_COLOR(player1Name), 3);
-        MovementController player1Controller = new MovementController(player1, setting.getControlOver(player1Name));
+        // TODO: 11.03.2018 добавить игрокам id
+        Map<Integer, Integer> control = setting.getControlOver(setting.getPlayerNames()[0]);
+        String player1Name = dialog.getPlayers().get(0).getName();
+        Color player1Color = dialog.getPlayers().get(0).getColor();
+        Snake player1 = new Snake(grid, 0, grid.getHeight() - 1, player1Name, player1Color, 3);
+        MovementController player1Controller = new MovementController(player1, control);
 //        Snake player2 = new Snake(grid, 0, 0, "player2", java.awt.Color.MAGENTA, 3);
         final Game game = new Game(grid, fruitColor, player1);
         Updater updater = new Updater(game, gameShell);
@@ -62,9 +76,13 @@ public class GameShellController {
             } else {
                 //TODO временное решение, пока не будет создано окно паузы
                 if (e.keyCode == 27) {
-                    if (Main.isDebug()) System.out.println("pause");
-                    if (updater.isPause()) updater.start();
-                    else updater.pause();
+                    if (updater.isPause()) {
+                        if (Main.isDebug()) System.out.println("end pause");
+                        updater.start();
+                    } else {
+                        if (Main.isDebug()) System.out.println("start pause");
+                        updater.pause();
+                    }
                 }
             }
         });
@@ -80,25 +98,13 @@ public class GameShellController {
             }
         });
 
-        // TODO: 11.03.2018 сделать нормальное открытие формы
-        CreatePlayerDialog dialog = new CreatePlayerDialog(gameShell);
-        Main.display.syncExec(dialog::open);
 
-        while (!dialog.isDisposed()) {
-            if (!Main.display.readAndDispatch()) {
-                Main.display.sleep();
-            }
-        }
-
-        CreatePlayerDialog.Player playerSetting = dialog.getPlayers().get(0);
-        player1.setName(playerSetting.getName());
-        player1.setColor(playerSetting.getColor());
-
+        gameShell.layout();
+        gameShell.open();
         gameShell.getGameField().setFocus();
 
         // Главный поток обновление графического окна.
         Main.display.asyncExec(updater);
-//        new Thread(updater).start();
     }
 
     private void computeCellSize(int minCellCount, Point canvasSize) {

@@ -1,5 +1,6 @@
 package ru.sherb.Snake.view;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Value;
@@ -12,6 +13,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -46,21 +48,31 @@ public final class CreatePlayerDialog {
         firstPlayer.setLayoutData(new GridData(GridData.FILL_BOTH));
         playerComposites.add(firstPlayer);
 
-        ButtonComposite controls = new ButtonComposite(shell, SWT.NONE);
-        controls.getBtnApply().addSelectionListener(new SelectionAdapter() {
+        Composite controls = new Composite(shell, SWT.NONE);
+        controls.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout gridLayout = new GridLayout(2, true);
+        gridLayout.horizontalSpacing = 40;
+        controls.setLayout(gridLayout);
+        Button cancel = new Button(controls, SWT.PUSH);
+        cancel.setText("Back");
+        cancel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        Button ok = new Button(controls, SWT.PUSH);
+        ok.setText("Ok");
+        ok.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        ok.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 // TODO: 11.03.2018 validate....
                 for (PlayerComposite composite : playerComposites) {
                     players.add(Player.of(composite.name.getText(), AwtToSwt.toAwtColor(composite.color)));
                 }
-                shell.dispose();
+                shell.getParent().dispose();
             }
         });
-        controls.getBtnExit().addSelectionListener(new SelectionAdapter() {
+        cancel.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                shell.dispose();
+                shell.getParent().dispose();
             }
         });
 
@@ -99,7 +111,7 @@ public final class CreatePlayerDialog {
             // TODO: 11.03.2018 добавить для остальных игроков при выборе имени выделять всю строку
 
             Label colorLabel = new Label(this, SWT.NONE);
-            colorLabel.setText("snake color:");
+            colorLabel.setText("Snake color:");
             colorLabel.setLayoutData(new GridData(GridData.FILL_BOTH));
             Composite changeColor = new Composite(this, SWT.BORDER);
             GridData gd_composite = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
@@ -129,7 +141,7 @@ public final class CreatePlayerDialog {
     }
 
     @Value
-    @AllArgsConstructor(staticName = "of")
+    @AllArgsConstructor(staticName = "of", access = AccessLevel.PRIVATE)
     public static class Player {
         String name;
         java.awt.Color color;

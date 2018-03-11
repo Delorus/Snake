@@ -71,14 +71,14 @@ class Updater implements Runnable {
         unprocessed += (now - lastTime) / NS_PER_TICK;
         if (pause) {
             game.stop();
-            synchronized (this) {
-                while (pause) {
-                    try {
-                        wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            while (pause && !gameShell.isDisposed()) {
+                if (!Main.display.readAndDispatch()) {
+                    Main.display.sleep();
                 }
+            }
+            if (gameShell.isDisposed()) {
+                if (Main.isDebug()) System.out.println("Я закончил обновляться");
+                return;
             }
             game.start();
         }

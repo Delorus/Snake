@@ -35,8 +35,8 @@ public class MainMenu extends Composite {
 		btnNewGame.setLayoutData(new RowData(100, SWT.DEFAULT));
 		btnNewGame.setText("New game");
         btnNewGame.addListener(SWT.Selection, e -> {
-            new GameShellController().open();
             parent.dispose();
+			new GameShellController().open();
         });
 
         btnGameLoad = new Button(this, SWT.NONE);
