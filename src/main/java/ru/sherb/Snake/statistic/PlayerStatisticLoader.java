@@ -11,7 +11,9 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.CREATE;
@@ -38,9 +40,9 @@ public final class PlayerStatisticLoader {
         return InstanceHolder.INSTANCE;
     }
 
-    public void addAllRecord(PlayerList currentPlayers) {
+    public void addAllRecord(List<Player> currentPlayers) {
         if (ensureLoad()) {
-            players.getPlayers().addAll(currentPlayers.getPlayers());
+            players.getPlayers().addAll(currentPlayers);
         }
     }
 
@@ -55,6 +57,20 @@ public final class PlayerStatisticLoader {
                     .max(Comparator.comparingInt(Player::getScore));
         }
         return Optional.empty();
+    }
+
+    public List<Player> getAllPlayers() {
+        if (ensureLoad()) {
+            return players.getPlayers();
+        }
+        return Collections.emptyList();
+    }
+
+    public List<Player> getAllPlayers(int max) {
+        if (ensureLoad()) {
+            return players.getPlayers().subList(0, max);
+        }
+        return Collections.emptyList();
     }
 
     public boolean save() {

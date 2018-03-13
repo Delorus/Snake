@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import ru.sherb.Snake.Main;
 import ru.sherb.Snake.controller.GameShellController;
+import ru.sherb.Snake.controller.StatisticShellController;
 
 public class MainMenu extends Composite {
 	private final Button btnNewGame;
@@ -45,6 +46,7 @@ public class MainMenu extends Composite {
 
         btnState = new Button(this, SWT.NONE);
 		btnState.setText("Statistic");
+        btnState.addListener(SWT.Selection, e -> new StatisticShellController().open());
 
         btnSetting = new Button(this, SWT.NONE);
 		btnSetting.setText("Setting");

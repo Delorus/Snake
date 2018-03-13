@@ -4,12 +4,13 @@ import ru.sherb.Snake.Main;
 import ru.sherb.Snake.model.Game;
 import ru.sherb.Snake.model.Snake;
 import ru.sherb.Snake.statistic.Player;
-import ru.sherb.Snake.statistic.PlayerList;
 import ru.sherb.Snake.statistic.PlayerStatisticLoader;
 import ru.sherb.Snake.util.AwtToSwt;
 import ru.sherb.Snake.view.DialogForm;
 import ru.sherb.Snake.view.GameShell;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
@@ -126,7 +127,7 @@ class Updater implements Runnable {
 
         if (game.isEnd()) {
             stop();
-            PlayerList currentPlayers = new PlayerList();
+            List<Player> currentPlayers = new ArrayList<>();
             for (Snake player : game.getPlayers()) {
                 Player statisticPlayer = new Player();
                 statisticPlayer.setName(player.getName());
@@ -137,7 +138,7 @@ class Updater implements Runnable {
 
             PlayerStatisticLoader.getInstance().addAllRecord(currentPlayers);
 
-            String scores = currentPlayers.getPlayers().stream()
+            String scores = currentPlayers.stream()
                     .map(Player::toString)
                     .collect(Collectors.joining());
 

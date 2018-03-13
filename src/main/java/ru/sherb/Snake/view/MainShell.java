@@ -20,8 +20,8 @@ public class MainShell extends Shell {
 		setText("Main menu");
 		setSize(300, 480);
         setBackground(Main.display.getSystemColor(SWT.COLOR_MAGENTA));
-        try (InputStream is =  Class.class.getResourceAsStream("/ru/sherb/Snake/res/backgroundTmp.png")) {
-            if (Objects.nonNull(is)) {
+        try (InputStream is = Class.class.getResourceAsStream("/backgroundTmp.png")) {
+            if (is != null) {
                 setBackgroundImage(new Image(Main.display, is));
             } else {
                 setBackground(Main.display.getSystemColor(SWT.COLOR_WHITE));

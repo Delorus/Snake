@@ -1,19 +1,20 @@
 package ru.sherb.Snake.statistic;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Created by sherb on 19.12.2016.
  */
-@Getter
-@Setter
+@Data
 @XmlRootElement(name = "player")
 public final class Player {
     private String name;
     private int score;
+    /**
+     * Max game time (ms)
+     */
     private long time;
 
     @Override

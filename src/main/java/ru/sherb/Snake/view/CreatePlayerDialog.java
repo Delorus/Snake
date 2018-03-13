@@ -66,7 +66,7 @@ public final class CreatePlayerDialog {
                 for (PlayerComposite composite : playerComposites) {
                     players.add(Player.of(composite.name.getText(), AwtToSwt.toAwtColor(composite.color)));
                 }
-                shell.getParent().dispose();
+                shell.dispose();
             }
         });
         cancel.addSelectionListener(new SelectionAdapter() {
