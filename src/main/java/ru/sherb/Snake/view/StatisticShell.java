@@ -30,29 +30,6 @@ public class StatisticShell extends Shell {
         setLayout(new FillLayout());
     }
 
-    private static Comparator<Player> getComparator(int columnIndex) {
-        switch (columnIndex) {
-            case NAME_INDEX:
-                return Comparator.comparing(Player::getName);
-            case SCORE_INDEX:
-                return Comparator.comparingInt(Player::getScore).reversed();
-            case TIME_INDEX:
-                return Comparator.comparingLong(Player::getTime).reversed();
-            default:
-                throw new IllegalArgumentException("column with index " + columnIndex + " not found");
-        }
-    }
-
-    private static int getColumnIndex(TableColumn column, Table table) {
-        TableColumn[] columns = table.getColumns();
-        for (int i = 0; i < columns.length; i++) {
-            if (column.getText().equals(columns[i].getText())) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     public void customize() {
         Table table = new Table(this, SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL);
         table.setHeaderVisible(true);
@@ -104,6 +81,29 @@ public class StatisticShell extends Shell {
 
         Stream.of(NAME_INDEX, SCORE_INDEX, TIME_INDEX).forEach(i -> table.getColumn(i).pack());
         pack();
+    }
+
+    private static int getColumnIndex(TableColumn column, Table table) {
+        TableColumn[] columns = table.getColumns();
+        for (int i = 0; i < columns.length; i++) {
+            if (column.getText().equals(columns[i].getText())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private static Comparator<Player> getComparator(int columnIndex) {
+        switch (columnIndex) {
+            case NAME_INDEX:
+                return Comparator.comparing(Player::getName);
+            case SCORE_INDEX:
+                return Comparator.comparingInt(Player::getScore).reversed();
+            case TIME_INDEX:
+                return Comparator.comparingLong(Player::getTime).reversed();
+            default:
+                throw new IllegalArgumentException("column with index " + columnIndex + " not found");
+        }
     }
 
     private void mapPlayersToTableItems(List<Player> players, Table table) {
