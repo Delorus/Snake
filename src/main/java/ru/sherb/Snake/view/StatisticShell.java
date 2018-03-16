@@ -1,6 +1,8 @@
 package ru.sherb.Snake.view;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
@@ -26,6 +28,7 @@ public class StatisticShell extends Shell {
 
     public StatisticShell(Display display) {
         super(display, SWT.SHELL_TRIM);
+        setMinimumSize(210, 80);
         setText("Statistics");
         setLayout(new FillLayout());
     }
@@ -78,6 +81,27 @@ public class StatisticShell extends Shell {
         nameColumn.addListener(SWT.Selection, onSortColumn);
         scoreColumn.addListener(SWT.Selection, onSortColumn);
         timeColumn.addListener(SWT.Selection, onSortColumn);
+
+        this.addListener(SWT.Resize, e -> {
+            Rectangle area = this.getClientArea();
+            Point preferredSize = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+            int width = area.width - 2 * table.getBorderWidth();
+            if (preferredSize.y > area.height + table.getHeaderHeight()) {
+                width -= table.getVerticalBar().getSize().x;
+            }
+            Point oldSize = table.getSize();
+            if (oldSize.x > area.width) {
+                nameColumn.setWidth(width / 3);
+                scoreColumn.setWidth(width / 3);
+                timeColumn.setWidth(width - (nameColumn.getWidth() + scoreColumn.getWidth()));
+                table.setSize(area.width, area.height);
+            } else {
+                table.setSize(area.width, area.height);
+                nameColumn.setWidth(width / 3);
+                scoreColumn.setWidth(width / 3);
+                timeColumn.setWidth(width - (nameColumn.getWidth() + scoreColumn.getWidth()));
+            }
+        });
 
         Stream.of(NAME_INDEX, SCORE_INDEX, TIME_INDEX).forEach(i -> table.getColumn(i).pack());
         pack();
