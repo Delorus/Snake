@@ -9,9 +9,10 @@ import ru.sherb.Snake.Main;
 import ru.sherb.Snake.controller.GameShellController;
 import ru.sherb.Snake.controller.StatisticShellController;
 
+import java.io.IOException;
+
 public class MainMenu extends Composite {
 	private final Button btnNewGame;
-	private final Button btnGameLoad;
 	private final Button btnState;
 	private final Button btnSetting;
 	private final Button btnHelp;
@@ -40,10 +41,6 @@ public class MainMenu extends Composite {
 			new GameShellController().open();
         });
 
-        btnGameLoad = new Button(this, SWT.NONE);
-		btnGameLoad.setEnabled(false);
-		btnGameLoad.setText("Game load");
-
         btnState = new Button(this, SWT.NONE);
 		btnState.setText("Statistic");
         btnState.addListener(SWT.Selection, e -> new StatisticShellController().open());
@@ -54,6 +51,13 @@ public class MainMenu extends Composite {
 
         btnHelp = new Button(this, SWT.NONE);
 		btnHelp.setText("Help");
+        btnHelp.addListener(SWT.Selection, event -> {
+            try {
+                Runtime.getRuntime().exec("hh.exe SnakeHelp.chm");
+            } catch (IOException e) {
+                if (Main.isDebug()) e.printStackTrace();
+            }
+        });
 
 		btnExit = new Button(this, SWT.NONE);
         btnExit.setText("Exit");
