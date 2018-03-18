@@ -10,7 +10,6 @@ import ru.sherb.Snake.Main;
 class SettingMenu extends Composite {
 	private final Button btnGame;
 	private final Button btnGraphics;
-	private final Button btnAudio;
 	private final Button btnControl;
 	private final Button btnExit;
 
@@ -37,9 +36,6 @@ class SettingMenu extends Composite {
 		btnGraphics = new Button(this, SWT.NONE);
 		btnGraphics.setText("Graphics");
         btnGraphics.addListener(SWT.Selection, e -> parent.setComposite(new GraphicSetting(parent, SWT.NONE)));
-		
-		btnAudio = new Button(this, SWT.NONE);
-		btnAudio.setText("Audio");
 		
 		btnControl = new Button(this, SWT.NONE);
 		btnControl.setText("Control");
