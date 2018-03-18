@@ -2,6 +2,7 @@ package ru.sherb.Snake.view;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -16,11 +17,16 @@ public class MainShell extends Shell {
     private Composite menu;
 
 	public MainShell(Display display) {
-		super(display, SWT.CLOSE | SWT.MIN | SWT.TITLE);
+        super(display, SWT.NONE);
 		setText("Main menu");
 		setSize(300, 480);
+        Rectangle bounds = Main.display.getPrimaryMonitor().getBounds();
+        Rectangle size = getBounds();
+        final int x = bounds.x + (bounds.width - size.width) / 2;
+        final int y = bounds.y + (bounds.height - size.height) / 2;
+        setLocation(x, y);
         setBackground(Main.display.getSystemColor(SWT.COLOR_MAGENTA));
-        try (InputStream is = Class.class.getResourceAsStream("/backgroundTmp.png")) {
+        try (InputStream is = Class.class.getResourceAsStream("/background.png")) {
             if (is != null) {
                 setBackgroundImage(new Image(Main.display, is));
             } else {
@@ -39,7 +45,7 @@ public class MainShell extends Shell {
     private void createContents() {
 
         Label lblLogo = new Label(this, SWT.CENTER);
-        try (InputStream is =  Class.class.getResourceAsStream("/ru/sherb/Snake/res/LogoTmp.png")) {
+        try (InputStream is = Class.class.getResourceAsStream("/logo.png")) {
             if (Objects.nonNull(is))
                 lblLogo.setImage(new Image(Main.display, is));
         } catch (IOException e) {
