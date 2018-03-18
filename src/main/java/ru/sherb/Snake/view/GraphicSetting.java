@@ -99,7 +99,7 @@ class GraphicSetting extends Composite {
         Combo comboCellCount = new Combo(compositeMenu, SWT.READ_ONLY);
         comboCellCount.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         comboCellCount.add(formatter.apply(setting.getScreenSizeX(), setting.getScreenSizeY()));
-        List<Point> resolutions = new ResolutionGenerator(16, 9).computeCount(10, setting.getScreenSizeX());
+        List<Point> resolutions = new ResolutionGenerator(16, 9).computeCount(100);
         resolutions.forEach(point -> comboCellCount.add(formatter.apply(point.x, point.y)));
         comboCellCount.select(0);
         comboCellCount.addListener(SWT.Selection, e -> {
