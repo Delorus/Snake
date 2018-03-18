@@ -107,16 +107,6 @@ class GameSetting extends Composite {
         transparentBorder.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
         transparentBorder.setSelection(setting.getTransparentBorder());
         //TODO добавить опцию в настройки
-
-        Label lblWalls = new Label(compositeMenu, SWT.NONE);
-        lblWalls.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-        lblWalls.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
-        lblWalls.setText("Walls");
-
-        final Button btnWalls = new Button(compositeMenu, SWT.CHECK);
-        btnWalls.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, false, false, 1, 1));
-        btnWalls.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
-        // TODO добавить опцию в настройки
     }
 
     @Override
