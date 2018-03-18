@@ -214,10 +214,6 @@ class ControlSetting extends Composite {
         txtMoveRight.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         txtMoveRight.setText(decodeKey(control.get(Controllable.RIGHT)));
         txtMoveRight.setEditable(false);
-
-
-        TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
-        tabItem.setText("New Player");
     }
 
     private static String decodeKey(int key) {
