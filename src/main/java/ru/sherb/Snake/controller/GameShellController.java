@@ -51,7 +51,7 @@ public class GameShellController {
         //количество ячеек по горизонтали задается в зависимости от начального размера окна
 //        computeCellSize(Math.min(cellCountHeight, cellCountWidth), new Point(gameShell.getGameArea().width, gameShell.getGameArea().height));
 
-        Grid grid = new Grid(cellCountWidth, cellCountHeight, setting.getGrid_COLOR());
+        Grid grid = new Grid(cellCountWidth, cellCountHeight, setting.getGrid_COLOR(), setting.getTransparentBorder());
         Color fruitColor = setting.getFruit_COLOR();
         // TODO: 11.03.2018 добавить игрокам id
         Map<Integer, Integer> control = setting.getControlOver(setting.getPlayerNames()[0]);

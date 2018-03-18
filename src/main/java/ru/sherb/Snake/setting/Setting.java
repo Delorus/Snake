@@ -96,6 +96,7 @@ public final class Setting {
         defaultSetting.setProperty("Fruit_COLOR", String.valueOf(Color.RED.getRGB()));
 
         defaultSetting.setProperty("PlayersStatisticPath", "players_statistic.xml");
+        defaultSetting.setProperty("TransparentBorder", "true");
         //...
 
         this.setDefault(defaultSetting);
@@ -208,5 +209,13 @@ public final class Setting {
 
     public void setStatisticPath(String path) {
         setting.setProperty("PlayersStatisticPath", path);
+    }
+
+    public boolean getTransparentBorder() {
+        return Boolean.parseBoolean(setting.getProperty("TransparentBorder"));
+    }
+
+    public void setTransparentBorder(boolean transparentBorder) {
+        setting.setProperty("TransparentBorder", String.valueOf(transparentBorder));
     }
 }

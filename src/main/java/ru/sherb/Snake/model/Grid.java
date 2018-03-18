@@ -14,7 +14,7 @@ public class Grid implements Colorable {
     private final Color color;
     private final boolean transparentBorder;
 
-    public Grid(int width, int height, Color color/*, boolean transparentBorder*/) {
+    public Grid(int width, int height, Color color, boolean transparentBorder) {
         this.color = color;
         grid = new Cell[width][height];
         for (int i = 0; i < width; i++) {
@@ -22,7 +22,7 @@ public class Grid implements Colorable {
                 grid[i][j] = new Cell(State.EMPTY, i, j, this.color);
             }
         }
-        this.transparentBorder = true;
+        this.transparentBorder = transparentBorder;
         if (Main.isDebug())
             System.out.println("Создано игровое поле " + getWidth() + " на " + getHeight());
     }

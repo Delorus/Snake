@@ -23,6 +23,7 @@ import java.util.ArrayList;
 class GameSetting extends Composite {
     private final ButtonComposite buttonComposite;
     private Combo comboCellCount;
+    private Button transparentBorder;
 
     /**
      * Create the composite.
@@ -60,8 +61,8 @@ class GameSetting extends Composite {
         //TODO сохранять значение из других полей тоже
         comboCellCount.addListener(SWT.Selection, e -> Setting.getInstance().setGrid_HEIGHT(Integer.valueOf(comboCellCount.getText())));
 
-
-
+        transparentBorder.addListener(SWT.Selection, e ->
+                Setting.getInstance().setTransparentBorder(transparentBorder.getSelection()));
     }
 
     private void createConponents() {
@@ -101,9 +102,10 @@ class GameSetting extends Composite {
         lblTransparentBorder.setText("Transparent border");
 
 
-        final Button btnTransparentBorder = new Button(compositeMenu, SWT.CHECK);
-        btnTransparentBorder.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, false, false, 1, 1));
-        btnTransparentBorder.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
+        transparentBorder = new Button(compositeMenu, SWT.CHECK);
+        transparentBorder.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, false, false, 1, 1));
+        transparentBorder.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
+        transparentBorder.setSelection(setting.getTransparentBorder());
         //TODO добавить опцию в настройки
 
         Label lblWalls = new Label(compositeMenu, SWT.NONE);
