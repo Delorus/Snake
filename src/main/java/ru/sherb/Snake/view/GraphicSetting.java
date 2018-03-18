@@ -13,11 +13,21 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Widget;
 import ru.sherb.Snake.Main;
+import ru.sherb.Snake.setting.Setting;
+import ru.sherb.Snake.util.ResolutionGenerator;
+
+import java.awt.*;
+import java.io.IOException;
+import java.util.List;
+import java.util.function.BiFunction;
 
 /**
  * Created by sherb on 09.11.2016.
  */
 class GraphicSetting extends Composite {
+
+    private final Button fullscreen;
+
     /**
      * Constructs a new instance of this class given its parent
      * and a style value describing its behavior and appearance.
@@ -77,25 +87,38 @@ class GraphicSetting extends Composite {
         compositeMenu.setLayoutData(compositeMenuData);
         compositeMenu.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
 
+        Setting setting = Setting.getInstance();
 
         Label lblResolution = new Label(compositeMenu, SWT.NONE);
         lblResolution.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         lblResolution.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
         lblResolution.setText("Resolution");
 
+        final BiFunction<Integer, Integer, String> formatter = (width, height) ->
+                String.format("%dx%d", width, height);
         Combo comboCellCount = new Combo(compositeMenu, SWT.READ_ONLY);
-        comboCellCount.setItems("wait...");
         comboCellCount.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        comboCellCount.add(formatter.apply(setting.getScreenSizeX(), setting.getScreenSizeY()));
+        List<Point> resolutions = new ResolutionGenerator(16, 9).computeCount(10, setting.getScreenSizeX());
+        resolutions.forEach(point -> comboCellCount.add(formatter.apply(point.x, point.y)));
+        comboCellCount.select(0);
+        comboCellCount.addListener(SWT.Selection, e -> {
+            Point point = resolutions.get(comboCellCount.getSelection().y);
+            setting.setScreenSizeX(point.x);
+            setting.setScreenSizeY(point.y);
+        });
 
         Label lblFullscreen = new Label(compositeMenu, SWT.NONE);
         lblFullscreen.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
         lblFullscreen.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
         lblFullscreen.setText("Fullscreen");
 
-        Button btnFullscreen = new Button(compositeMenu, SWT.CHECK);
-        btnFullscreen.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, false, false, 1, 1));
-        btnFullscreen.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
-
+        fullscreen = new Button(compositeMenu, SWT.CHECK);
+        fullscreen.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, false, false, 1, 1));
+        fullscreen.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
+        fullscreen.setSelection(setting.getFullscreen());
+        fullscreen.addListener(SWT.Selection, e ->
+                setting.setFullscreen(fullscreen.getSelection()));
 
 
         Button btnExit = new Button(compositeButton, SWT.NONE);
@@ -106,7 +129,14 @@ class GraphicSetting extends Composite {
         Button btnApply = new Button(compositeButton, SWT.NONE);
         btnApply.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         btnApply.setText("Apply");
-        btnExit.addListener(SWT.Selection, e -> {
+        btnApply.addListener(SWT.Selection, e -> {
+            try {
+                setting.store();
+            } catch (IOException exc) {
+                if (Main.isDebug()) exc.printStackTrace();
+                //TODO добавить предупреждение для пользователя
+            }
+            parent.setComposite(new SettingMenu(parent, SWT.NONE));
         });
     }
 

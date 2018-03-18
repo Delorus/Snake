@@ -168,6 +168,10 @@ public final class Setting {
         return Paths.get(setting.getProperty("PlayersStatisticPath"));
     }
 
+    public boolean getFullscreen() {
+        return Boolean.parseBoolean(setting.getProperty("Fullscreen"));
+    }
+
     public void setScreenSizeX(int width) {
         setting.setProperty("ScreenSizeX", String.valueOf(width));
     }
