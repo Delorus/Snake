@@ -43,7 +43,6 @@ public class StatisticShell extends Shell {
         TableColumn timeColumn = new TableColumn(table, SWT.NONE, TIME_INDEX);
         timeColumn.setText("Time");
 
-        // TODO: 13.03.2018 move to controller
         PlayerStatisticLoader statisticLoader = PlayerStatisticLoader.getInstance();
         List<Player> players = statisticLoader.getAllPlayers();
 

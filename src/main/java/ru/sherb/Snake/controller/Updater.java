@@ -93,21 +93,13 @@ class Updater implements Runnable {
         }
 
 
-        //TODO [REFACTOR] большую часть времени цикл проходит в "холостую", что излишне нагружает процессор
-        // освобождение ресурсов процессора на 2мс,
-        // пока остальные потоки не требовательны этого времени хватает, что бы ресурсы ЦП не простаивали
-//            Thread.yield();
-
         if (shouldRender) {
             frames++;
             render.paint();
         }
 
-        //TODO [ВОЗМОЖНО] оптимизировать операцию, что бы не проходить массив каждый раз
         for (Snake player : game.getPlayers()) {
             if (player.isChanged()) {
-                //TODO [DEBUG] если закрыть окно в то время как идет обновление информации, то вылетит ошибка и закроет приложение.
-                // Попытка перехватить исключение и обработать не возымела эффекта
                 gameShell.setData(
                         player.getName(),
                         AwtToSwt.toSwtColor(player.getColor()),
@@ -142,7 +134,6 @@ class Updater implements Runnable {
                     .map(Player::toString)
                     .collect(Collectors.joining());
 
-            // TODO: 10.03.2018 i/o in common pool
             ForkJoinPool.commonPool().execute(PlayerStatisticLoader.getInstance()::save);
 
             Main.display.syncExec(() -> new DialogForm(

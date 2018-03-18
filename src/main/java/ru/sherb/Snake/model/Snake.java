@@ -30,7 +30,6 @@ public class Snake extends GameObject implements Controllable {
      * Текущее направление движения змейки (см. {@link Controllable}
      */
     private int direct;
-    //TODO заменить цвет на тональность текстурки
     /**
      * Текущий цвет змейки
      */
@@ -39,12 +38,10 @@ public class Snake extends GameObject implements Controllable {
      * Хранит координаты фруктов, которые проглотила змейка
      */
     private final LinkedList<Point> foods;
-    //TODO [DEBUG] возвращает длину последнего съеденного фрукта, т.е. если съесть сначала фрукт на +2 а потом на +1, то оба раза увеличиться на +1
     /**
      * Число, на которое вырастит змейка, после переваривания пищи
      */
     private int countLength;
-    //TODO [ВОЗМОЖНО] сделать ввод пользователем своего имени при старте игры
     private String name;
     /**
      * Блокирование изменение направления движения, если игрок уже его выбрал, а змейка еще не походила
@@ -175,8 +172,6 @@ public class Snake extends GameObject implements Controllable {
                 head.setStatus(State.SNAKE, this);
                 break;
             case FRUIT:
-                //сделать возможность получить фрукт из змейки
-                //TODO [REFACTOR] временное решение проблемы
                 eatFruit = true;
                 head.setColor(Color.MAGENTA);
                 foods.add(head.getPosition());
@@ -210,7 +205,6 @@ public class Snake extends GameObject implements Controllable {
     }
 
 
-    //TODO съедать фрукт
     public void eat(int count) {
         countLength = count;
         eatFruit = false;

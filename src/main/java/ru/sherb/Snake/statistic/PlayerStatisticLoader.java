@@ -50,7 +50,6 @@ public final class PlayerStatisticLoader {
         return ensureLoad() && players.add(record);
     }
 
-    // TODO: 10.03.2018 very slow, but who cares ¯\_(ツ)_/¯
     public Optional<Player> getPlayerWithBestScore() {
         if (ensureLoad()) {
             return players.getPlayers().stream()

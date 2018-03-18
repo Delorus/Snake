@@ -62,7 +62,6 @@ public final class CreatePlayerDialog {
         ok.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                // TODO: 11.03.2018 validate....
                 for (PlayerComposite composite : playerComposites) {
                     players.add(Player.of(composite.name.getText(), AwtToSwt.toAwtColor(composite.color)));
                 }
@@ -108,7 +107,6 @@ public final class CreatePlayerDialog {
             name.setLayoutData(new GridData(GridData.FILL_BOTH));
             name.setText(defaultName);
             name.selectAll();
-            // TODO: 11.03.2018 добавить для остальных игроков при выборе имени выделять всю строку
 
             Label colorLabel = new Label(this, SWT.NONE);
             colorLabel.setText("Snake color:");
@@ -117,7 +115,6 @@ public final class CreatePlayerDialog {
             GridData gd_composite = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
             gd_composite.heightHint = 20;
             changeColor.setLayoutData(gd_composite);
-            // TODO: 11.03.2018 при смене имени, искать цвет для такого игрока в настройках и заполнять его
             color = AwtToSwt.toSwtColor(Setting.getInstance().getPlayer_COLOR(defaultName));
             changeColor.setBackground(color);
             changeColor.addMouseListener(new MouseAdapter() {

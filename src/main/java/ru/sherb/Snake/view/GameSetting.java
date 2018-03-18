@@ -51,14 +51,12 @@ class GameSetting extends Composite {
                 Setting.getInstance().store();
             } catch (IOException exc) {
                 if (Main.isDebug()) exc.printStackTrace();
-                //TODO добавить предупреждение для пользователя
             }
             parent.setComposite(new SettingMenu(parent, SWT.NONE));
         });
 
         createConponents();
 
-        //TODO сохранять значение из других полей тоже
         comboCellCount.addListener(SWT.Selection, e -> Setting.getInstance().setGrid_HEIGHT(Integer.valueOf(comboCellCount.getText())));
 
         transparentBorder.addListener(SWT.Selection, e ->
@@ -86,7 +84,6 @@ class GameSetting extends Composite {
 
         comboCellCount = new Combo(compositeMenu, SWT.READ_ONLY);
         ArrayList<String> buff = new ArrayList<>();
-        //TODO сделать набор ячеек по первым 4 делителям после 9 числа, который получается из высоты игрового поля
         buff.add("9");
         buff.add("18");
         buff.add("27");
@@ -106,7 +103,6 @@ class GameSetting extends Composite {
         transparentBorder.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, false, false, 1, 1));
         transparentBorder.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
         transparentBorder.setSelection(setting.getTransparentBorder());
-        //TODO добавить опцию в настройки
     }
 
     @Override

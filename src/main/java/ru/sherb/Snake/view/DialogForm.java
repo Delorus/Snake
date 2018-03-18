@@ -33,7 +33,6 @@ public class DialogForm {
         dialog.open();
 
         // Обработка закрытия окна
-        //TODO [DEBUG] удалить после тестирования
         while (!dialog.isDisposed()) {
             if (!Display.getCurrent().readAndDispatch()) {
                 Display.getCurrent().sleep();

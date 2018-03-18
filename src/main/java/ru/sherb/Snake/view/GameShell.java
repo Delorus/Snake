@@ -26,7 +26,6 @@ public class GameShell extends Shell {
     private Composite stateComposite;
     private Composite toolComposite;
     public Composite gameComposite;
-    //TODO [REFACTOR] после того как будут добавлены остальные игроки, добавить возможность создания многих полей
     private Label lblPlayer;
     private Composite compPlayerColor;
     private Label lblScoreValue;
@@ -36,8 +35,6 @@ public class GameShell extends Shell {
      * Create the shell.
      */
     public GameShell(Display display, Point defaultSize, boolean fullscreen) {
-//        super(display, SWT.SHELL_TRIM & (~SWT.RESIZE));
-//        super(display, (fullscreen ? SWT.NO_TRIM : SWT.SHELL_TRIM));
         super(display, SWT.DIALOG_TRIM);
         setLayout(new FormLayout());
         setMinimumSize(432, 243);
@@ -56,7 +53,6 @@ public class GameShell extends Shell {
         Menu submenu = new Menu(this, SWT.DROP_DOWN);
         fileItem.setMenu(submenu);
         MenuItem item = new MenuItem(submenu, SWT.PUSH);
-        //TODO [REFACTOR] переместить в контроллер
         item.addListener(SWT.Selection, e -> {
             new MainShellController().open();
             this.dispose();
@@ -84,7 +80,6 @@ public class GameShell extends Shell {
         gameField.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
         stateComposite.setLayout(new GridLayout(2, false));
 
-        //TODO [DEBUG] удалить layout, управлять размером в ручную
         FormData fd_stateComposite = new FormData();
         fd_stateComposite.left = new FormAttachment(gameComposite);
         fd_stateComposite.right = new FormAttachment(100);
@@ -142,41 +137,6 @@ public class GameShell extends Shell {
         lblLengthValue.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
         lblLengthValue.setBackground(Main.display.getSystemColor(SWT.COLOR_TRANSPARENT));
         lblLengthValue.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-
-//        Label lblPlayer_1 = new Label(stateComposite, SWT.NONE);
-//        lblPlayer_1.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
-//        lblPlayer_1.setBackground(SWTResourceManager.getColor(SWT.COLOR_TRANSPARENT));
-//        lblPlayer_1.setText("player2");
-//
-//        Composite composite_1 = new Composite(stateComposite, SWT.BORDER);
-//        GridData gd_composite_1 = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
-//        gd_composite_1.heightHint = 20;
-//        composite_1.setLayoutData(gd_composite_1);
-//        composite_1.setBackground(SWTResourceManager.getColor(SWT.COLOR_MAGENTA));
-//
-//        Label lblScore_1 = new Label(stateComposite, SWT.NONE);
-//        lblScore_1.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
-//        lblScore_1.setBackground(SWTResourceManager.getColor(SWT.COLOR_TRANSPARENT));
-//        lblScore_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-//        lblScore_1.setText("Score");
-//
-//        Label label_2 = new Label(stateComposite, SWT.NONE);
-//        label_2.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
-//        label_2.setBackground(SWTResourceManager.getColor(SWT.COLOR_TRANSPARENT));
-//        label_2.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-//        label_2.setText("1");
-//
-//        Label lblLength_1 = new Label(stateComposite, SWT.NONE);
-//        lblLength_1.setBackground(SWTResourceManager.getColor(SWT.COLOR_TRANSPARENT));
-//        lblLength_1.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
-//        lblLength_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-//        lblLength_1.setText("Length");
-//
-//        Label label_3 = new Label(stateComposite, SWT.NONE);
-//        label_3.setBackground(SWTResourceManager.getColor(SWT.COLOR_TRANSPARENT));
-//        label_3.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
-//        label_3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-//        label_3.setText("3");
     }
 
     @Override
@@ -189,7 +149,6 @@ public class GameShell extends Shell {
     }
 
 
-    //TODO [ВОЗМОЖНО] удалить метод
     public Rectangle getGameArea() {
         this.layout();
         return gameField.getClientArea();

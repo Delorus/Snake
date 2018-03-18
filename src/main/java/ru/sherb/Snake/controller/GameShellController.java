@@ -47,19 +47,14 @@ public class GameShellController {
         int cellCountWidth = cellCountHeight / 9 * 16; // Количество ячеек по горизонтали
         int size = gameShell.getGameArea().height / cellCountHeight;
         Cell.setSizeCoeff((double) size / Cell.NORMAL_SIZE);
-        //TODO [DEBUG] не верно работает функция масштабирования
-        //количество ячеек по горизонтали задается в зависимости от начального размера окна
-//        computeCellSize(Math.min(cellCountHeight, cellCountWidth), new Point(gameShell.getGameArea().width, gameShell.getGameArea().height));
 
         Grid grid = new Grid(cellCountWidth, cellCountHeight, setting.getGrid_COLOR(), setting.getTransparentBorder());
         Color fruitColor = setting.getFruit_COLOR();
-        // TODO: 11.03.2018 добавить игрокам id
         Map<Integer, Integer> control = setting.getControlOver(setting.getPlayerNames()[0]);
         String player1Name = dialog.getPlayers().get(0).getName();
         Color player1Color = dialog.getPlayers().get(0).getColor();
         Snake player1 = new Snake(grid, 0, grid.getHeight() - 1, player1Name, player1Color, 3);
         MovementController player1Controller = new MovementController(player1, control);
-//        Snake player2 = new Snake(grid, 0, 0, "player2", java.awt.Color.MAGENTA, 3);
         final Game game = new Game(grid, fruitColor, player1);
         Updater updater = new Updater(game, gameShell);
         updater.init();
@@ -71,10 +66,8 @@ public class GameShellController {
 
         gameShell.getGameField().addListener(SWT.KeyDown, e -> {
             if (player1Controller.containsKey(e.keyCode)) {
-                //TODO добавить сохранение до двух нажатий в очередь
                 player1Controller.changeDirection(e.keyCode);
             } else {
-                //TODO временное решение, пока не будет создано окно паузы
                 if (e.keyCode == 27) {
                     if (updater.isPause()) {
                         if (Main.isDebug()) System.out.println("end pause");
@@ -89,8 +82,6 @@ public class GameShellController {
 
         if (Main.isDebug()) System.out.println("Размер окна = " + gameShell.getSize());
         gameShell.addListener(SWT.Resize, event -> {
-            //TODO [DEBUG] пока лучший вариант для стирания старой картинки, но из-за этого происходят фризы при изменениех размера окна
-//            gameShell.getGameField().pack();
             computeCellSize(Math.min(cellCountHeight, cellCountWidth), new Point(gameShell.getGameArea().width, gameShell.getGameArea().height));
             if (Main.isDebug()) {
                 System.out.println("Размер окна = " + gameShell.getSize());
@@ -108,7 +99,6 @@ public class GameShellController {
     }
 
     private void computeCellSize(int minCellCount, Point canvasSize) {
-        //TODO [DEBUG] не верно выравнивает число клеток, если уменьшать по х
         int size = (int) Math.ceil((double) Math.min(canvasSize.x, canvasSize.y) / minCellCount);
         if (Main.isDebug()) System.out.println("Размер ячейки = " + size);
         Cell.setSizeCoeff((double) size / Cell.NORMAL_SIZE); //Расчет размера каждой ячейки

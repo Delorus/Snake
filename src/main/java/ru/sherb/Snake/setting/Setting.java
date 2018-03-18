@@ -45,7 +45,6 @@ public final class Setting {
 
     // загрузка настроек из файла, либо из {@link defaultSetting}
     public void loadOrDefault() throws IOException {
-        //TODO [DEBUG] если в настройках отсутствует хотя бы один параметр, происходит ошибка
         try (InputStream in = new FileInputStream(path)) {
             setting.load(in);
         } catch (FileNotFoundException e) {

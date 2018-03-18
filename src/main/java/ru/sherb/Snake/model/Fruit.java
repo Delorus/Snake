@@ -6,7 +6,6 @@ import java.util.Random;
 /**
  * Created by sherb on 12.10.2016.
  */
-//TODO сделать наследование от ячейки
 public class Fruit extends GameObject{
     private final Grid grid;
     private Cell self;
@@ -75,8 +74,6 @@ public class Fruit extends GameObject{
     public void eatenBy(Snake snake) {
         snake.addScore(scoreInc);
         snake.eat(lengthSnakeInc);
-        //TODO [REFACTOR] неверное использование методов
-//        self.setStatus(State.SNAKE, () -> new Color(color.getRGB() + snake.getColor().getRGB()));
         destroyFruit();
     }
 
