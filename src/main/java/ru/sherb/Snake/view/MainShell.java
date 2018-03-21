@@ -20,6 +20,8 @@ public class MainShell extends Shell {
         super(display, SWT.NONE);
 		setText("Main menu");
 		setSize(300, 480);
+        Image icon = new Image(Main.display, Class.class.getResourceAsStream("/icon.ico"));
+        setImage(icon);
         Rectangle bounds = Main.display.getPrimaryMonitor().getBounds();
         Rectangle size = getBounds();
         final int x = bounds.x + (bounds.width - size.width) / 2;

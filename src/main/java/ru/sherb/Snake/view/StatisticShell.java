@@ -1,6 +1,7 @@
 package ru.sherb.Snake.view;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
@@ -10,6 +11,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import ru.sherb.Snake.Main;
 import ru.sherb.Snake.statistic.Player;
 import ru.sherb.Snake.statistic.PlayerStatisticLoader;
 
@@ -31,6 +33,8 @@ public class StatisticShell extends Shell {
         setMinimumSize(210, 80);
         setText("Statistics");
         setLayout(new FillLayout());
+        Image icon = new Image(Main.display, Class.class.getResourceAsStream("/icon.ico"));
+        setImage(icon);
     }
 
     public void customize() {

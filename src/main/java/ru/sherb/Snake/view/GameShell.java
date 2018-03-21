@@ -2,6 +2,7 @@ package ru.sherb.Snake.view;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
@@ -44,6 +45,8 @@ public class GameShell extends Shell {
             setMaximized(true);
             setFullScreen(true);
         }
+        Image icon = new Image(Main.display, Class.class.getResourceAsStream("/icon.ico"));
+        setImage(icon);
 
         //Create menu
         Menu bar = new Menu(this, SWT.BAR);
